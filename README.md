@@ -1,7 +1,17 @@
 # Dulwich Bookings API
-The Backend repository for Dulwich Bookings
+
+The Backend repository for Dulwich Bookings hosted on Heroku. Built with NodeJS, Express, Sequelize, TypeScript, PostgreSQL
+
+## Documentation
+
+- [**Production Link**]()
+- [**Documentation Link**]()
 
 ## Inital setup
+
+**Prerequisites**
+NodeJS LTS v16.15.0
+
 1. Install nvm on your machine
 2. run `nvm install v16.15.0`
 3. run `npm install -g npm@8.5.5`
