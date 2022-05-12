@@ -12,3 +12,4 @@ The Backend repository for Dulwich Bookings
 8. Run `npm run db:create` to create the database.
 9. Run `npm run db:migrate` to migrate models.
 10. Run `npm run db:seed` to seed database.
+11. Run `npm run dev` to start the development server
