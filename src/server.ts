@@ -1,15 +1,18 @@
-import express, {Express, Request, Response} from 'express';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
-dotenv.config();
+import {authenticate} from './utils/dbUtils';
+import sequelize from './db';
+import App from './app';
 
-const app: Express = express();
-const port = process.env.PORT;
+dotenv.config({path: __dirname + '/.env'});
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server');
-});
+authenticate(sequelize);
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running on Port: ${port}`);
-});
+const {PORT} = process.env;
+const app = new App();
+
+app.initMiddlewares();
+app.initContainer();
+app.initModels();
+app.initControllers();
+app.listen(PORT || '8080');
