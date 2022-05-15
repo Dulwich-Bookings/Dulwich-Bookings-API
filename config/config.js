@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-const {DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, PROD_DB_URL} = process.env;
+const {DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, DATABASE_URL} = process.env;
 
 module.exports = {
   development: {
@@ -12,7 +12,7 @@ module.exports = {
     dialect: 'postgres',
   },
   production: {
-    url: PROD_DB_URL,
+    url: DATABASE_URL,
     dialect: 'postgres',
   },
 };
