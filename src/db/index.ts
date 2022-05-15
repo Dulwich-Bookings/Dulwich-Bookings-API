@@ -2,13 +2,13 @@ import {Sequelize} from 'sequelize';
 
 require('dotenv').config();
 
-const {DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, NODE_ENV, PROD_DB_URL} =
+const {DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, NODE_ENV, DATABASE_URL} =
   process.env;
 
 let sequelize: Sequelize;
 
 if (NODE_ENV === 'production') {
-  sequelize = new Sequelize(PROD_DB_URL!, {
+  sequelize = new Sequelize(DATABASE_URL!, {
     dialect: 'postgres',
     dialectOptions: {
       ssl: {
