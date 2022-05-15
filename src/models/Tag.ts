@@ -13,7 +13,7 @@ class Tag
 {
   public id!: number;
   public name!: string;
-  public static tableName = 'Tags';
+  public static tableName = 'tag';
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

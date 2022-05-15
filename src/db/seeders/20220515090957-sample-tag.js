@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async queryInterface => {
-    return await queryInterface.bulkInsert('Tags', [
+    return await queryInterface.bulkInsert('tag', [
       {
         name: 'Math',
         createdAt: new Date(),
@@ -36,6 +36,6 @@ module.exports = {
     ]);
   },
   down: async queryInterface => {
-    return await queryInterface.bulkDelete('Tags', null, {});
+    return await queryInterface.bulkDelete('tag', null, {});
   },
 };
