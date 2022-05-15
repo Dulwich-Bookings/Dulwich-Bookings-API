@@ -13,5 +13,6 @@ module.exports = {
   },
   production: {
     url: PROD_DB_URL,
+    dialect: 'postgres',
   },
 };
