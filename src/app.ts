@@ -1,6 +1,12 @@
-import express, {Application, NextFunction, Request, Response} from 'express';
+import express, {Application} from 'express';
 
 import sequelize from './db';
+import models from './models';
+
+import TagController from './controllers/TagController';
+import TagRepository from './repositories/TagRepository';
+import TagRouter from './routes/TagRoutes';
+import TagService from './services/TagService';
 
 import Container from './utils/container';
 
@@ -28,19 +34,28 @@ export default class App {
     });
   }
 
-  public initModels() {}
+  public initModels() {
+    Object.keys(models).forEach(key => {
+      models[key].initModel(Container.getInstance().get('db'));
+    });
+  }
 
-  public initControllers() {}
+  public initControllers() {
+    this.app.use('/tags', TagRouter());
+  }
 
   public async initContainer() {
     const container = Container.getInstance();
     container.register('db', sequelize, []);
 
     // repositories
+    container.register('TagRepository', TagRepository, ['db']);
 
     // services
+    container.register('TagService', TagService, ['TagRepository']);
 
     // controllers
+    container.register('TagController', TagController, ['TagService']);
 
     // middlewares
   }
