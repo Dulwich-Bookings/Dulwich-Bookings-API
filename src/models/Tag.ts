@@ -19,7 +19,7 @@ class Tag
   public readonly updatedAt!: Date;
 
   public static getTableName = (): string => {
-    return this.tableName;
+    return Tag.tableName;
   };
 
   public static initModel(sequelize: Sequelize) {
