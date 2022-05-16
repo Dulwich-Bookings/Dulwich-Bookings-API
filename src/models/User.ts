@@ -87,25 +87,38 @@ class User
         role: {
           type: new DataTypes.STRING(128),
           allowNull: false,
+          validate: {
+            notEmpty: true,
+          },
         },
         schoolId: {
           type: DataTypes.INTEGER,
           unique: false,
           allowNull: false,
+          validate: {
+            notEmpty: true,
+          },
         },
         isConfirmed: {
           type: DataTypes.BOOLEAN,
           allowNull: false,
+          validate: {
+            notEmpty: true,
+          },
         },
         isTemporary: {
           type: DataTypes.BOOLEAN,
           allowNull: false,
+          validate: {
+            notEmpty: true,
+          },
         },
         class: {
           type: DataTypes.INTEGER,
           allowNull: true,
           validate: {
-            is: /^[12][0-9]{3}$/i,
+            is: /^[12][0-9]{3}$/i, // regex expression to allow valid years from 1000 - 2999
+            notEmpty: false,
           },
         },
       },
