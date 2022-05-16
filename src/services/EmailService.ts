@@ -65,4 +65,20 @@ export default class EmailService {
       console.log(e);
     }
   }
+
+  public async sendConfirmEmail(from: string, to: string, url: string) {
+    try {
+      const message = {
+        from: from,
+        to: to,
+        subject: 'Dulwich Bookings: Confirm your Email',
+        html:
+          `Welcome, <br>Click on link to confirm your email: <a href=${url}>${url}</a><br><br>` +
+          'Kind Regards, <br>Dulwich Bookings',
+      };
+      await this.sendOneEmail(message);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }
