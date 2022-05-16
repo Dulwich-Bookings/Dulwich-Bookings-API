@@ -26,6 +26,7 @@
     "heroku-postbuild": "npm run build && PGSSLMODE=no-verify && npm run db:reseed"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.6.2",
     "@types/express": "4.17.13",
     "@types/node": "14.17.14",
     "bcrypt": "5.0.1",
