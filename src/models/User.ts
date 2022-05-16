@@ -138,10 +138,24 @@ class User
             user.password = hashedPassword;
           },
           beforeUpdate: async (user: User) => {
+            const isPasswordChange = user.changed()
+              ? (user.changed() as string[]).includes('password')
+              : false;
+
+            if (!isPasswordChange) {
+              return;
+            }
             const hashedPassword = await User.passwordHasher(
               user.password as string
             );
             user.password = hashedPassword;
+          },
+          beforeBulkCreate: async (users: User[]) => {
+            for (const user of users) {
+              const {password} = user;
+              const hashedPassword = await User.passwordHasher(password);
+              user.password = hashedPassword;
+            }
           },
         },
       }

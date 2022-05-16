@@ -8,6 +8,11 @@ import TagRepository from './repositories/TagRepository';
 import TagRouter from './routes/TagRoutes';
 import TagService from './services/TagService';
 
+import UserController from './controllers/UserController';
+import UserRepository from './repositories/UserRepository';
+import UserRouter from './routes/UserRoutes';
+import UserService from './services/UserService';
+
 import Container from './utils/container';
 
 export default class App {
@@ -42,6 +47,7 @@ export default class App {
 
   public initControllers() {
     this.app.use('/tags', TagRouter());
+    this.app.use('/users', UserRouter());
   }
 
   public async initContainer() {
@@ -50,12 +56,15 @@ export default class App {
 
     // repositories
     container.register('TagRepository', TagRepository, ['db']);
+    container.register('UserRepository', UserRepository, ['db']);
 
     // services
     container.register('TagService', TagService, ['TagRepository']);
+    container.register('UserService', UserService, ['UserRepository']);
 
     // controllers
     container.register('TagController', TagController, ['TagService']);
+    container.register('UserController', UserController, ['UserService']);
 
     // middlewares
   }
