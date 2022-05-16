@@ -12,6 +12,8 @@ export default () => {
     userController.getAllUsers(res, next)
   );
 
+  userRouter.get('/:id', userController.getOneUserById.bind(userController));
+
   userRouter.get('/getSelf', userController.getSelf.bind(userController));
 
   userRouter.put('/updateSelf', userController.updateSelf.bind(userController));
