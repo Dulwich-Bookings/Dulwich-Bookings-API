@@ -13,6 +13,10 @@ import UserRepository from './repositories/UserRepository';
 import UserRouter from './routes/UserRoutes';
 import UserService from './services/UserService';
 
+import EmailController from './controllers/EmailController';
+import EmailRouter from './routes/EmailRoutes';
+import EmailService from './services/EmailService';
+
 import Container from './utils/container';
 
 export default class App {
@@ -48,6 +52,7 @@ export default class App {
   public initControllers() {
     this.app.use('/tags', TagRouter());
     this.app.use('/users', UserRouter());
+    this.app.use('/email', EmailRouter());
   }
 
   public async initContainer() {
@@ -59,10 +64,12 @@ export default class App {
     container.register('UserRepository', UserRepository, ['db']);
 
     // services
+    container.register('EmailService', EmailService, []);
     container.register('TagService', TagService, ['TagRepository']);
     container.register('UserService', UserService, ['UserRepository']);
 
     // controllers
+    container.register('EmailController', EmailController, ['EmailService']);
     container.register('TagController', TagController, ['TagService']);
     container.register('UserController', UserController, ['UserService']);
 

@@ -11,6 +11,8 @@ export default {
     createUser: 'Successfully created User(s).',
     updateUser: 'Successfully updated User.',
     deleteUser: 'Successfully deleted User(s).',
+
+    sendEmail: 'Successfully sent email.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -24,6 +26,8 @@ export default {
     createUser: 'Error in creating User(s).',
     updateUser: 'Error in updating User.',
     deleteUser: 'Error in deleting User(s).',
+
+    sendEmail: 'Error in sending email.',
 
     userNotExist: 'User does not exist.',
   },
