@@ -78,10 +78,11 @@ export default class UserController {
     try {
       const id = parseInt(req.params.id);
       const oldUser = await this.userService.getOneUserById(id);
-      const updateAttributes = {...oldUser, ...req.body};
+      const updatedAttributes = {...oldUser, ...req.body};
+      delete updatedAttributes['password'];
       const updatedUser = await this.userService.updateOneUserById(
         id,
-        updateAttributes
+        updatedAttributes
       );
       res.json({
         message: userFriendlyMessage.success.updateUser,
