@@ -1,5 +1,6 @@
 import {UserAttributes, UserCreationAttributes} from '../models/User';
 import UserRepository from '../repositories/UserRepository';
+import User from '../models/User';
 
 export type DeleteOptions = {
   id: number[];
@@ -17,15 +18,19 @@ export default class UserService {
   }
 
   async getOneUserById(id: number, showPassword = false) {
-    return showPassword
-      ? this.userRepository.getScopeWithFilters({id}, 'withPassword')
-      : this.userRepository.getWithFilters({id});
+    return (
+      await (showPassword
+        ? this.userRepository.getScopeWithFilters({id}, 'withPassword')
+        : this.userRepository.getWithFilters({id}))
+    )[0] as User;
   }
 
   async getOneUserByEmail(email: string, showPassword = false) {
-    return showPassword
-      ? this.userRepository.getScopeWithFilters({email}, 'withPassword')
-      : this.userRepository.getWithFilters({email});
+    return (
+      await (showPassword
+        ? this.userRepository.getScopeWithFilters({email}, 'withPassword')
+        : this.userRepository.getWithFilters({email}))
+    )[0] as User;
   }
 
   async createOneUser(user: UserCreationAttributes) {
