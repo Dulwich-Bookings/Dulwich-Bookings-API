@@ -25,7 +25,12 @@ export default () => {
 
   authenticationRouter.post(
     '/setPassword',
-    authenticationController.updatePassword.bind(authenticationController)
+    authenticationController.setPassword.bind(authenticationController)
+  );
+
+  authenticationRouter.post(
+    '/resetPassword',
+    authenticationController.resetPassword.bind(authenticationController)
   );
 
   authenticationRouter.post(

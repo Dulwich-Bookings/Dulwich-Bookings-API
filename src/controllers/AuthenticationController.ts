@@ -82,7 +82,9 @@ export default class AuthenticationController {
     }
   }
 
-  async updatePassword(req: Request, res: Response, next: NextFunction) {}
+  async setPassword(req: Request, res: Response, next: NextFunction) {}
+
+  async resetPassword(req: Request, res: Response, next: NextFunction) {}
 
   async forgetPasswordEmail(req: Request, res: Response, next: NextFunction) {
     // When sending email containing link and access token, expiration parameter should be infinite
