@@ -13,6 +13,8 @@ export default {
     deleteUser: 'Successfully deleted User(s).',
 
     sendEmail: 'Successfully sent email.',
+
+    signIn: 'Successfully signed in.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -30,5 +32,9 @@ export default {
     sendEmail: 'Error in sending email.',
 
     userNotExist: 'User does not exist.',
+
+    emailExists: 'Email already exists.',
+    signIn: 'Error in signing in.',
+    invalidSignInCredentials: 'Invalid email or password.',
   },
 };
