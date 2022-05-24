@@ -15,6 +15,7 @@ export default {
     sendEmail: 'Successfully sent email.',
 
     signIn: 'Successfully signed in.',
+    resetPassword: 'Successfully reset password.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -34,7 +35,10 @@ export default {
     userNotExist: 'User does not exist.',
 
     emailExists: 'Email already exists.',
+    passwordConfirmationMismatch:
+      'Password and password confirmation does not match.',
     signIn: 'Error in signing in.',
     incorrectPassword: 'Password is incorrect.',
+    resetPassword: 'Error in resetting password.',
   },
 };

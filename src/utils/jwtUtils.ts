@@ -2,8 +2,10 @@ import jwt, {SignOptions} from 'jsonwebtoken';
 import enviroment from '../consts/enviroment';
 
 class JWTUtils {
-  static generateAccessToken(payload: string, options: SignOptions = {}) {
-    options.expiresIn = '180 days';
+  static generateAccessToken(
+    payload: string,
+    options: SignOptions = {expiresIn: '180 days'}
+  ) {
     return jwt.sign(payload, enviroment.jwtAccessTokenSecret, options);
   }
 

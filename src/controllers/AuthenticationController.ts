@@ -11,22 +11,26 @@ export default class AuthenticationController {
 
   async signUp(req: Request, res: Response, next: NextFunction) {
     try {
-      const {email} = req.body;
+      const {email, password, passwordConfirmation} = req.body;
       const user = await this.userService.getOneUserByEmail(email);
 
       if (user) {
-        res.status(200).json({
-          success: false,
+        res.status(400).send({
           message: userFriendlyMessage.failure.emailExists,
+        });
+        return;
+      }
+      if (password !== passwordConfirmation) {
+        res.status(400).json({
+          message: userFriendlyMessage.failure.passwordConfirmationMismatch,
         });
       }
 
       const payload = email;
       const accessToken = JWTUtils.generateAccessToken(payload);
-      await this.userService.createOneUser(req.body);
+      await this.userService.createOneUser({...req.body});
 
       res.json({
-        success: true,
         message: userFriendlyMessage.success.createUser,
         data: {
           accessToken,
@@ -35,7 +39,6 @@ export default class AuthenticationController {
     } catch (e) {
       res.status(400);
       res.json({
-        success: false,
         message: userFriendlyMessage.failure.createUser,
       });
       next(e);
@@ -50,22 +53,22 @@ export default class AuthenticationController {
       const user = await this.userService.getOneUserByEmail(email, true);
 
       if (!user) {
-        res.status(401).json({
-          success: false,
+        res.status(401).send({
           message: userFriendlyMessage.failure.userNotExist,
         });
+        return;
       }
       if (!user.isPasswordMatch(password)) {
-        res.status(401).json({
-          success: false,
+        res.status(401).send({
           message: userFriendlyMessage.failure.incorrectPassword,
         });
+        return;
       }
 
       const payload = email;
       const accessToken = JWTUtils.generateAccessToken(payload);
 
-      res.status(200).json({
+      res.json({
         success: true,
         message: userFriendlyMessage.success.signIn,
         data: {
@@ -75,18 +78,63 @@ export default class AuthenticationController {
     } catch (e) {
       res.status(400);
       res.json({
-        success: false,
         message: userFriendlyMessage.failure.signIn,
       });
       next(e);
     }
   }
 
-  async setPassword(req: Request, res: Response, next: NextFunction) {}
+  async setPassword(req: Request, res: Response, next: NextFunction) {
+    // try {
+    // } catch (e) {}
+  }
 
-  async resetPassword(req: Request, res: Response, next: NextFunction) {}
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      //TODO: Auth Middleware will add the current user in req.user
+      const {user} = req;
+      const {originalPassword, newPassword, newPasswordConfirmation} = req.body;
+
+      if (!user) {
+        res
+          .status(400)
+          .send({message: userFriendlyMessage.failure.userNotExist});
+        return;
+      }
+      if (!(await user.isPasswordMatch(originalPassword))) {
+        res
+          .status(401)
+          .send({message: userFriendlyMessage.failure.incorrectPassword});
+        return;
+      }
+      if (newPassword !== newPasswordConfirmation) {
+        res.status(400).send({
+          message: userFriendlyMessage.failure.passwordConfirmationMismatch,
+        });
+        return;
+      }
+
+      const id = user.id;
+      const updatedAttributes = {...user, ...req.body};
+      const updatedUser = await this.userService.updateOneUserById(
+        id,
+        updatedAttributes
+      );
+      res.json({
+        message: userFriendlyMessage.success.resetPassword,
+        data: updatedUser,
+      });
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessage.failure.resetPassword});
+      next(e);
+    }
+  }
 
   async forgetPasswordEmail(req: Request, res: Response, next: NextFunction) {
-    // When sending email containing link and access token, expiration parameter should be infinite
+    // try {
+    //   const payload = 'test';
+    //   const accessToken = JWTUtils.generateAccessToken(payload, {});
+    // } catch (e) {}
   }
 }
