@@ -35,6 +35,6 @@ export default {
 
     emailExists: 'Email already exists.',
     signIn: 'Error in signing in.',
-    invalidSignInCredentials: 'Invalid email or password.',
+    incorrectPassword: 'Password is incorrect.',
   },
 };

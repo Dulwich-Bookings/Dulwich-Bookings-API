@@ -1,5 +1,4 @@
 import {NextFunction, Request, Response} from 'express';
-import {User} from '../models';
 import userFriendlyMessage from '../consts/userFriendlyMessages';
 import UserService from '../services/UserService';
 import JWTUtils from '../utils/jwtUtils';
@@ -48,12 +47,18 @@ export default class AuthenticationController {
   async signIn(req: Request, res: Response, next: NextFunction) {
     try {
       const {email, password} = req.body;
-      const user = await User.scope('withPassword').findOne({where: {email}}); // Get user with password
+      const user = await this.userService.getOneUserByEmail(email, true);
 
-      if (!user || !(await user.isPasswordMatch(password))) {
+      if (!user) {
         res.status(401).json({
           success: false,
-          message: userFriendlyMessage.failure.invalidSignInCredentials,
+          message: userFriendlyMessage.failure.userNotExist,
+        });
+      }
+      if (!user.isPasswordMatch(password)) {
+        res.status(401).json({
+          success: false,
+          message: userFriendlyMessage.failure.incorrectPassword,
         });
       }
 
