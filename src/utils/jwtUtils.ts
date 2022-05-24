@@ -3,7 +3,7 @@ import enviroment from '../consts/enviroment';
 
 class JWTUtils {
   static generateAccessToken(payload: string, options: SignOptions = {}) {
-    options.expiresIn = '1d';
+    options.expiresIn = '180 days';
     return jwt.sign(payload, enviroment.jwtAccessTokenSecret, options);
   }
 
