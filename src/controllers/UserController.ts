@@ -35,6 +35,7 @@ export default class UserController {
       }
       const id = user.id;
       const updatedAttributes = {...user, ...req.body};
+      delete updatedAttributes['password'];
       const updatedUser = await this.userService.updateOneUserById(
         id,
         updatedAttributes
