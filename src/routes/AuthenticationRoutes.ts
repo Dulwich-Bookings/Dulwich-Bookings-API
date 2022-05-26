@@ -14,6 +14,11 @@ export default () => {
   );
 
   authenticationRouter.post(
+    '/confirmEmail',
+    authenticationController.confirmEmail.bind(authenticationController)
+  );
+
+  authenticationRouter.post(
     '/bulkSignUp',
     authenticationController.bulkSignUp.bind(authenticationController)
   );

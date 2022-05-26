@@ -1,12 +1,17 @@
 import {NextFunction, Request, Response} from 'express';
 import userFriendlyMessage from '../consts/userFriendlyMessages';
 import UserService from '../services/UserService';
+import EmailService from '../services/EmailService';
 import JWTUtils from '../utils/jwtUtils';
+import {Payload, UserAttributes} from '../models/User';
 
 export default class AuthenticationController {
   private userService: UserService;
-  constructor(userService: UserService) {
+  private emailService: EmailService;
+
+  constructor(userService: UserService, emailService: EmailService) {
     this.userService = userService;
+    this.emailService = emailService;
   }
 
   async signUp(req: Request, res: Response, next: NextFunction) {
@@ -15,37 +20,90 @@ export default class AuthenticationController {
       const user = await this.userService.getOneUserByEmail(email);
 
       if (user) {
-        res.status(400).send({
-          message: userFriendlyMessage.failure.emailExists,
-        });
+        res.status(400);
+        res.json({message: userFriendlyMessage.failure.emailExists});
         return;
       }
       if (password !== passwordConfirmation) {
-        res.status(400).json({
+        res.status(400);
+        res.json({
           message: userFriendlyMessage.failure.passwordConfirmationMismatch,
         });
+        return;
       }
 
-      const payload = email;
-      const accessToken = JWTUtils.generateAccessToken(payload);
-      await this.userService.createOneUser({...req.body});
-
+      const createdUser = await this.userService.createOneUser({
+        ...req.body,
+        isConfirmed: false,
+        isTemporary: false,
+      });
+      const payload: Payload = {
+        id: createdUser.id,
+        isConfirmed: createdUser.isConfirmed,
+        isTemporary: createdUser.isTemporary,
+        role: createdUser.role,
+      };
+      const accessToken = JWTUtils.generateAccessToken(payload, undefined, {});
+      // TODO: insert frontend url for confirm email.
+      const url = `test.com?token=${accessToken}`;
+      await this.emailService.sendConfirmEmail(email, url);
       res.json({
         message: userFriendlyMessage.success.createUser,
-        data: {
-          accessToken,
-        },
       });
     } catch (e) {
       res.status(400);
-      res.json({
-        message: userFriendlyMessage.failure.createUser,
-      });
+      res.json({message: userFriendlyMessage.failure.createUser});
       next(e);
     }
   }
 
-  async bulkSignUp(req: Request, res: Response, next: NextFunction) {}
+  async confirmEmail(req: Request, res: Response, next: NextFunction) {
+    try {
+      const token = req.query.token as string;
+      let decoded;
+      try {
+        decoded = JWTUtils.verifyAccessToken(token) as Payload;
+      } catch (e) {
+        res.status(401);
+        res.json({message: userFriendlyMessage.failure.invalidToken});
+        return;
+      }
+      const {id} = decoded;
+      const user = await this.userService.getOneUserById(id);
+
+      if (!user) {
+        res.status(400);
+        res.json({message: userFriendlyMessage.failure.userNotExist});
+      }
+
+      const updatedAttributes: UserAttributes = {
+        ...user,
+        isConfirmed: true,
+      };
+      await this.userService.updateOneUserById(id, updatedAttributes);
+      res.json({message: userFriendlyMessage.success.confirmEmail});
+      // Redirect user to login page
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessage.failure.confirmEmail});
+      next(e);
+    }
+  }
+
+  async bulkSignUp(req: Request, res: Response, next: NextFunction) {
+    try {
+      // get csv file from request
+      // create all the users
+      // spam all of them with set password emails
+
+      // change message
+      res.json({message: userFriendlyMessage.success.createUser});
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessage.failure.createUser});
+      next(e);
+    }
+  }
 
   async signIn(req: Request, res: Response, next: NextFunction) {
     try {
@@ -53,23 +111,35 @@ export default class AuthenticationController {
       const user = await this.userService.getOneUserByEmail(email, true);
 
       if (!user) {
-        res.status(401).send({
-          message: userFriendlyMessage.failure.userNotExist,
-        });
+        res.status(401);
+        res.json({message: userFriendlyMessage.failure.emailNotExist});
+        return;
+      }
+      if (user.isTemporary) {
+        res.status(401);
+        res.json({message: userFriendlyMessage.failure.userIsTemporary});
         return;
       }
       if (!user.isPasswordMatch(password)) {
-        res.status(401).send({
-          message: userFriendlyMessage.failure.incorrectPassword,
-        });
+        res.status(401);
+        res.json({message: userFriendlyMessage.failure.incorrectPassword});
+        return;
+      }
+      if (!user.isConfirmed) {
+        res.status(401);
+        res.json({message: userFriendlyMessage.failure.emailNotConfirmed});
         return;
       }
 
-      const payload = email;
+      const payload: Payload = {
+        id: user.id,
+        isConfirmed: user.isConfirmed,
+        isTemporary: user.isTemporary,
+        role: user.role,
+      };
       const accessToken = JWTUtils.generateAccessToken(payload);
 
       res.json({
-        success: true,
         message: userFriendlyMessage.success.signIn,
         data: {
           accessToken,
@@ -77,16 +147,47 @@ export default class AuthenticationController {
       });
     } catch (e) {
       res.status(400);
-      res.json({
-        message: userFriendlyMessage.failure.signIn,
-      });
+      res.json({message: userFriendlyMessage.failure.signIn});
       next(e);
     }
   }
 
   async setPassword(req: Request, res: Response, next: NextFunction) {
-    // try {
-    // } catch (e) {}
+    try {
+      const token = req.query.token as string;
+      const decoded = JWTUtils.getPayload(token) as Payload;
+      const {id} = decoded;
+      const user = await this.userService.getOneUserById(id);
+
+      if (!user) {
+        res.status(400);
+        res.json({message: userFriendlyMessage.failure.userNotExist});
+        return;
+      }
+
+      try {
+        JWTUtils.verifyAccessToken(token, user.password);
+      } catch (e) {
+        res.status(401);
+        res.json({message: userFriendlyMessage.failure.invalidToken});
+        return;
+      }
+
+      const {password} = req.body;
+      const updatedAttributes: UserAttributes = {
+        ...user,
+        password: password,
+        isConfirmed: true,
+        isTemporary: false,
+      };
+      await this.userService.updateOneUserById(id, updatedAttributes);
+      res.json({message: userFriendlyMessage.success.setPassword});
+      // Redirect user to login page
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessage.failure.setPassword});
+      next(e);
+    }
   }
 
   async resetPassword(req: Request, res: Response, next: NextFunction) {
@@ -96,26 +197,28 @@ export default class AuthenticationController {
       const {originalPassword, newPassword, newPasswordConfirmation} = req.body;
 
       if (!user) {
-        res
-          .status(400)
-          .send({message: userFriendlyMessage.failure.userNotExist});
+        res.status(400);
+        res.json({message: userFriendlyMessage.failure.userNotExist});
         return;
       }
       if (!(await user.isPasswordMatch(originalPassword))) {
-        res
-          .status(401)
-          .send({message: userFriendlyMessage.failure.incorrectPassword});
+        res.status(401);
+        res.json({message: userFriendlyMessage.failure.incorrectPassword});
         return;
       }
       if (newPassword !== newPasswordConfirmation) {
-        res.status(400).send({
+        res.status(400);
+        res.json({
           message: userFriendlyMessage.failure.passwordConfirmationMismatch,
         });
         return;
       }
 
       const id = user.id;
-      const updatedAttributes = {...user, ...req.body};
+      const updatedAttributes: UserAttributes = {
+        ...user,
+        password: newPassword,
+      };
       const updatedUser = await this.userService.updateOneUserById(
         id,
         updatedAttributes
@@ -132,9 +235,37 @@ export default class AuthenticationController {
   }
 
   async forgetPasswordEmail(req: Request, res: Response, next: NextFunction) {
-    // try {
-    //   const payload = 'test';
-    //   const accessToken = JWTUtils.generateAccessToken(payload, {});
-    // } catch (e) {}
+    try {
+      // get email
+      // get user and create payload and use old password as secret
+      const {email} = req.body;
+      const user = await this.userService.getOneUserByEmail(email);
+
+      if (!user) {
+        res.status(400);
+        res.json({message: userFriendlyMessage.failure.emailNotExist});
+        return;
+      }
+
+      const payload: Payload = {
+        id: user.id,
+        isConfirmed: user.isConfirmed,
+        isTemporary: user.isTemporary,
+        role: user.role,
+      };
+      const accessToken = JWTUtils.generateAccessToken(
+        payload,
+        user.password,
+        {}
+      );
+      // TODO: Insert frontend url to set password.
+      const url = `test.com?token=${accessToken}`;
+      await this.emailService.sendResetForgotPasswordEmail(email, url);
+      res.json({message: userFriendlyMessage.success.sendEmail});
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessage.failure.sendEmail});
+      next(e);
+    }
   }
 }

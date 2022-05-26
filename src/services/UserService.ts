@@ -34,7 +34,7 @@ export default class UserService {
   }
 
   async createOneUser(user: UserCreationAttributes) {
-    return this.userRepository.createOne(user);
+    return (await this.userRepository.createOne(user)) as User;
   }
 
   async bulkCreateUser(users: UserCreationAttributes[]) {
