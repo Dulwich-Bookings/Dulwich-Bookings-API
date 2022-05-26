@@ -46,14 +46,10 @@ export default class EmailService {
     }
   }
 
-  public async sendResetForgotPasswordEmail(
-    from: string,
-    to: string,
-    url: string
-  ) {
+  public async sendResetForgotPasswordEmail(to: string, url: string) {
     try {
       const message = {
-        from: from,
+        from: 'bookingsdulwich@gmail.com',
         to: to,
         subject: 'Dulwich Bookings: Forgot Your Password',
         html:
@@ -66,10 +62,10 @@ export default class EmailService {
     }
   }
 
-  public async sendConfirmEmail(from: string, to: string, url: string) {
+  public async sendConfirmEmail(to: string, url: string) {
     try {
       const message = {
-        from: from,
+        from: 'bookingsdulwich@gmail.com',
         to: to,
         subject: 'Dulwich Bookings: Confirm your Email',
         html:
