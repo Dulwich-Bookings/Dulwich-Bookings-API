@@ -224,7 +224,16 @@ export default class AuthenticationController {
         return;
       }
 
-      const {password} = req.body;
+      const {password, passwordConfirmation} = req.body;
+
+      if (password !== passwordConfirmation) {
+        res.status(400);
+        res.json({
+          message: userFriendlyMessage.failure.passwordConfirmationMismatch,
+        });
+        return;
+      }
+
       const updatedAttributes: UserAttributes = {
         ...user,
         password: password,
@@ -287,8 +296,6 @@ export default class AuthenticationController {
 
   async forgetPasswordEmail(req: Request, res: Response, next: NextFunction) {
     try {
-      // get email
-      // get user and create payload and use old password as secret
       const {email} = req.body;
       const user = await this.userService.getOneUserByEmail(email);
 
