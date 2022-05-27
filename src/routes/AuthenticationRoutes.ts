@@ -2,6 +2,8 @@ import express from 'express';
 
 import AuthenticationController from '../controllers/AuthenticationController';
 import Container from '../utils/container';
+import uploadFile from '../middlewares/uploadFile';
+import parseCsv from '../middlewares/parseCsv';
 
 export default () => {
   const authenticationRouter = express.Router();
@@ -20,6 +22,7 @@ export default () => {
 
   authenticationRouter.post(
     '/bulkSignUp',
+    [uploadFile, parseCsv],
     authenticationController.bulkSignUp.bind(authenticationController)
   );
 

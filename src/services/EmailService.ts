@@ -10,7 +10,7 @@ type emailMessage = {
 
 type setPasswordOptions = {
   to: string;
-  tempPassword: string;
+  url: string;
 };
 
 export default class EmailService {
@@ -34,8 +34,7 @@ export default class EmailService {
           to: msg.to,
           subject: 'Dulwich Bookings: Set Your Password',
           html:
-            `Welcome,<br><b>Email: </b>'${msg.to}<br><b>Temporary Password: </b>'${msg.tempPassword}<br><br>` +
-            'Please Login to Dulwich Bookings and set a new password,<br>' +
+            `Welcome, <br>Click on link to set your password: <a href=${msg.url}>${msg.url}</a><br><br>` +
             'Kind Regards, <br>Dulwich Bookings',
         };
       });

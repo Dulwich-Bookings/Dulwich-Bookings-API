@@ -3,7 +3,8 @@ import userFriendlyMessage from '../consts/userFriendlyMessages';
 import UserService from '../services/UserService';
 import EmailService from '../services/EmailService';
 import JWTUtils from '../utils/jwtUtils';
-import {Payload, UserAttributes} from '../models/User';
+import PasswordUtils from '../utils/passwordUtils';
+import {Payload, UserAttributes, UserCreationAttributes} from '../models/User';
 
 export default class AuthenticationController {
   private userService: UserService;
@@ -90,13 +91,63 @@ export default class AuthenticationController {
     }
   }
 
+  // Format for CSV file: [email], [role], [schoolId]
   async bulkSignUp(req: Request, res: Response, next: NextFunction) {
     try {
-      // get csv file from request
-      // create all the users
-      // spam all of them with set password emails
+      const userAttributes = req.body.userAttributes;
 
-      // change message
+      if (!userAttributes) {
+        res.status(400);
+        res.json({message: userFriendlyMessage.failure.userAttributes});
+        return;
+      }
+
+      userAttributes.map(async (attribute: string[]) => {
+        const email = attribute[0];
+        const user = await this.userService.getOneUserByEmail(email);
+
+        if (user) {
+          res.status(400);
+          res.json({
+            email: email,
+            message: userFriendlyMessage.failure.emailExists,
+          });
+          return;
+        }
+
+        return {
+          email: attribute[0],
+          password: PasswordUtils.generateRandomPassword(),
+          role: attribute[1],
+          schoolId: attribute[2],
+          isConfirmed: false,
+          isTemporary: true,
+        };
+      }) as UserCreationAttributes[];
+
+      const createdUsers = await this.userService.bulkCreateUser(
+        userAttributes
+      );
+      const emailParams = createdUsers.map(createdUser => {
+        const payload: Payload = {
+          id: createdUser.id,
+          isConfirmed: createdUser.isConfirmed,
+          isTemporary: createdUser.isTemporary,
+          role: createdUser.role,
+        };
+        const accessToken = JWTUtils.generateAccessToken(
+          payload,
+          createdUser.password,
+          {}
+        );
+        // TODO: insert frontend url for confirm email.
+        const url = `test.com?token=${accessToken}`;
+        return {
+          to: createdUser.email,
+          url: url,
+        };
+      });
+      await this.emailService.sendSetPasswordEmail(emailParams);
       res.json({message: userFriendlyMessage.success.createUser});
     } catch (e) {
       res.status(400);

@@ -38,7 +38,7 @@ export default class UserService {
   }
 
   async bulkCreateUser(users: UserCreationAttributes[]) {
-    return this.userRepository.bulkCreate(users);
+    return (await this.userRepository.bulkCreate(users)) as User[];
   }
 
   async bulkDeleteUser(users: DeleteOptions) {

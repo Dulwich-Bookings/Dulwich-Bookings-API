@@ -51,5 +51,8 @@ export default {
       'Email is not confirmed. Please check your email for a confirmation link.',
     setPassword: 'Erorr in setting password',
     resetPassword: 'Error in resetting password.',
+    fileNotFound: 'File is not found.',
+    parseCsv: 'Error in parsing CSV file.',
+    userAttributes: 'Error in getting user attributes.',
   },
 };
