@@ -85,8 +85,6 @@ export default class App {
     ]);
 
     // middlewares
-    container.register('uploadFile', uploadFile, []);
-    container.register('parseCsv', parseCsv, []);
   }
 
   public listen(port: string) {
