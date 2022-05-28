@@ -9,7 +9,7 @@ export default {
     getOneUser: 'Successfully retrieved User.',
     getAllUsers: 'Successfully retrieved Users.',
     createUser:
-      'Successfully created User(s). Please check your email(s) for a confirmation link before signing in.',
+      "Successfully created User(s). Please check your email's inbox (and junk folder) for a confirmation link before signing in.",
     updateUser: 'Successfully updated User.',
     deleteUser: 'Successfully deleted User(s).',
 
@@ -19,6 +19,8 @@ export default {
     signIn: 'Successfully signed in.',
     setPassword: 'Successfully set password',
     resetPassword: 'Successfully reset password.',
+    sendForgetPasswordEmail:
+      "Successfully sent email. Please check your email's inbox (and junk folder) for a set password link.",
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',

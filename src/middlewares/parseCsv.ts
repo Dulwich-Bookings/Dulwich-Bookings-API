@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from 'express';
-import csv from 'fast-csv';
+import {parseFile} from 'fast-csv';
 import fs from 'fs';
 
 import userFriendlyMessages from '../consts/userFriendlyMessages';
@@ -13,16 +13,15 @@ const parseCsv = (req: Request, res: Response, next: NextFunction) => {
     }
     const filePath = req.file?.path as string;
     const fileRows: string[][] = [];
-    csv
-      .parseFile(filePath)
+    parseFile(filePath)
       .on('data', (data: string[]) => {
         fileRows.push(data);
       })
       .on('end', () => {
-        req.body.userAttributes = fileRows;
+        req.parsedUserAttributes = fileRows;
         fs.unlinkSync(filePath);
+        next();
       });
-    next();
   } catch (e) {
     res.status(400);
     res.json({message: userFriendlyMessages.failure.parseCsv});

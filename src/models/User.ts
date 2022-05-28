@@ -19,9 +19,10 @@ export interface UserAttributes {
 // Payload Interface for the JWT Token
 export interface Payload {
   id: number;
+  role: Role;
+  schoolId: number;
   isConfirmed: boolean;
   isTemporary: boolean;
-  role: Role;
 }
 
 // Some attributes are optional in `User.build` and `User.create` calls

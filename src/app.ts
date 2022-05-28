@@ -20,6 +20,9 @@ import EmailService from './services/EmailService';
 import AuthenticationController from './controllers/AuthenticationController';
 import AuthenticationRouter from './routes/AuthenticationRoutes';
 
+import uploadFile from './middlewares/uploadFile';
+import parseCsv from './middlewares/parseCsv';
+
 import Container from './utils/container';
 
 export default class App {
@@ -76,13 +79,14 @@ export default class App {
     container.register('EmailController', EmailController, ['EmailService']);
     container.register('TagController', TagController, ['TagService']);
     container.register('UserController', UserController, ['UserService']);
-    container.register(
-      'AuthenticationController',
-      AuthenticationController,
-      []
-    );
+    container.register('AuthenticationController', AuthenticationController, [
+      'UserService',
+      'EmailService',
+    ]);
 
     // middlewares
+    container.register('uploadFile', uploadFile, []);
+    container.register('parseCsv', parseCsv, []);
   }
 
   public listen(port: string) {
