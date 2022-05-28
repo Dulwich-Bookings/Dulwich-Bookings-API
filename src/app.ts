@@ -20,9 +20,6 @@ import EmailService from './services/EmailService';
 import AuthenticationController from './controllers/AuthenticationController';
 import AuthenticationRouter from './routes/AuthenticationRoutes';
 
-import uploadFile from './middlewares/uploadFile';
-import parseCsv from './middlewares/parseCsv';
-
 import Container from './utils/container';
 
 export default class App {
