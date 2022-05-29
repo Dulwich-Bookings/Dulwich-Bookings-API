@@ -20,7 +20,7 @@ export default {
     setPassword: 'Successfully set password',
     resetPassword: 'Successfully reset password.',
     sendForgetPasswordEmail:
-      "Successfully sent email. Please check your email's inbox (and junk folder) for a set password link." +
+      "Successfully sent email. Please check your email's inbox (and junk folder) for a set password link.<br>" +
       'Please note that the link will be valid for 30 minutes.',
   },
   failure: {
@@ -51,7 +51,7 @@ export default {
       'User password is temporary. Please check your email to set password.',
     incorrectPassword: 'Password is incorrect.',
     emailNotConfirmed:
-      'Email is not confirmed. Please check your email for a confirmation link.',
+      "Email is not confirmed. Please check your email's inbox (and junk folder) for a confirmation link.",
     setPassword: 'Erorr in setting password',
     resetPassword: 'Error in resetting password.',
     fileNotFound: 'File is not found.',
