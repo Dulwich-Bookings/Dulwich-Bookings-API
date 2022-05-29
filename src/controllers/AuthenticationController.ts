@@ -46,10 +46,6 @@ export default class AuthenticationController {
       });
       const payload: Payload = {
         id: createdUser.id,
-        role: createdUser.role,
-        schoolId: createdUser.schoolId,
-        isConfirmed: createdUser.isConfirmed,
-        isTemporary: createdUser.isTemporary,
       };
       const accessToken = JWTUtils.generateAccessToken(payload);
       // TODO: insert frontend url for confirm email.
@@ -144,10 +140,6 @@ export default class AuthenticationController {
       const emailParams = createdUsers.map(createdUser => {
         const payload: Payload = {
           id: createdUser.id,
-          role: createdUser.role,
-          schoolId: createdUser.schoolId,
-          isConfirmed: createdUser.isConfirmed,
-          isTemporary: createdUser.isTemporary,
         };
         const accessToken = JWTUtils.generateSetPasswordAccessToken(
           payload,
@@ -197,10 +189,6 @@ export default class AuthenticationController {
 
       const payload: Payload = {
         id: user.id,
-        role: user.role,
-        schoolId: user.schoolId,
-        isConfirmed: user.isConfirmed,
-        isTemporary: user.isTemporary,
       };
       const accessToken = JWTUtils.generateAccessToken(payload);
 
@@ -321,10 +309,6 @@ export default class AuthenticationController {
 
       const payload: Payload = {
         id: user.id,
-        role: user.role,
-        schoolId: user.schoolId,
-        isConfirmed: user.isConfirmed,
-        isTemporary: user.isTemporary,
       };
       const accessToken = JWTUtils.generateSetPasswordAccessToken(
         payload,

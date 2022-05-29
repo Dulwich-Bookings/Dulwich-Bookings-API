@@ -25,10 +25,6 @@ export interface BulkSignUpAttributes {
 // Payload Interface for the JWT Token
 export interface Payload {
   id: number;
-  role: Role;
-  schoolId: number;
-  isConfirmed: boolean;
-  isTemporary: boolean;
 }
 
 // Some attributes are optional in `User.build` and `User.create` calls
