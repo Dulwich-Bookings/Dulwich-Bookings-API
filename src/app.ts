@@ -17,6 +17,9 @@ import EmailController from './controllers/EmailController';
 import EmailRouter from './routes/EmailRoutes';
 import EmailService from './services/EmailService';
 
+import AuthenticationController from './controllers/AuthenticationController';
+import AuthenticationRouter from './routes/AuthenticationRoutes';
+
 import Container from './utils/container';
 
 export default class App {
@@ -53,6 +56,7 @@ export default class App {
     this.app.use('/tags', TagRouter());
     this.app.use('/users', UserRouter());
     this.app.use('/email', EmailRouter());
+    this.app.use('/authentication', AuthenticationRouter());
   }
 
   public async initContainer() {
@@ -72,6 +76,10 @@ export default class App {
     container.register('EmailController', EmailController, ['EmailService']);
     container.register('TagController', TagController, ['TagService']);
     container.register('UserController', UserController, ['UserService']);
+    container.register('AuthenticationController', AuthenticationController, [
+      'UserService',
+      'EmailService',
+    ]);
 
     // middlewares
   }

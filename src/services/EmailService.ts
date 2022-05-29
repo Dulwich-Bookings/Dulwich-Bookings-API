@@ -10,7 +10,7 @@ type emailMessage = {
 
 type setPasswordOptions = {
   to: string;
-  tempPassword: string;
+  url: string;
 };
 
 export default class EmailService {
@@ -34,8 +34,7 @@ export default class EmailService {
           to: msg.to,
           subject: 'Dulwich Bookings: Set Your Password',
           html:
-            `Welcome,<br><b>Email: </b>'${msg.to}<br><b>Temporary Password: </b>'${msg.tempPassword}<br><br>` +
-            'Please Login to Dulwich Bookings and set a new password,<br>' +
+            `Welcome, <br>Click on link to set your password: <a href=${msg.url}>${msg.url}</a><br><br>` +
             'Kind Regards, <br>Dulwich Bookings',
         };
       });
@@ -46,14 +45,10 @@ export default class EmailService {
     }
   }
 
-  public async sendResetForgotPasswordEmail(
-    from: string,
-    to: string,
-    url: string
-  ) {
+  public async sendResetForgotPasswordEmail(to: string, url: string) {
     try {
       const message = {
-        from: from,
+        from: 'bookingsdulwich@gmail.com',
         to: to,
         subject: 'Dulwich Bookings: Forgot Your Password',
         html:
@@ -66,10 +61,10 @@ export default class EmailService {
     }
   }
 
-  public async sendConfirmEmail(from: string, to: string, url: string) {
+  public async sendConfirmEmail(to: string, url: string) {
     try {
       const message = {
-        from: from,
+        from: 'bookingsdulwich@gmail.com',
         to: to,
         subject: 'Dulwich Bookings: Confirm your Email',
         html:

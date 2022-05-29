@@ -35,6 +35,7 @@ export default class UserController {
       }
       const id = user.id;
       const updatedAttributes = {...user, ...req.body};
+      delete updatedAttributes['password'];
       const updatedUser = await this.userService.updateOneUserById(
         id,
         updatedAttributes
@@ -64,7 +65,7 @@ export default class UserController {
   async getOneUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseInt(req.params.id);
-      const user = (await this.userService.getOneUserById(id))[0];
+      const user = await this.userService.getOneUserById(id);
       res.json({message: userFriendlyMessage.success.getOneUser, data: user});
     } catch (e) {
       res.status(400);
@@ -76,11 +77,12 @@ export default class UserController {
   async updateOneUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseInt(req.params.id);
-      const oldUser = (await this.userService.getOneUserById(id))[0];
-      const updateAttributes = {...oldUser, ...req.body};
+      const oldUser = await this.userService.getOneUserById(id);
+      const updatedAttributes = {...oldUser, ...req.body};
+      delete updatedAttributes['password'];
       const updatedUser = await this.userService.updateOneUserById(
         id,
-        updateAttributes
+        updatedAttributes
       );
       res.json({
         message: userFriendlyMessage.success.updateUser,

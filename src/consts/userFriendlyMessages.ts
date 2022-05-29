@@ -8,11 +8,20 @@ export default {
 
     getOneUser: 'Successfully retrieved User.',
     getAllUsers: 'Successfully retrieved Users.',
-    createUser: 'Successfully created User(s).',
+    createUser:
+      "Successfully created User(s). Please check your email's inbox (and junk folder) for a confirmation link before signing in.",
     updateUser: 'Successfully updated User.',
     deleteUser: 'Successfully deleted User(s).',
 
     sendEmail: 'Successfully sent email.',
+
+    confirmEmail: 'Successfully confirmed email.',
+    signIn: 'Successfully signed in.',
+    setPassword: 'Successfully set password',
+    resetPassword: 'Successfully reset password.',
+    sendForgetPasswordEmail:
+      "Successfully sent email. Please check your email's inbox (and junk folder) for a set password link.<br>" +
+      'Please note that the link will be valid for 30 minutes.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -30,5 +39,23 @@ export default {
     sendEmail: 'Error in sending email.',
 
     userNotExist: 'User does not exist.',
+
+    emailExists: 'Email already exists.',
+    invalidToken: 'Link is invalid.',
+    confirmEmail: 'Error in confirming email.',
+    emailNotExist: 'Email does not exist.',
+    passwordConfirmationMismatch:
+      'Password and password confirmation does not match.',
+    signIn: 'Error in signing in.',
+    userIsTemporary:
+      'User password is temporary. Please check your email to set password.',
+    incorrectPassword: 'Password is incorrect.',
+    emailNotConfirmed:
+      "Email is not confirmed. Please check your email's inbox (and junk folder) for a confirmation link.",
+    setPassword: 'Erorr in setting password',
+    resetPassword: 'Error in resetting password.',
+    fileNotFound: 'File is not found.',
+    parseCsv: 'Error in parsing CSV file.',
+    signUpAttributes: 'Error in getting sign up attributes.',
   },
 };

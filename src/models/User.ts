@@ -16,12 +16,19 @@ export interface UserAttributes {
   class?: number;
 }
 
+// Attributes for parsing CSV when doing bulk sign up
+export interface BulkSignUpAttributes {
+  email: string;
+  role: Role;
+}
+
 // Payload Interface for the JWT Token
 export interface Payload {
   id: number;
+  role: Role;
+  schoolId: number;
   isConfirmed: boolean;
   isTemporary: boolean;
-  role: Role;
 }
 
 // Some attributes are optional in `User.build` and `User.create` calls
