@@ -51,7 +51,7 @@ export default class AuthenticationController {
         isConfirmed: createdUser.isConfirmed,
         isTemporary: createdUser.isTemporary,
       };
-      const accessToken = JWTUtils.generateAccessToken(payload, undefined, {});
+      const accessToken = JWTUtils.generateAccessToken(payload);
       // TODO: insert frontend url for confirm email.
       const url = `test.com?token=${accessToken}`;
       await this.emailService.sendConfirmEmail(email, url);
@@ -68,14 +68,14 @@ export default class AuthenticationController {
   async confirmEmail(req: Request, res: Response, next: NextFunction) {
     try {
       const token = req.query.token as string;
-      let decoded;
       try {
-        decoded = JWTUtils.verifyAccessToken(token) as Payload;
+        JWTUtils.verifyAccessToken(token);
       } catch (e) {
         res.status(401);
         res.json({message: userFriendlyMessage.failure.invalidToken});
         return;
       }
+      const decoded = JWTUtils.getPayload(token);
       const {id} = decoded;
       const user = await this.userService.getOneUserById(id);
 
@@ -116,6 +116,7 @@ export default class AuthenticationController {
 
       for (const attribute of userAttributes) {
         const email = attribute[0];
+        const role = attribute[1] as Role;
         const user = await this.userService.getOneUserByEmail(email);
 
         if (user) {
@@ -127,9 +128,9 @@ export default class AuthenticationController {
           return;
         }
         userCreationAttributes.push({
-          email: attribute[0],
+          email: email,
           password: PasswordUtils.generateRandomPassword(),
-          role: attribute[1] as Role,
+          role: role,
           schoolId: 1,
           // TODO: Uncomment below after implementation of auth middleware
           // schoolId: user.schoolId,
@@ -149,10 +150,9 @@ export default class AuthenticationController {
           isConfirmed: createdUser.isConfirmed,
           isTemporary: createdUser.isTemporary,
         };
-        const accessToken = JWTUtils.generateAccessToken(
+        const accessToken = JWTUtils.generateSetPasswordAccessToken(
           payload,
-          createdUser.password,
-          {}
+          createdUser.password
         );
         // TODO: insert frontend url for confirm email.
         const url = `test.com?token=${accessToken}`;
@@ -221,7 +221,7 @@ export default class AuthenticationController {
   async setPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const token = req.query.token as string;
-      const decoded = JWTUtils.getPayload(token) as Payload;
+      const decoded = JWTUtils.getPayload(token);
       const {id} = decoded;
       const user = await this.userService.getOneUserById(id);
 
@@ -232,7 +232,7 @@ export default class AuthenticationController {
       }
 
       try {
-        JWTUtils.verifyAccessToken(token, user.password);
+        JWTUtils.verifySetPasswordAccessToken(token, user.password);
       } catch (e) {
         res.status(401);
         res.json({message: userFriendlyMessage.failure.invalidToken});
@@ -327,10 +327,10 @@ export default class AuthenticationController {
         isConfirmed: user.isConfirmed,
         isTemporary: user.isTemporary,
       };
-      const accessToken = JWTUtils.generateAccessToken(
+      const accessToken = JWTUtils.generateSetPasswordAccessToken(
         payload,
         user.password,
-        {}
+        {expiresIn: '30m'}
       );
       // TODO: Insert frontend url to set password.
       const url = `test.com?token=${accessToken}`;

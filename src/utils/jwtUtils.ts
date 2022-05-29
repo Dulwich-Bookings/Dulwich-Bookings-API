@@ -3,23 +3,29 @@ import enviroment from '../consts/enviroment';
 import {Payload} from '../models/User';
 
 class JWTUtils {
-  static generateAccessToken(
+  static generateAccessToken(payload: Payload) {
+    const options: SignOptions = {expiresIn: '180 days'};
+    return jwt.sign(payload, enviroment.jwtAccessTokenSecret, options);
+  }
+
+  static generateSetPasswordAccessToken(
     payload: Payload,
-    secret: string = enviroment.jwtAccessTokenSecret,
-    options: SignOptions = {expiresIn: '180 days'}
+    secret: string,
+    options = {}
   ) {
     return jwt.sign(payload, secret, options);
   }
 
-  static verifyAccessToken(
-    accessToken: string,
-    secret: string = enviroment.jwtAccessTokenSecret
-  ) {
+  static verifyAccessToken(accessToken: string) {
+    return jwt.verify(accessToken, enviroment.jwtAccessTokenSecret);
+  }
+
+  static verifySetPasswordAccessToken(accessToken: string, secret: string) {
     return jwt.verify(accessToken, secret);
   }
 
   static getPayload(accessToken: string) {
-    return jwt.decode(accessToken);
+    return jwt.decode(accessToken) as Payload;
   }
 }
 

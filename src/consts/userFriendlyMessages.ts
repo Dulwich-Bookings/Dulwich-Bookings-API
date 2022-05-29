@@ -20,7 +20,8 @@ export default {
     setPassword: 'Successfully set password',
     resetPassword: 'Successfully reset password.',
     sendForgetPasswordEmail:
-      "Successfully sent email. Please check your email's inbox (and junk folder) for a set password link.",
+      "Successfully sent email. Please check your email's inbox (and junk folder) for a set password link." +
+      'Please note that the link will be valid for 30 minutes.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
