@@ -4,12 +4,7 @@ import UserService from '../services/UserService';
 import EmailService from '../services/EmailService';
 import JWTUtils from '../utils/jwtUtils';
 import PasswordUtils from '../utils/passwordUtils';
-import {
-  Payload,
-  Role,
-  UserAttributes,
-  UserCreationAttributes,
-} from '../models/User';
+import {Payload, UserAttributes, UserCreationAttributes} from '../models/User';
 
 export default class AuthenticationController {
   private userService: UserService;
@@ -102,11 +97,11 @@ export default class AuthenticationController {
   // TODO: Output CSV containing [email], [role], [url]
   async bulkSignUp(req: Request, res: Response, next: NextFunction) {
     try {
-      const userAttributes = req.parsedUserAttributes;
+      const signUpAttributes = req.bulkSignUpAttributes;
 
-      if (!userAttributes) {
+      if (!signUpAttributes) {
         res.status(400);
-        res.json({message: userFriendlyMessage.failure.userAttributes});
+        res.json({message: userFriendlyMessage.failure.signUpAttributes});
         return;
       }
 
@@ -114,23 +109,22 @@ export default class AuthenticationController {
       const {user} = req;
       const userCreationAttributes: UserCreationAttributes[] = [];
 
-      for (const attribute of userAttributes) {
-        const email = attribute[0];
-        const role = attribute[1] as Role;
-        const user = await this.userService.getOneUserByEmail(email);
+      for (const attribute of signUpAttributes) {
+        const user = await this.userService.getOneUserByEmail(attribute.email);
 
         if (user) {
           res.status(400);
           res.json({
-            email: email,
+            email: attribute.email,
             message: userFriendlyMessage.failure.emailExists,
           });
           return;
         }
+
         userCreationAttributes.push({
-          email: email,
+          email: attribute.email,
           password: PasswordUtils.generateRandomPassword(),
-          role: role,
+          role: attribute.role,
           schoolId: 1,
           // TODO: Uncomment below after implementation of auth middleware
           // schoolId: user.schoolId,

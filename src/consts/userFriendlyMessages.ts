@@ -56,6 +56,6 @@ export default {
     resetPassword: 'Error in resetting password.',
     fileNotFound: 'File is not found.',
     parseCsv: 'Error in parsing CSV file.',
-    userAttributes: 'Error in getting user attributes.',
+    signUpAttributes: 'Error in getting sign up attributes.',
   },
 };
