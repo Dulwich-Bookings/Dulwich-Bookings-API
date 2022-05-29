@@ -33,6 +33,12 @@ export default class UserService {
     )[0] as User;
   }
 
+  async bulkGetUserByEmails(emails: string[], showPassword = false) {
+    return (await (showPassword
+      ? this.userRepository.getScopeWithFilters({email: emails}, 'withPassword')
+      : this.userRepository.getWithFilters({email: emails}))) as User[];
+  }
+
   async createOneUser(user: UserCreationAttributes) {
     return (await this.userRepository.createOne(user)) as User;
   }

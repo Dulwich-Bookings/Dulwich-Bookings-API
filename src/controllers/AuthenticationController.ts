@@ -63,30 +63,19 @@ export default class AuthenticationController {
 
   async confirmEmail(req: Request, res: Response, next: NextFunction) {
     try {
-      const token = req.query.token as string;
-      try {
-        JWTUtils.verifyAccessToken(token);
-      } catch (e) {
-        res.status(401);
-        res.json({message: userFriendlyMessage.failure.invalidToken});
-        return;
-      }
-      const decoded = JWTUtils.getPayload(token);
-      const {id} = decoded;
-      const user = await this.userService.getOneUserById(id);
-
+      const {user} = req;
       if (!user) {
         res.status(400);
         res.json({message: userFriendlyMessage.failure.userNotExist});
       }
-
       const updatedAttributes: UserAttributes = {
         ...user,
         isConfirmed: true,
       };
-      await this.userService.updateOneUserById(id, updatedAttributes);
-      res.json({message: userFriendlyMessage.success.confirmEmail});
+      await this.userService.updateOneUserById(user.id, updatedAttributes);
+
       // Redirect user to login page
+      res.json({message: userFriendlyMessage.success.confirmEmail});
     } catch (e) {
       res.status(400);
       res.json({message: userFriendlyMessage.failure.confirmEmail});
@@ -99,40 +88,39 @@ export default class AuthenticationController {
   async bulkSignUp(req: Request, res: Response, next: NextFunction) {
     try {
       const signUpAttributes = req.bulkSignUpAttributes;
-
       if (!signUpAttributes) {
         res.status(400);
         res.json({message: userFriendlyMessage.failure.signUpAttributes});
         return;
       }
 
-      //TODO: Auth Middleware will add the current user in req.user
       const currentUser = req.user;
-      const userCreationAttributes: UserCreationAttributes[] = [];
+      const emails: string[] = signUpAttributes.map(user => user.email);
 
-      for (const attribute of signUpAttributes) {
-        const user = await this.userService.getOneUserByEmail(attribute.email);
+      const existingUsers = await this.userService.bulkGetUserByEmails(emails);
+      const exisitingEmails: string[] = existingUsers.map(user => user.email);
+      const usersExist = existingUsers.length !== 0;
 
-        if (user) {
-          res.status(400);
-          res.json({
-            email: attribute.email,
-            message: userFriendlyMessage.failure.emailExists,
-          });
-          return;
-        }
-
-        userCreationAttributes.push({
-          email: attribute.email,
-          password: PasswordUtils.generateRandomPassword(),
-          role: attribute.role,
-          schoolId: 1,
-          // TODO: Uncomment below after implementation of auth middleware
-          // schoolId: currentUser.schoolId,
-          isConfirmed: false,
-          isTemporary: true,
+      if (usersExist) {
+        res.status(400);
+        res.json({
+          emails: exisitingEmails,
+          message: userFriendlyMessage.failure.emailExists,
         });
+        return;
       }
+
+      const userCreationAttributes: UserCreationAttributes[] =
+        signUpAttributes.map(user => {
+          return {
+            email: user.email,
+            password: PasswordUtils.generateRandomPassword(),
+            role: user.role,
+            schoolId: currentUser.schoolId,
+            isConfirmed: true,
+            isTemporary: true,
+          };
+        });
 
       const createdUsers = await this.userService.bulkCreateUser(
         userCreationAttributes
@@ -207,25 +195,7 @@ export default class AuthenticationController {
 
   async setPassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const token = req.query.token as string;
-      const decoded = JWTUtils.getPayload(token);
-      const {id} = decoded;
-      const user = await this.userService.getOneUserById(id, true);
-
-      if (!user) {
-        res.status(400);
-        res.json({message: userFriendlyMessage.failure.userNotExist});
-        return;
-      }
-
-      try {
-        JWTUtils.verifySetPasswordAccessToken(token, user.password);
-      } catch (e) {
-        res.status(401);
-        res.json({message: userFriendlyMessage.failure.invalidToken});
-        return;
-      }
-
+      const {user} = req;
       const {password, passwordConfirmation} = req.body;
 
       if (password !== passwordConfirmation) {
@@ -242,7 +212,7 @@ export default class AuthenticationController {
         isConfirmed: true,
         isTemporary: false,
       };
-      await this.userService.updateOneUserById(id, updatedAttributes);
+      await this.userService.updateOneUserById(user.id, updatedAttributes);
       res.json({message: userFriendlyMessage.success.setPassword});
       // Redirect user to login page
     } catch (e) {
@@ -254,13 +224,12 @@ export default class AuthenticationController {
 
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
-      //TODO: Auth Middleware will add the current user in req.user
       const {user} = req;
       const {originalPassword, newPassword, newPasswordConfirmation} = req.body;
 
-      if (!user) {
+      if (user.isTemporary) {
         res.status(400);
-        res.json({message: userFriendlyMessage.failure.userNotExist});
+        res.json({message: userFriendlyMessage.failure.userIsTemporary});
         return;
       }
       if (!(await user.isPasswordMatch(originalPassword))) {
@@ -300,6 +269,12 @@ export default class AuthenticationController {
     try {
       const {email} = req.body;
       const user = await this.userService.getOneUserByEmail(email, true);
+
+      if (user.isTemporary) {
+        res.status(400);
+        res.json({message: userFriendlyMessage.failure.userIsTemporary});
+        return;
+      }
 
       if (!user) {
         res.status(400);

@@ -41,7 +41,9 @@ export default {
     userNotExist: 'User does not exist.',
 
     emailExists: 'Email already exists.',
-    invalidToken: 'Link is invalid.',
+    noAuthToken: 'Authorization token not found',
+    malformedToken: 'Malformed token',
+    invalidToken: 'Invalid authentication token',
     confirmEmail: 'Error in confirming email.',
     emailNotExist: 'Email does not exist.',
     passwordConfirmationMismatch:

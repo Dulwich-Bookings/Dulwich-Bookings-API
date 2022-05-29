@@ -1,14 +1,25 @@
-import express from 'express';
+import express, {Request, Response, NextFunction} from 'express';
 
 import AuthenticationController from '../controllers/AuthenticationController';
 import Container from '../utils/container';
 import uploadFile from '../middlewares/uploadFile';
 import parseCsv from '../middlewares/parseCsv';
+import AuthenticationMiddleware from '../middlewares/authentication';
 
 export default () => {
   const authenticationRouter = express.Router();
   const authenticationController: AuthenticationController =
     Container.getInstance().get('AuthenticationController');
+  const authenticationMiddleware: AuthenticationMiddleware =
+    Container.getInstance().get('AuthenticationMiddleware');
+
+  const auth = (req: Request, res: Response, next: NextFunction) =>
+    authenticationMiddleware.authentication(req, res, next);
+  const authChangePassword = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => authenticationMiddleware.authentication(req, res, next, true);
 
   authenticationRouter.post(
     '/signUp',
@@ -17,12 +28,13 @@ export default () => {
 
   authenticationRouter.post(
     '/confirmEmail',
+    [auth],
     authenticationController.confirmEmail.bind(authenticationController)
   );
 
   authenticationRouter.post(
     '/bulkSignUp',
-    [uploadFile, parseCsv],
+    [auth, uploadFile, parseCsv],
     authenticationController.bulkSignUp.bind(authenticationController)
   );
 
@@ -33,11 +45,13 @@ export default () => {
 
   authenticationRouter.post(
     '/setPassword',
+    [authChangePassword],
     authenticationController.setPassword.bind(authenticationController)
   );
 
   authenticationRouter.post(
     '/resetPassword',
+    [auth],
     authenticationController.resetPassword.bind(authenticationController)
   );
 
@@ -48,6 +62,7 @@ export default () => {
 
   authenticationRouter.post(
     '/setForgetPassword',
+    [authChangePassword],
     authenticationController.setPassword.bind(authenticationController)
   );
 
