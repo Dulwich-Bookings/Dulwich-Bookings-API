@@ -15,7 +15,8 @@ export default class AuthenticationMiddleware {
     req: Request,
     res: Response,
     next: NextFunction,
-    changePassword = false
+    changePassword = false,
+    showPassword = false
   ) {
     const authToken = req.headers['x-auth-token'] as string;
     try {
@@ -33,7 +34,7 @@ export default class AuthenticationMiddleware {
       const payload = JwtUtils.getPayload(authToken) as Payload;
       const user = await this.userService.getOneUserById(
         payload.id,
-        changePassword
+        showPassword
       );
       if (!user) {
         return res

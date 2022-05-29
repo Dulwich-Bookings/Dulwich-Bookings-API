@@ -20,6 +20,7 @@ export interface UserAttributes {
 export interface BulkSignUpAttributes {
   email: string;
   role: Role;
+  class?: number;
 }
 
 // Payload Interface for the JWT Token

@@ -50,7 +50,7 @@ export default {
       'Password and password confirmation does not match.',
     signIn: 'Error in signing in.',
     userIsTemporary:
-      'User password is temporary. Please check your email to set password.',
+      "User password is temporary. Please check your email's inbox  (and junk folder) to set password.",
     incorrectPassword: 'Password is incorrect.',
     emailNotConfirmed:
       "Email is not confirmed. Please check your email's inbox (and junk folder) for a confirmation link.",

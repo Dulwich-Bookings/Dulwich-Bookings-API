@@ -83,8 +83,8 @@ export default class AuthenticationController {
     }
   }
 
-  // Format for CSV file: [email], [role]
-  // TODO: Output CSV containing [email], [role], [url]
+  // Format for CSV file: [email], [role], [class?]
+  // TODO: Output CSV containing [email], [role], [class?], [url]
   async bulkSignUp(req: Request, res: Response, next: NextFunction) {
     try {
       const signUpAttributes = req.bulkSignUpAttributes;
@@ -119,6 +119,7 @@ export default class AuthenticationController {
             schoolId: currentUser.schoolId,
             isConfirmed: true,
             isTemporary: true,
+            class: user.class,
           };
         });
 
@@ -225,6 +226,7 @@ export default class AuthenticationController {
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const {user} = req;
+      // when using this controller in the forgot password flow pass the originalPassword as the newPassword
       const {originalPassword, newPassword, newPasswordConfirmation} = req.body;
 
       if (user.isTemporary) {
@@ -250,13 +252,9 @@ export default class AuthenticationController {
         ...user,
         password: newPassword,
       };
-      const updatedUser = await this.userService.updateOneUserById(
-        id,
-        updatedAttributes
-      );
+      await this.userService.updateOneUserById(id, updatedAttributes);
       res.json({
         message: userFriendlyMessage.success.resetPassword,
-        data: updatedUser,
       });
     } catch (e) {
       res.status(400);

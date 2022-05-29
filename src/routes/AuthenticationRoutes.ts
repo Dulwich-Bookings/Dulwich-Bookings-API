@@ -15,11 +15,15 @@ export default () => {
 
   const auth = (req: Request, res: Response, next: NextFunction) =>
     authenticationMiddleware.authentication(req, res, next);
+
   const authChangePassword = (
     req: Request,
     res: Response,
     next: NextFunction
-  ) => authenticationMiddleware.authentication(req, res, next, true);
+  ) => authenticationMiddleware.authentication(req, res, next, true, true);
+
+  const authShowPassword = (req: Request, res: Response, next: NextFunction) =>
+    authenticationMiddleware.authentication(req, res, next, false, true);
 
   authenticationRouter.post(
     '/signUp',
@@ -51,7 +55,7 @@ export default () => {
 
   authenticationRouter.post(
     '/resetPassword',
-    [auth],
+    [authShowPassword],
     authenticationController.resetPassword.bind(authenticationController)
   );
 
