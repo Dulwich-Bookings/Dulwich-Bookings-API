@@ -4,7 +4,12 @@ import UserService from '../services/UserService';
 import EmailService from '../services/EmailService';
 import JWTUtils from '../utils/jwtUtils';
 import PasswordUtils from '../utils/passwordUtils';
-import {Payload, UserAttributes, UserCreationAttributes} from '../models/User';
+import {
+  Payload,
+  Role,
+  UserAttributes,
+  UserCreationAttributes,
+} from '../models/User';
 
 export default class AuthenticationController {
   private userService: UserService;
@@ -35,7 +40,7 @@ export default class AuthenticationController {
 
       const createdUser = await this.userService.createOneUser({
         ...req.body,
-        role: 'Student',
+        role: 'Student' as Role,
         isConfirmed: false,
         isTemporary: false,
       });
@@ -106,7 +111,7 @@ export default class AuthenticationController {
       }
 
       //TODO: Auth Middleware will add the current user in req.user
-      const {user} = req;
+      const currentUser = req.user;
       const userCreationAttributes: UserCreationAttributes[] = [];
 
       for (const attribute of signUpAttributes) {
@@ -127,7 +132,7 @@ export default class AuthenticationController {
           role: attribute.role,
           schoolId: 1,
           // TODO: Uncomment below after implementation of auth middleware
-          // schoolId: user.schoolId,
+          // schoolId: currentUser.schoolId,
           isConfirmed: false,
           isTemporary: true,
         });
@@ -217,7 +222,7 @@ export default class AuthenticationController {
       const token = req.query.token as string;
       const decoded = JWTUtils.getPayload(token);
       const {id} = decoded;
-      const user = await this.userService.getOneUserById(id);
+      const user = await this.userService.getOneUserById(id, true);
 
       if (!user) {
         res.status(400);
@@ -306,7 +311,7 @@ export default class AuthenticationController {
   async forgetPasswordEmail(req: Request, res: Response, next: NextFunction) {
     try {
       const {email} = req.body;
-      const user = await this.userService.getOneUserByEmail(email);
+      const user = await this.userService.getOneUserByEmail(email, true);
 
       if (!user) {
         res.status(400);
