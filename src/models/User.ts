@@ -64,6 +64,15 @@ class User
     return bcrypt.compare(password, this.password);
   };
 
+  public isClassValid = () => {
+    // regex expression to allow valid years from 1000 - 2999
+    console.log(this.class);
+    const isYear = new RegExp('^(19|20)[\\d]{2,2}$');
+    if (this.class && !isYear.test(this.class.toString())) {
+      throw new Error('class must be a valid year');
+    }
+  };
+
   public static initModel(sequelize: Sequelize) {
     User.init(
       {
@@ -121,7 +130,6 @@ class User
           type: DataTypes.INTEGER,
           allowNull: true,
           validate: {
-            is: /^[12][0-9]{3}$/i, // regex expression to allow valid years from 1000 - 2999
             notEmpty: false,
           },
         },
@@ -140,8 +148,10 @@ class User
           beforeCreate: async (user: User) => {
             const hashedPassword = await User.passwordHasher(user.password);
             user.password = hashedPassword;
+            user.isClassValid();
           },
           beforeUpdate: async (user: User) => {
+            user.isClassValid();
             const isPasswordChange = user.changed()
               ? (user.changed() as string[]).includes('password')
               : false;
@@ -159,6 +169,7 @@ class User
               const {password} = user;
               const hashedPassword = await User.passwordHasher(password);
               user.password = hashedPassword;
+              user.isClassValid();
             }
           },
         },
