@@ -3,8 +3,8 @@
 1. Import
 
 - `Dulwich-Bookings-API.postman_collection.json`
-- `Dulwich-Bookings-API.postman_environment.json`
-- `Dulwich-Bookings-API.postman_environment.json`
+- `Dulwich-Bookings-API.postman_environment_DEV.json`
+- `Dulwich-Bookings-API.postman_environment_PROD.json`
 
 2. Setup your postman [working directory](https://learning.postman.com/docs/getting-started/settings/#working-directory) and add `sd-api.jpg` into the working directory.
 
