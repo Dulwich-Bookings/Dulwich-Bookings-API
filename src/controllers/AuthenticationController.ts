@@ -226,7 +226,6 @@ export default class AuthenticationController {
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
       const {user} = req;
-      // when using this controller in the forgot password flow pass the originalPassword as the newPassword
       const {originalPassword, newPassword, newPasswordConfirmation} = req.body;
 
       if (user.isTemporary) {
