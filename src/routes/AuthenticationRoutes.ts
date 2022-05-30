@@ -5,6 +5,7 @@ import Container from '../utils/container';
 import uploadFile from '../middlewares/uploadFile';
 import parseCsv from '../middlewares/parseCsv';
 import AuthenticationMiddleware from '../middlewares/authentication';
+import roleValidator, {ADMINS} from '../middlewares/authorization';
 
 export default () => {
   const authenticationRouter = express.Router();
@@ -38,7 +39,7 @@ export default () => {
 
   authenticationRouter.post(
     '/bulkSignUp',
-    [auth, uploadFile, parseCsv],
+    [auth, roleValidator(ADMINS), uploadFile, parseCsv],
     authenticationController.bulkSignUp.bind(authenticationController)
   );
 

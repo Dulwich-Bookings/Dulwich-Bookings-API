@@ -3,6 +3,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import UserController from '../controllers/UserController';
 import Container from '../utils/container';
 import AuthenticationMiddleware from '../middlewares/authentication';
+import roleValidator, {ADMINS} from '../middlewares/authorization';
 
 export default () => {
   const userRouter = express.Router();
@@ -39,19 +40,19 @@ export default () => {
 
   userRouter.put(
     '/:id',
-    [auth],
+    [auth, roleValidator(ADMINS)],
     userController.updateOneUserById.bind(userController)
   );
 
   userRouter.delete(
     '/:id',
-    [auth],
+    [auth, roleValidator(ADMINS)],
     userController.deleteOneUserById.bind(userController)
   );
 
   userRouter.delete(
     '/',
-    [auth],
+    [auth, roleValidator(ADMINS)],
     userController.bulkDeleteUserById.bind(userController)
   );
   return userRouter;

@@ -3,6 +3,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import TagController from '../controllers/TagController';
 import Container from '../utils/container';
 import AuthenticationMiddleware from '../middlewares/authentication';
+import roleValidator, {TEACHERS} from '../middlewares/authorization';
 
 export default () => {
   const tagRouter = express.Router();
@@ -22,15 +23,19 @@ export default () => {
     [auth],
     tagController.getOneTagById.bind(tagController)
   );
-  tagRouter.post('/', [auth], tagController.createOneTag.bind(tagController));
+  tagRouter.post(
+    '/',
+    [auth, roleValidator(TEACHERS)],
+    tagController.createOneTag.bind(tagController)
+  );
   tagRouter.put(
     '/:id',
-    [auth],
+    [auth, roleValidator(TEACHERS)],
     tagController.updateOneTagById.bind(tagController)
   );
   tagRouter.delete(
     '/:id',
-    [auth],
+    [auth, roleValidator(TEACHERS)],
     tagController.deleteOneTagById.bind(tagController)
   );
 
