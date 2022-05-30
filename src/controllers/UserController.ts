@@ -10,7 +10,6 @@ export default class UserController {
   }
   async getSelf(req: Request, res: Response, next: NextFunction) {
     try {
-      //TODO: Auth Middleware will add the current user in req.user
       const {user} = req;
       if (!user) {
         res

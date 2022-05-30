@@ -19,6 +19,7 @@ import EmailService from './services/EmailService';
 
 import AuthenticationController from './controllers/AuthenticationController';
 import AuthenticationRouter from './routes/AuthenticationRoutes';
+import AuthenticationMiddleware from './middlewares/authentication';
 
 import Container from './utils/container';
 
@@ -82,6 +83,9 @@ export default class App {
     ]);
 
     // middlewares
+    container.register('AuthenticationMiddleware', AuthenticationMiddleware, [
+      'UserService',
+    ]);
   }
 
   public listen(port: string) {

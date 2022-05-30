@@ -18,9 +18,11 @@ const parseCsv = (req: Request, res: Response, next: NextFunction) => {
       .on('data', (data: string[]) => {
         const email = data[0];
         const role = data[1];
+        const gradClass = data[2] ? (data[2] as unknown as number) : undefined;
         bulkSignUpAttributes.push({
           email: email,
           role: role as Role,
+          class: gradClass,
         });
       })
       .on('end', () => {

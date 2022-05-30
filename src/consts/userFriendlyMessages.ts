@@ -41,14 +41,16 @@ export default {
     userNotExist: 'User does not exist.',
 
     emailExists: 'Email already exists.',
-    invalidToken: 'Link is invalid.',
+    noAuthToken: 'Authorization token not found',
+    malformedToken: 'Malformed token',
+    invalidToken: 'Invalid authentication token',
     confirmEmail: 'Error in confirming email.',
     emailNotExist: 'Email does not exist.',
     passwordConfirmationMismatch:
       'Password and password confirmation does not match.',
     signIn: 'Error in signing in.',
     userIsTemporary:
-      'User password is temporary. Please check your email to set password.',
+      "User password is temporary. Please check your email's inbox  (and junk folder) to set password.",
     incorrectPassword: 'Password is incorrect.',
     emailNotConfirmed:
       "Email is not confirmed. Please check your email's inbox (and junk folder) for a confirmation link.",

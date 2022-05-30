@@ -16,12 +16,11 @@ class JWTUtils {
     return jwt.sign(payload, secret, options);
   }
 
-  static verifyAccessToken(accessToken: string) {
-    return jwt.verify(accessToken, enviroment.jwtAccessTokenSecret);
-  }
-
-  static verifySetPasswordAccessToken(accessToken: string, secret: string) {
-    return jwt.verify(accessToken, secret);
+  static verifyAccessToken(
+    accessToken: string,
+    token = enviroment.jwtAccessTokenSecret
+  ) {
+    return jwt.verify(accessToken, token);
   }
 
   static getPayload(accessToken: string) {
