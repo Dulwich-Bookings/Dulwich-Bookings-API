@@ -1,6 +1,7 @@
 import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
 import bcrypt from 'bcrypt';
 import enviroment from '../consts/enviroment';
+import userFriendlyMessages from '../consts/userFriendlyMessages';
 
 export type Role = 'Student' | 'Teacher' | 'Admin';
 
@@ -30,6 +31,18 @@ export interface Payload {
 
 // Some attributes are optional in `User.build` and `User.create` calls
 export type UserCreationAttributes = Optional<UserAttributes, 'id'>;
+
+export class InvalidUserClassError extends Error {
+  constructor() {
+    super(userFriendlyMessages.failure.invalidClass);
+  }
+}
+
+export class InvalidUserPasswordError extends Error {
+  constructor() {
+    super(userFriendlyMessages.failure.invalidPassword);
+  }
+}
 
 class User
   extends Model<UserAttributes, UserCreationAttributes>
@@ -66,10 +79,18 @@ class User
 
   public isClassValid = () => {
     // regex expression to allow valid years from 1000 - 2999
-    console.log(this.class);
     const isYear = new RegExp('^(19|20)[\\d]{2,2}$');
     if (this.class && !isYear.test(this.class.toString())) {
-      throw new Error('class must be a valid year');
+      throw new InvalidUserClassError();
+    }
+  };
+
+  public isPasswordValid = () => {
+    // regex expression to allow valid passwords with at least 6 characters and
+    // at least 1 special character
+    const isPassword = new RegExp('^(?=.*[@$!%*#?&])(?=.{6,})');
+    if (this.password && !isPassword.test(this.password)) {
+      throw new InvalidUserPasswordError();
     }
   };
 
@@ -146,9 +167,10 @@ class User
         hooks: {
           // hash password before creating the user
           beforeCreate: async (user: User) => {
+            user.isClassValid();
+            user.isPasswordValid();
             const hashedPassword = await User.passwordHasher(user.password);
             user.password = hashedPassword;
-            user.isClassValid();
           },
           beforeUpdate: async (user: User) => {
             user.isClassValid();
@@ -159,6 +181,7 @@ class User
             if (!isPasswordChange) {
               return;
             }
+            user.isPasswordValid();
             const hashedPassword = await User.passwordHasher(
               user.password as string
             );
@@ -166,10 +189,11 @@ class User
           },
           beforeBulkCreate: async (users: User[]) => {
             for (const user of users) {
+              user.isClassValid();
+              user.isPasswordValid();
               const {password} = user;
               const hashedPassword = await User.passwordHasher(password);
               user.password = hashedPassword;
-              user.isClassValid();
             }
           },
         },
