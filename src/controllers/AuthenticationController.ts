@@ -24,7 +24,8 @@ export default class AuthenticationController {
 
   async signUp(req: Request, res: Response, next: NextFunction) {
     try {
-      const {email, password, passwordConfirmation} = req.body;
+      const {password, passwordConfirmation} = req.body;
+      const email = req.body.email.toLowerCase();
       const user = await this.userService.getOneUserByEmail(email);
 
       if (user) {
@@ -101,7 +102,9 @@ export default class AuthenticationController {
       }
 
       const currentUser = req.user;
-      const emails: string[] = signUpAttributes.map(user => user.email);
+      const emails: string[] = signUpAttributes.map(user =>
+        user.email.toLowerCase()
+      );
 
       const existingUsers = await this.userService.bulkGetUserByEmails(emails);
       const exisitingEmails: string[] = existingUsers.map(user => user.email);
@@ -162,7 +165,8 @@ export default class AuthenticationController {
 
   async signIn(req: Request, res: Response, next: NextFunction) {
     try {
-      const {email, password} = req.body;
+      const {password} = req.body;
+      const email = req.body.email.toLowerCase();
       const user = await this.userService.getOneUserByEmail(email, true);
 
       if (!user) {
@@ -282,7 +286,7 @@ export default class AuthenticationController {
 
   async forgetPasswordEmail(req: Request, res: Response, next: NextFunction) {
     try {
-      const {email} = req.body;
+      const email = req.body.email.toLowerCase();
       const user = await this.userService.getOneUserByEmail(email, true);
 
       if (user.isTemporary) {

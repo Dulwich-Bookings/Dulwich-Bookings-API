@@ -109,6 +109,7 @@ class User
           validate: {
             isEmail: true,
             notEmpty: true,
+            isLowercase: true,
           },
         },
         password: {
@@ -165,35 +166,49 @@ class User
           },
         },
         hooks: {
-          // hash password before creating the user
+          // hash password and fix email to lowercase before creating the user
           beforeCreate: async (user: User) => {
             user.isClassValid();
             user.isPasswordValid();
-            const hashedPassword = await User.passwordHasher(user.password);
+
+            const {password, email} = user;
+            const hashedPassword = await User.passwordHasher(password);
             user.password = hashedPassword;
+
+            const lowercaseEmail = email.toLowerCase();
+            user.email = lowercaseEmail;
           },
           beforeUpdate: async (user: User) => {
             user.isClassValid();
+
             const isPasswordChange = user.changed()
               ? (user.changed() as string[]).includes('password')
               : false;
+            const isEmailChange = user.changed()
+              ? (user.changed() as string[]).includes('email')
+              : false;
 
-            if (!isPasswordChange) {
-              return;
+            if (isPasswordChange) {
+              user.isPasswordValid();
+              const hashedPassword = await User.passwordHasher(user.password);
+              user.password = hashedPassword;
             }
-            user.isPasswordValid();
-            const hashedPassword = await User.passwordHasher(
-              user.password as string
-            );
-            user.password = hashedPassword;
+            if (isEmailChange) {
+              const lowercaseEmail = user.email.toLowerCase();
+              user.email = lowercaseEmail;
+            }
           },
           beforeBulkCreate: async (users: User[]) => {
             for (const user of users) {
               user.isClassValid();
               user.isPasswordValid();
-              const {password} = user;
+
+              const {password, email} = user;
               const hashedPassword = await User.passwordHasher(password);
               user.password = hashedPassword;
+
+              const lowercaseEmail = email.toLowerCase();
+              user.email = lowercaseEmail;
             }
           },
         },
