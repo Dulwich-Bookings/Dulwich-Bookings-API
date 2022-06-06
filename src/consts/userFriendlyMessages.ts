@@ -59,5 +59,9 @@ export default {
     fileNotFound: 'File is not found.',
     parseCsv: 'Error in parsing CSV file.',
     signUpAttributes: 'Error in getting sign up attributes.',
+
+    invalidClass: 'Class must be a valid year.',
+    invalidPassword:
+      'Password must at least be 6 characters long with at least 1 special character (@ $ ! % * # ? &).',
   },
 };

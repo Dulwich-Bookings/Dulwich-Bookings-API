@@ -5,6 +5,8 @@ import EmailService from '../services/EmailService';
 import JWTUtils from '../utils/jwtUtils';
 import PasswordUtils from '../utils/passwordUtils';
 import {
+  InvalidUserClassError,
+  InvalidUserPasswordError,
   Payload,
   Role,
   UserAttributes,
@@ -55,8 +57,12 @@ export default class AuthenticationController {
         message: userFriendlyMessage.success.createUser,
       });
     } catch (e) {
+      if (e instanceof InvalidUserClassError || InvalidUserPasswordError) {
+        res.json({message: (e as Error).message});
+      } else {
+        res.json({message: userFriendlyMessage.failure.createUser});
+      }
       res.status(400);
-      res.json({message: userFriendlyMessage.failure.createUser});
       next(e);
     }
   }
@@ -144,8 +150,12 @@ export default class AuthenticationController {
       await this.emailService.sendSetPasswordEmail(emailParams);
       res.json({message: userFriendlyMessage.success.createUser});
     } catch (e) {
+      if (e instanceof InvalidUserClassError || InvalidUserPasswordError) {
+        res.json({message: (e as Error).message});
+      } else {
+        res.json({message: userFriendlyMessage.failure.createUser});
+      }
       res.status(400);
-      res.json({message: userFriendlyMessage.failure.createUser});
       next(e);
     }
   }
@@ -217,8 +227,12 @@ export default class AuthenticationController {
       res.json({message: userFriendlyMessage.success.setPassword});
       // Redirect user to login page
     } catch (e) {
+      if (e instanceof InvalidUserPasswordError) {
+        res.json({message: e.message});
+      } else {
+        res.json({message: userFriendlyMessage.failure.setPassword});
+      }
       res.status(400);
-      res.json({message: userFriendlyMessage.failure.setPassword});
       next(e);
     }
   }
@@ -256,8 +270,12 @@ export default class AuthenticationController {
         message: userFriendlyMessage.success.resetPassword,
       });
     } catch (e) {
+      if (e instanceof InvalidUserPasswordError) {
+        res.json({message: e.message});
+      } else {
+        res.json({message: userFriendlyMessage.failure.setPassword});
+      }
       res.status(400);
-      res.json({message: userFriendlyMessage.failure.resetPassword});
       next(e);
     }
   }
