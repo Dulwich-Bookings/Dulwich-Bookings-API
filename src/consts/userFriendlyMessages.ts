@@ -22,6 +22,12 @@ export default {
     sendForgetPasswordEmail:
       "Successfully sent email. Please check your email's inbox (and junk folder) for a set password link.<br>" +
       'Please note that the link will be valid for 30 minutes.',
+
+    createResource: 'Successfully created resource.',
+    getAllResources: 'Successfully retrieved resources.',
+    getOneResource: 'Successfully retrieved resource.',
+    updateResource: 'Successfully updated resource.',
+    deleteResource: 'Successfully deleted resource.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -63,5 +69,11 @@ export default {
     invalidClass: 'Class must be a valid year.',
     invalidPassword:
       'Password must at least be 6 characters long with at least 1 special character (@ $ ! % * # ? &).',
+
+    createResource: 'Error in creating resource.',
+    getAllResources: 'Error in retrieving resources.',
+    getOneResource: 'Error in retrieving resource.',
+    updateResource: 'Error in updating resource.',
+    deleteResource: 'Error in deleting resource.',
   },
 };

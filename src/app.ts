@@ -21,6 +21,11 @@ import AuthenticationController from './controllers/AuthenticationController';
 import AuthenticationRouter from './routes/AuthenticationRoutes';
 import AuthenticationMiddleware from './middlewares/authentication';
 
+import ResourceController from './controllers/ResourceController';
+import ResourceRepository from './repositories/ResourceRepository';
+import ResourceRouter from './routes/ResourceRoutes';
+import ResourceService from './services/ResourceService';
+
 import Container from './utils/container';
 
 export default class App {
@@ -58,6 +63,7 @@ export default class App {
     this.app.use('/users', UserRouter());
     this.app.use('/email', EmailRouter());
     this.app.use('/authentication', AuthenticationRouter());
+    this.app.use('/resource', ResourceRouter());
   }
 
   public async initContainer() {
@@ -67,11 +73,15 @@ export default class App {
     // repositories
     container.register('TagRepository', TagRepository, ['db']);
     container.register('UserRepository', UserRepository, ['db']);
+    container.register('ResourceRepository', ResourceRepository, ['db']);
 
     // services
     container.register('EmailService', EmailService, []);
     container.register('TagService', TagService, ['TagRepository']);
     container.register('UserService', UserService, ['UserRepository']);
+    container.register('ResourceService', ResourceService, [
+      'ResourceRepository',
+    ]);
 
     // controllers
     container.register('EmailController', EmailController, ['EmailService']);
@@ -80,6 +90,9 @@ export default class App {
     container.register('AuthenticationController', AuthenticationController, [
       'UserService',
       'EmailService',
+    ]);
+    container.register('ResourceController', ResourceController, [
+      'ResourceService',
     ]);
 
     // middlewares

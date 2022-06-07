@@ -4,11 +4,11 @@ import {Role} from './User';
 export interface ResourceAttributes {
   id: number;
   name: string;
-  description?: string;
+  description: string;
   accessRights: Role[];
   bookingRights: Role[];
   inAdvance: number;
-  isDescriptionOptional: boolean;
+  isBookingDescriptionOptional: boolean;
   schoolId: number;
 }
 
@@ -20,11 +20,11 @@ class Resource
 {
   public id!: number;
   public name!: string;
-  public description?: string;
+  public description!: string;
   public accessRights!: Role[];
   public bookingRights!: Role[];
   public inAdvance!: number;
-  public isDescriptionOptional!: boolean;
+  public isBookingDescriptionOptional!: boolean;
   public schoolId!: number; // foreign key
 
   public readonly createdAt!: Date;
@@ -53,7 +53,7 @@ class Resource
         },
         description: {
           type: DataTypes.STRING(500),
-          allowNull: true,
+          allowNull: false,
           validate: {
             notEmpty: true,
           },
@@ -79,7 +79,7 @@ class Resource
             notEmpty: true,
           },
         },
-        isDescriptionOptional: {
+        isBookingDescriptionOptional: {
           type: DataTypes.BOOLEAN,
           allowNull: false,
           validate: {
