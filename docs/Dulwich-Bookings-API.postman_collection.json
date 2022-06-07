@@ -1,717 +1,725 @@
 {
-	"info": {
-		"_postman_id": "fc138b57-ca61-4afc-8626-7a2ffcefeefe",
-		"name": "DULWICHBOOKINGS-API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20981280"
-	},
-	"item": [
-		{
-			"name": "Authentication",
-			"item": [
-				{
-					"name": "Sign In Student",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var data = pm.response.json();",
-									"console.log(data.data.accessToken);",
-									"pm.environment.set(\"token\", data.data.accessToken);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"student23@stu.dulwich.org\",\n    \"password\": \"asdasd\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/authentication/signIn",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"signIn"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Sign In Teacher",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var data = pm.response.json();",
-									"console.log(data.data.accessToken);",
-									"pm.environment.set(\"token\", data.data.accessToken);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"teacher@dulwich.org\",\n    \"password\": \"asdasd\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/authentication/signIn",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"signIn"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Sign In Admin",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var data = pm.response.json();",
-									"console.log(data.data.accessToken);",
-									"pm.environment.set(\"token\", data.data.accessToken);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@dulwich.org\",\n    \"password\": \"asdasd\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/authentication/signIn",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"signIn"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Sign Up",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"test2@test.com\",\n    \"password\": \"12345678\",\n    \"passwordConfirmation\":\"12345678\",\n    \"schoolId\": 1,\n    \"class\": 2014\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/authentication/signUp",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"signUp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Confirm Email",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/authentication/confirmEmail",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"confirmEmail"
-							]
-						},
-						"description": "JWT created using Jason's token secret. For other testers, the message will show \"Link is invalid.\", since `confirmEmail` verifies the JWT using the tester's token secret in his or her local environment."
-					},
-					"response": []
-				},
-				{
-					"name": "Bulk Sign Up",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/Users/shenyicui/Desktop/test.csv"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{hostname}}/authentication/bulkSignUp",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"bulkSignUp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Set Password",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNjUzODQ3MzAwfQ.ojgcIWKfVChmzodJbfoWTbtJHnZX9TZIIJ0PlvpTOH0",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"password\": \"test\",\n    \"passwordConfirmation\": \"test\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/authentication/setPassword",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"setPassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Reset Password",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"originalPassword\": \"12345678\",\n    \"newPassword\": \"asdasd\",\n    \"newPasswordConfirmation\": \"asdasd\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/authentication/resetPassword",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"resetPassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Forget Password Email",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"email\": \"shenyicui@outlook.com\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/authentication/forgetPassword",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"forgetPassword"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Set Forget Password",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNjUzODQ5NDkyLCJleHAiOjE2NTM4NTEyOTJ9.teBt6_hd0DxprJ63Ugfr33NUGbjM_A8X3M1vuLpe-5w",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"password\": \"asdasd\",\n    \"passwordConfirmation\": \"asdasd\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/authentication/setForgetPassword",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"authentication",
-								"setForgetPassword"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Email",
-			"item": [
-				{
-					"name": "Send Email",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"from\": \"bookingsdulwich@gmail.com\",\n    \"to\": \"shenyicui@outlook.com\",\n    \"subject\":\"Dulwich Bookings\",\n    \"html\":\"<b>Important Message</b>\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/email",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"email"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Tags",
-			"item": [
-				{
-					"name": "Get All Tags",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/tags",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"tags"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get One Tag",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/tags/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"tags",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create New Tag",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\":\"Test\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/tags",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"tags"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update One Tag",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"new name\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/tags/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"tags",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete One Tag",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/tags/7",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"tags",
-								"7"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Users",
-			"item": [
-				{
-					"name": "Get Self",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/users/getSelf",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"getSelf"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Users",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/users",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get One User by Id",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/users/4",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"4"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update One User by Id",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"isConfirmed\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/1",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Self",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"isConfirmed\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users/updateSelf",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"updateSelf"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete One User by Id",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{hostname}}/users/6",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users",
-								"6"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Bulk Delete Users",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "x-auth-token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"id\": [11,12,13,14]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostname}}/users",
-							"host": [
-								"{{hostname}}"
-							],
-							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "fc138b57-ca61-4afc-8626-7a2ffcefeefe",
+    "name": "DULWICHBOOKINGS-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20981301"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Sign In Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();",
+                  "console.log(data.data.accessToken);",
+                  "pm.environment.set(\"token\", data.data.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"student23@stu.dulwich.org\",\n    \"password\": \"asdasd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/signIn",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "signIn"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign In Teacher",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();",
+                  "console.log(data.data.accessToken);",
+                  "pm.environment.set(\"token\", data.data.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"teacher@dulwich.org\",\n    \"password\": \"asdasd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/signIn",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "signIn"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign In Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var data = pm.response.json();",
+                  "console.log(data.data.accessToken);",
+                  "pm.environment.set(\"token\", data.data.accessToken);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@dulwich.org\",\n    \"password\": \"asdasd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/signIn",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "signIn"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test2@test.com\",\n    \"password\": \"12345678\",\n    \"passwordConfirmation\":\"12345678\",\n    \"schoolId\": 1,\n    \"class\": 99\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/signUp",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "signUp"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/authentication/confirmEmail",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "confirmEmail"]
+            },
+            "description": "JWT created using Jason's token secret. For other testers, the message will show \"Link is invalid.\", since `confirmEmail` verifies the JWT using the tester's token secret in his or her local environment."
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/Users/shenyicui/Desktop/test.csv"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/bulkSignUp",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "bulkSignUp"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNjUzODQ3MzAwfQ.ojgcIWKfVChmzodJbfoWTbtJHnZX9TZIIJ0PlvpTOH0",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"password\": \"test\",\n    \"passwordConfirmation\": \"test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/setPassword",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "setPassword"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"originalPassword\": \"12345678\",\n    \"newPassword\": \"asdasd\",\n    \"newPasswordConfirmation\": \"asdasd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/resetPassword",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "resetPassword"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forget Password Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"shenyicui@outlook.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/forgetPassword",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "forgetPassword"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Forget Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNjUzODQ5NDkyLCJleHAiOjE2NTM4NTEyOTJ9.teBt6_hd0DxprJ63Ugfr33NUGbjM_A8X3M1vuLpe-5w",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"password\": \"asdasd\",\n    \"passwordConfirmation\": \"asdasd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/setForgetPassword",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "setForgetPassword"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Email",
+      "item": [
+        {
+          "name": "Send Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"from\": \"bookingsdulwich@gmail.com\",\n    \"to\": \"shenyicui@outlook.com\",\n    \"subject\":\"Dulwich Bookings\",\n    \"html\":\"<b>Important Message</b>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/email",
+              "host": ["{{hostname}}"],
+              "path": ["email"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "item": [
+        {
+          "name": "Get All Tags",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/tags",
+              "host": ["{{hostname}}"],
+              "path": ["tags"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get One Tag",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/tags/1",
+              "host": ["{{hostname}}"],
+              "path": ["tags", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create New Tag",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\":\"Test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/tags",
+              "host": ["{{hostname}}"],
+              "path": ["tags"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update One Tag",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"new name\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/tags/1",
+              "host": ["{{hostname}}"],
+              "path": ["tags", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete One Tag",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/tags/7",
+              "host": ["{{hostname}}"],
+              "path": ["tags", "7"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Self",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/users/getSelf",
+              "host": ["{{hostname}}"],
+              "path": ["users", "getSelf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/users",
+              "host": ["{{hostname}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get One User by Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/users/4",
+              "host": ["{{hostname}}"],
+              "path": ["users", "4"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update One User by Id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"isConfirmed\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/1",
+              "host": ["{{hostname}}"],
+              "path": ["users", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Self",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"isConfirmed\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users/updateSelf",
+              "host": ["{{hostname}}"],
+              "path": ["users", "updateSelf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete One User by Id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/users/6",
+              "host": ["{{hostname}}"],
+              "path": ["users", "6"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Delete Users",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": [11,12,13,14]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/users",
+              "host": ["{{hostname}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Resources",
+      "item": [
+        {
+          "name": "Create Resource",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"A113\",\n    \"description\": \"This is an intriguing room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\"],\n    \"inAdvance\": 3,\n    \"isBookingDescriptionOptional\": true,\n    \"schoolId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/resource/",
+              "host": ["{{hostname}}"],
+              "path": ["resource", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Resources",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/resource/",
+              "host": ["{{hostname}}"],
+              "path": ["resource", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get One Resource By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/resource/3",
+              "host": ["{{hostname}}"],
+              "path": ["resource", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update One Resource By Id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"B113\",\n    \"description\": \"This is a boring room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"inAdvance\": 4\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/resource/3",
+              "host": ["{{hostname}}"],
+              "path": ["resource", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete One Resource By Id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/resource/3",
+              "host": ["{{hostname}}"],
+              "path": ["resource", "3"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }
