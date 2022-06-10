@@ -22,5 +22,6 @@ fs.readdirSync(__dirname)
 
 export {default as User} from './User';
 export {default as Tag} from './Tag';
+export {default as Resource} from './Resource';
 
 export default models;
