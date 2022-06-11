@@ -4,6 +4,7 @@ import UserService from '../services/UserService';
 import EmailService from '../services/EmailService';
 import JWTUtils from '../utils/jwtUtils';
 import PasswordUtils from '../utils/passwordUtils';
+import enviroment from '../consts/enviroment';
 import {
   InvalidUserClassError,
   InvalidUserPasswordError,
@@ -55,7 +56,7 @@ export default class AuthenticationController {
       };
       const accessToken = JWTUtils.generateAccessToken(payload);
       // TODO: insert frontend url for confirm email.
-      const url = `test.com?token=${accessToken}`;
+      const url = `${enviroment.frontendUrl}/auth/confirmEmail?token=${accessToken}`;
       await this.emailService.sendConfirmEmail(email, url);
       res.json({
         message: userFriendlyMessage.success.createUser,
@@ -149,8 +150,7 @@ export default class AuthenticationController {
           payload,
           createdUser.password
         );
-        // TODO: insert frontend url for confirm email.
-        const url = `test.com?token=${accessToken}`;
+        const url = `${enviroment.frontendUrl}/auth/setPassword?token=${accessToken}`;
         return {
           to: createdUser.email,
           url: url,
@@ -230,6 +230,13 @@ export default class AuthenticationController {
         });
         return;
       }
+      if (await user.isPasswordMatch(password)) {
+        res.status(400);
+        res.json({
+          message: userFriendlyMessage.failure.samePasswordError,
+        });
+        return;
+      }
 
       const updatedAttributes: UserAttributes = {
         ...user,
@@ -270,6 +277,13 @@ export default class AuthenticationController {
         res.status(400);
         res.json({
           message: userFriendlyMessage.failure.passwordConfirmationMismatch,
+        });
+        return;
+      }
+      if (await user.isPasswordMatch(newPassword)) {
+        res.status(400);
+        res.json({
+          message: userFriendlyMessage.failure.samePasswordError,
         });
         return;
       }
@@ -324,7 +338,7 @@ export default class AuthenticationController {
         {expiresIn: '30m'}
       );
       // TODO: Insert frontend url to set password.
-      const url = `test.com?token=${accessToken}`;
+      const url = `${enviroment.frontendUrl}/auth/setPassword?token=${accessToken}`;
       await this.emailService.sendResetForgotPasswordEmail(email, url);
       res.json({message: userFriendlyMessage.success.sendForgetPasswordEmail});
     } catch (e) {
