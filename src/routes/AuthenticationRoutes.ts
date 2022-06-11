@@ -65,11 +65,5 @@ export default () => {
     authenticationController.forgetPasswordEmail.bind(authenticationController)
   );
 
-  authenticationRouter.post(
-    '/setForgetPassword',
-    [authChangePassword],
-    authenticationController.setPassword.bind(authenticationController)
-  );
-
   return authenticationRouter;
 };
