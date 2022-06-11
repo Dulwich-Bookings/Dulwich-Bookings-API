@@ -25,18 +25,35 @@ export default class UserService {
     )[0] as User;
   }
 
-  async getOneUserByEmail(email: string, showPassword = false) {
+  async getOneUserByEmailAndSchoolId(
+    email: string,
+    schoolId: number,
+    showPassword = false
+  ) {
     return (
       await (showPassword
-        ? this.userRepository.getScopeWithFilters({email}, 'withPassword')
-        : this.userRepository.getWithFilters({email}))
+        ? this.userRepository.getScopeWithFilters(
+            {email, schoolId},
+            'withPassword'
+          )
+        : this.userRepository.getWithFilters({email, schoolId}))
     )[0] as User;
   }
 
-  async bulkGetUserByEmails(emails: string[], showPassword = false) {
+  async bulkGetUserByEmailsAndSchoolId(
+    emails: string[],
+    schoolId: number,
+    showPassword = false
+  ) {
     return (await (showPassword
-      ? this.userRepository.getScopeWithFilters({email: emails}, 'withPassword')
-      : this.userRepository.getWithFilters({email: emails}))) as User[];
+      ? this.userRepository.getScopeWithFilters(
+          {email: emails, schoolId},
+          'withPassword'
+        )
+      : this.userRepository.getWithFilters({
+          email: emails,
+          schoolId,
+        }))) as User[];
   }
 
   async createOneUser(user: UserCreationAttributes) {

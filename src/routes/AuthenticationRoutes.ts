@@ -3,7 +3,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import AuthenticationController from '../controllers/AuthenticationController';
 import Container from '../utils/container';
 import uploadFile from '../middlewares/uploadFile';
-import parseCsv from '../middlewares/parseCsv';
+import parseBulkUserCsv from '../middlewares/parseBulkUserCsv';
 import AuthenticationMiddleware from '../middlewares/authentication';
 import roleValidator, {ADMINS} from '../middlewares/authorization';
 
@@ -39,7 +39,7 @@ export default () => {
 
   authenticationRouter.post(
     '/bulkSignUp',
-    [auth, roleValidator(ADMINS), uploadFile, parseCsv],
+    [auth, roleValidator(ADMINS), uploadFile, parseBulkUserCsv],
     authenticationController.bulkSignUp.bind(authenticationController)
   );
 

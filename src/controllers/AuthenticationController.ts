@@ -24,9 +24,12 @@ export default class AuthenticationController {
 
   async signUp(req: Request, res: Response, next: NextFunction) {
     try {
-      const {password, passwordConfirmation} = req.body;
+      const {schoolId, password, passwordConfirmation} = req.body;
       const email = req.body.email.toLowerCase();
-      const user = await this.userService.getOneUserByEmail(email);
+      const user = await this.userService.getOneUserByEmailAndSchoolId(
+        email,
+        schoolId
+      );
 
       if (user) {
         res.status(400);
@@ -90,7 +93,6 @@ export default class AuthenticationController {
     }
   }
 
-  // Format for CSV file: [email], [role], [class?]
   // TODO: Output CSV containing [email], [role], [class?], [url]
   async bulkSignUp(req: Request, res: Response, next: NextFunction) {
     try {
@@ -106,7 +108,11 @@ export default class AuthenticationController {
         user.email.toLowerCase()
       );
 
-      const existingUsers = await this.userService.bulkGetUserByEmails(emails);
+      const existingUsers =
+        await this.userService.bulkGetUserByEmailsAndSchoolId(
+          emails,
+          currentUser.schoolId
+        );
       const exisitingEmails: string[] = existingUsers.map(user => user.email);
       const usersExist = existingUsers.length !== 0;
 
@@ -165,9 +171,13 @@ export default class AuthenticationController {
 
   async signIn(req: Request, res: Response, next: NextFunction) {
     try {
-      const {password} = req.body;
+      const {password, schoolId} = req.body;
       const email = req.body.email.toLowerCase();
-      const user = await this.userService.getOneUserByEmail(email, true);
+      const user = await this.userService.getOneUserByEmailAndSchoolId(
+        email,
+        schoolId,
+        true
+      );
 
       if (!user) {
         res.status(401);
@@ -286,18 +296,22 @@ export default class AuthenticationController {
 
   async forgetPasswordEmail(req: Request, res: Response, next: NextFunction) {
     try {
+      const {schoolId} = req.body;
       const email = req.body.email.toLowerCase();
-      const user = await this.userService.getOneUserByEmail(email, true);
-
-      if (user.isTemporary) {
-        res.status(400);
-        res.json({message: userFriendlyMessage.failure.userIsTemporary});
-        return;
-      }
+      const user = await this.userService.getOneUserByEmailAndSchoolId(
+        email,
+        schoolId,
+        true
+      );
 
       if (!user) {
         res.status(400);
         res.json({message: userFriendlyMessage.failure.emailNotExist});
+        return;
+      }
+      if (user.isTemporary) {
+        res.status(400);
+        res.json({message: userFriendlyMessage.failure.userIsTemporary});
         return;
       }
 

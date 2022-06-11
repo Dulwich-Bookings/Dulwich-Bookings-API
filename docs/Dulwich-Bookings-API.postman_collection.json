@@ -29,7 +29,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"student23@stu.dulwich.org\",\n    \"password\": \"asdasd\"\n}",
+              "raw": "{\n    \"email\": \"student23@stu.dulwich.org\",\n    \"password\": \"asdasd\",\n    \"schoolId\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -64,7 +64,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"teacher@dulwich.org\",\n    \"password\": \"asdasd\"\n}",
+              "raw": "{\n    \"email\": \"teacher@dulwich.org\",\n    \"password\": \"asdasd\",\n    \"schoolId\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -99,7 +99,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"admin@dulwich.org\",\n    \"password\": \"asdasd\"\n}",
+              "raw": "{\n    \"email\": \"admin@dulwich.org\",\n    \"password\": \"asdasd\",\n    \"schoolId\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -248,7 +248,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"shenyicui@outlook.com\"\n}",
+              "raw": "{\n    \"email\": \"shenyicui@outlook.com\",\n    \"schoolId\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"

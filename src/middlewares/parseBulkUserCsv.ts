@@ -5,7 +5,8 @@ import fs from 'fs';
 import userFriendlyMessages from '../consts/userFriendlyMessages';
 import {BulkSignUpAttributes, Role} from '../models/User';
 
-const parseCsv = (req: Request, res: Response, next: NextFunction) => {
+// Format for bulk user CSV file: [email], [role], [class?]
+const parseBulkUserCsv = (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.file?.path) {
       res.status(400);
@@ -37,4 +38,4 @@ const parseCsv = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default parseCsv;
+export default parseBulkUserCsv;
