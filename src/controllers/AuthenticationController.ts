@@ -62,12 +62,12 @@ export default class AuthenticationController {
         message: userFriendlyMessage.success.createUser,
       });
     } catch (e) {
+      res.status(400);
       if (e instanceof InvalidUserClassError || InvalidUserPasswordError) {
         res.json({message: (e as Error).message});
       } else {
         res.json({message: userFriendlyMessage.failure.createUser});
       }
-      res.status(400);
       next(e);
     }
   }
@@ -159,12 +159,12 @@ export default class AuthenticationController {
       await this.emailService.sendSetPasswordEmail(emailParams);
       res.json({message: userFriendlyMessage.success.createUser});
     } catch (e) {
+      res.status(400);
       if (e instanceof InvalidUserClassError || InvalidUserPasswordError) {
         res.json({message: (e as Error).message});
       } else {
         res.json({message: userFriendlyMessage.failure.createUser});
       }
-      res.status(400);
       next(e);
     }
   }
@@ -241,12 +241,12 @@ export default class AuthenticationController {
       res.json({message: userFriendlyMessage.success.setPassword});
       // Redirect user to login page
     } catch (e) {
+      res.status(400);
       if (e instanceof InvalidUserPasswordError) {
         res.json({message: e.message});
       } else {
         res.json({message: userFriendlyMessage.failure.setPassword});
       }
-      res.status(400);
       next(e);
     }
   }
@@ -291,12 +291,12 @@ export default class AuthenticationController {
         message: userFriendlyMessage.success.resetPassword,
       });
     } catch (e) {
+      res.status(400);
       if (e instanceof InvalidUserPasswordError) {
         res.json({message: e.message});
       } else {
         res.json({message: userFriendlyMessage.failure.setPassword});
       }
-      res.status(400);
       next(e);
     }
   }
