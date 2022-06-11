@@ -230,13 +230,6 @@ export default class AuthenticationController {
         });
         return;
       }
-      if (await user.isPasswordMatch(password)) {
-        res.status(400);
-        res.json({
-          message: userFriendlyMessage.failure.samePasswordError,
-        });
-        return;
-      }
 
       const updatedAttributes: UserAttributes = {
         ...user,
