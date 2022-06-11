@@ -65,6 +65,7 @@ export default {
     fileNotFound: 'File is not found.',
     parseCsv: 'Error in parsing CSV file.',
     signUpAttributes: 'Error in getting sign up attributes.',
+    samePasswordError: 'New password and old password cannot be the same',
 
     invalidClass: 'Class must be a valid year.',
     invalidPassword:
