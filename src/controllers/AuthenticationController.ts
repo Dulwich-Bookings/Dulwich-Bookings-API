@@ -189,7 +189,7 @@ export default class AuthenticationController {
         res.json({message: userFriendlyMessage.failure.userIsTemporary});
         return;
       }
-      if (!user.isPasswordMatch(password)) {
+      if (!(await user.isPasswordMatch(password))) {
         res.status(401);
         res.json({message: userFriendlyMessage.failure.incorrectPassword});
         return;
