@@ -26,6 +26,11 @@ import ResourceRepository from './repositories/ResourceRepository';
 import ResourceRouter from './routes/ResourceRoutes';
 import ResourceService from './services/ResourceService';
 
+import SubscriptionController from './controllers/SubscriptionController';
+import SubscriptionRepository from './repositories/SubscriptionRepository';
+import SubscriptionRouter from './routes/SubscriptionRoutes';
+import SubscriptionService from './services/SubscriptionService';
+
 import Container from './utils/container';
 
 export default class App {
@@ -64,6 +69,7 @@ export default class App {
     this.app.use('/email', EmailRouter());
     this.app.use('/authentication', AuthenticationRouter());
     this.app.use('/resource', ResourceRouter());
+    this.app.use('/subscription', SubscriptionRouter());
   }
 
   public async initContainer() {
@@ -74,6 +80,9 @@ export default class App {
     container.register('TagRepository', TagRepository, ['db']);
     container.register('UserRepository', UserRepository, ['db']);
     container.register('ResourceRepository', ResourceRepository, ['db']);
+    container.register('SubscriptionRepository', SubscriptionRepository, [
+      'db',
+    ]);
 
     // services
     container.register('EmailService', EmailService, []);
@@ -81,6 +90,9 @@ export default class App {
     container.register('UserService', UserService, ['UserRepository']);
     container.register('ResourceService', ResourceService, [
       'ResourceRepository',
+    ]);
+    container.register('SubscriptionService', SubscriptionService, [
+      'SubscriptionRepository',
     ]);
 
     // controllers
@@ -93,6 +105,9 @@ export default class App {
     ]);
     container.register('ResourceController', ResourceController, [
       'ResourceService',
+    ]);
+    container.register('SubscriptionController', SubscriptionController, [
+      'SubscriptionService',
     ]);
 
     // middlewares

@@ -28,6 +28,12 @@ export default {
     getOneResource: 'Successfully retrieved resource.',
     updateResource: 'Successfully updated resource.',
     deleteResource: 'Successfully deleted resource.',
+
+    createSubscription: 'Successfully created subscription.',
+    getAllSubscriptions: 'Successfully retrieved subscriptions.',
+    getOneSubscription: 'Successfully retrieved subscription.',
+    updateSubscription: 'Successfully updated subscription.',
+    deleteSubscription: 'Successfully deleted subscription.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -76,5 +82,11 @@ export default {
     getOneResource: 'Error in retrieving resource.',
     updateResource: 'Error in updating resource.',
     deleteResource: 'Error in deleting resource.',
+
+    createSubscription: 'Error in creating subscription.',
+    getAllSubscriptions: 'Error in retrieving subscriptions.',
+    getOneSubscription: 'Error in retrieving subscription.',
+    updateSubscription: 'Error in updating subscription.',
+    deleteSubscription: 'Error in deleting subscription.',
   },
 };

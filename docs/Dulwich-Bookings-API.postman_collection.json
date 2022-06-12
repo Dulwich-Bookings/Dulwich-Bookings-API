@@ -121,7 +121,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"test2@test.com\",\n    \"password\": \"12345678\",\n    \"passwordConfirmation\":\"12345678\",\n    \"schoolId\": 1,\n    \"class\": 99\n}",
+              "raw": "{\n    \"email\": \"test2@test.com\",\n    \"password\": \"12345678\",\n    \"passwordConfirmation\":\"12345678\",\n    \"schoolId\": 1,\n    \"class\": 2022\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -214,6 +214,34 @@
           "response": []
         },
         {
+          "name": "Set Forget Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNjUzODQ5NDkyLCJleHAiOjE2NTM4NTEyOTJ9.teBt6_hd0DxprJ63Ugfr33NUGbjM_A8X3M1vuLpe-5w",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"password\": \"asdasd\",\n    \"passwordConfirmation\": \"asdasd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/authentication/setForgetPassword",
+              "host": ["{{hostname}}"],
+              "path": ["authentication", "setForgetPassword"]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Reset Password",
           "request": {
             "method": "POST",
@@ -259,34 +287,6 @@
               "raw": "{{hostname}}/authentication/forgetPassword",
               "host": ["{{hostname}}"],
               "path": ["authentication", "forgetPassword"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Set Forget Password",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "x-auth-token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNjUzODQ5NDkyLCJleHAiOjE2NTM4NTEyOTJ9.teBt6_hd0DxprJ63Ugfr33NUGbjM_A8X3M1vuLpe-5w",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"password\": \"asdasd\",\n    \"passwordConfirmation\": \"asdasd\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{hostname}}/authentication/setForgetPassword",
-              "host": ["{{hostname}}"],
-              "path": ["authentication", "setForgetPassword"]
             }
           },
           "response": []
@@ -715,6 +715,125 @@
               "raw": "{{hostname}}/resource/3",
               "host": ["{{hostname}}"],
               "path": ["resource", "3"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Create Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Adobe Photoshop\",\n    \"description\": \"For photo editing\",\n    \"accessRights\": [\"Admin\", \"Teacher\"],\n    \"credentials\": \"test123\",\n    \"expiry\": \"2023-06-01\",\n    \"remindMe\": true,\n    \"schoolId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/subscription/",
+              "host": ["{{hostname}}"],
+              "path": ["subscription", ""]
+            },
+            "description": "Expiry date format: YYYY-MM-DD"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/subscription/",
+              "host": ["{{hostname}}"],
+              "path": ["subscription", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get One Subscription By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/subscription/3",
+              "host": ["{{hostname}}"],
+              "path": ["subscription", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update One Subscription By Id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Microsoft Office\",\n    \"description\": \"For coding!\",\n    \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"credentials\": \"321test\",\n    \"expiry\": null,\n    \"remindMe\": false,\n    \"schoolId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/subscription/3",
+              "host": ["{{hostname}}"],
+              "path": ["subscription", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete One Subscription By Id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/subscription/3",
+              "host": ["{{hostname}}"],
+              "path": ["subscription", "3"]
             }
           },
           "response": []
