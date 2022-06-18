@@ -34,6 +34,12 @@ export default {
     getOneSubscription: 'Successfully retrieved subscription.',
     updateSubscription: 'Successfully updated subscription.',
     deleteSubscription: 'Successfully deleted subscription.',
+
+    createSchool: 'Successfully created school.',
+    getAllSchools: 'Successfully retrieved schools.',
+    getOneSchool: 'Successfully retrieved school.',
+    updateSchool: 'Successfully updated school.',
+    deleteSchool: 'Successfully deleted school.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -88,5 +94,11 @@ export default {
     getOneSubscription: 'Error in retrieving subscription.',
     updateSubscription: 'Error in updating subscription.',
     deleteSubscription: 'Error in deleting subscription.',
+
+    createSchool: 'Error in creating school.',
+    getAllSchools: 'Error in retrieving schools.',
+    getOneSchool: 'Error in retrieving school.',
+    updateSchool: 'Error in updating school.',
+    deleteSchool: 'Error in deleting school.',
   },
 };

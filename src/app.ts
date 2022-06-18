@@ -31,6 +31,11 @@ import SubscriptionRepository from './repositories/SubscriptionRepository';
 import SubscriptionRouter from './routes/SubscriptionRoutes';
 import SubscriptionService from './services/SubscriptionService';
 
+import SchoolController from './controllers/SchoolController';
+import SchoolRepository from './repositories/SchoolRepository';
+import SchoolRouter from './routes/SchoolRoutes';
+import SchoolService from './services/SchoolService';
+
 import Container from './utils/container';
 
 export default class App {
@@ -61,6 +66,12 @@ export default class App {
     Object.keys(models).forEach(key => {
       models[key].initModel(Container.getInstance().get('db'));
     });
+
+    Object.keys(models).forEach(key => {
+      if ('associate' in models[key]) {
+        models[key].associate(models);
+      }
+    });
   }
 
   public initControllers() {
@@ -70,6 +81,7 @@ export default class App {
     this.app.use('/authentication', AuthenticationRouter());
     this.app.use('/resource', ResourceRouter());
     this.app.use('/subscription', SubscriptionRouter());
+    this.app.use('/school', SchoolRouter());
   }
 
   public async initContainer() {
@@ -83,6 +95,7 @@ export default class App {
     container.register('SubscriptionRepository', SubscriptionRepository, [
       'db',
     ]);
+    container.register('SchoolRepository', SchoolRepository, ['db']);
 
     // services
     container.register('EmailService', EmailService, []);
@@ -94,6 +107,7 @@ export default class App {
     container.register('SubscriptionService', SubscriptionService, [
       'SubscriptionRepository',
     ]);
+    container.register('SchoolService', SchoolService, ['SchoolRepository']);
 
     // controllers
     container.register('EmailController', EmailController, ['EmailService']);
@@ -109,6 +123,7 @@ export default class App {
     container.register('SubscriptionController', SubscriptionController, [
       'SubscriptionService',
     ]);
+    container.register('SchoolController', SchoolController, ['SchoolService']);
 
     // middlewares
     container.register('AuthenticationMiddleware', AuthenticationMiddleware, [
