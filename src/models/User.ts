@@ -2,6 +2,7 @@ import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
 import bcrypt from 'bcrypt';
 import enviroment from '../consts/enviroment';
 import userFriendlyMessages from '../consts/userFriendlyMessages';
+import {Models} from '../types';
 
 export type Role = 'Student' | 'Teacher' | 'Admin';
 
@@ -214,6 +215,12 @@ class User
         },
       }
     );
+  }
+
+  public static associate(models: Models) {
+    User.belongsTo(models.School, {
+      foreignKey: 'schoolId',
+    });
   }
 }
 
