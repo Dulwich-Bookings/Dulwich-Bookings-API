@@ -1,4 +1,5 @@
 import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
+import {Models} from '../types';
 import {Role} from './User';
 
 export interface ResourceAttributes {
@@ -25,7 +26,7 @@ class Resource
   public bookingRights!: Role[];
   public inAdvance!: number;
   public isBookingDescriptionOptional!: boolean;
-  public schoolId!: number; // foreign key
+  public schoolId!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -99,6 +100,12 @@ class Resource
         sequelize,
       }
     );
+  }
+
+  public static associate(models: Models) {
+    Resource.belongsTo(models.School, {
+      foreignKey: 'schoolId',
+    });
   }
 }
 

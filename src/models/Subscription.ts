@@ -1,4 +1,5 @@
 import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
+import {Models} from '../types';
 import {Role} from './User';
 
 export interface SubscriptionAttributes {
@@ -102,6 +103,12 @@ class Subscription
         sequelize,
       }
     );
+  }
+
+  public static associate(models: Models) {
+    Subscription.belongsTo(models.School, {
+      foreignKey: 'schoolId',
+    });
   }
 }
 

@@ -214,34 +214,6 @@
           "response": []
         },
         {
-          "name": "Set Forget Password",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "x-auth-token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiaWF0IjoxNjUzODQ5NDkyLCJleHAiOjE2NTM4NTEyOTJ9.teBt6_hd0DxprJ63Ugfr33NUGbjM_A8X3M1vuLpe-5w",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"password\": \"asdasd\",\n    \"passwordConfirmation\": \"asdasd\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{hostname}}/authentication/setForgetPassword",
-              "host": ["{{hostname}}"],
-              "path": ["authentication", "setForgetPassword"]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Reset Password",
           "request": {
             "method": "POST",
@@ -566,9 +538,9 @@
               }
             ],
             "url": {
-              "raw": "{{hostname}}/users/6",
+              "raw": "{{hostname}}/users/7",
               "host": ["{{hostname}}"],
-              "path": ["users", "6"]
+              "path": ["users", "7"]
             }
           },
           "response": []
@@ -839,6 +811,126 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "School",
+      "item": [
+        {
+          "name": "Create School",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Dulwich College Shanghai Pudong\",\n    \"timezone\": \"Asia/Shanghai\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/school/",
+              "host": ["{{hostname}}"],
+              "path": ["school", ""]
+            },
+            "description": "Expiry date format: YYYY-MM-DD"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Schools",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/school/",
+              "host": ["{{hostname}}"],
+              "path": ["school", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get One School By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/school/1",
+              "host": ["{{hostname}}"],
+              "path": ["school", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update One School By Id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Dulwich College Singapore\",\n    \"timezone\": \"Asia/Singapore\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/school/1",
+              "host": ["{{hostname}}"],
+              "path": ["school", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete One School By Id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/school/1",
+              "host": ["{{hostname}}"],
+              "path": ["school", "1"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "For timezone attribute, refer to list [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)."
     }
   ]
 }
