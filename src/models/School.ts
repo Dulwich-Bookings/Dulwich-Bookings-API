@@ -44,6 +44,13 @@ class School
             notEmpty: true,
           },
         },
+        alternativeName: {
+          type: DataTypes.STRING(128),
+          allowNull: true,
+          validate: {
+            notEmpty: false,
+          },
+        },
         timezone: {
           type: DataTypes.STRING(128),
           allowNull: false,

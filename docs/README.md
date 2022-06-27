@@ -6,8 +6,6 @@
 - `Dulwich-Bookings-API.postman_environment_DEV.json`
 - `Dulwich-Bookings-API.postman_environment_PROD.json`
 
-2. Setup your postman [working directory](https://learning.postman.com/docs/getting-started/settings/#working-directory) and add `sd-api.jpg` into the working directory.
-
 # Postman testing steps
 
 1. Select your prefered postman environment (Dev or Prod).  
