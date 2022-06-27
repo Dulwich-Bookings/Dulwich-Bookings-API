@@ -5,6 +5,7 @@ import {Timezone} from '../types/timezone';
 export interface SchoolAttributes {
   id: number;
   name: string;
+  alternativeName?: string;
   timezone: Timezone;
 }
 
@@ -16,6 +17,7 @@ class School
 {
   public id!: number;
   public name!: string;
+  public alternativeName?: string;
   public timezone!: Timezone;
 
   public readonly createdAt!: Date;
@@ -40,6 +42,13 @@ class School
           allowNull: false,
           validate: {
             notEmpty: true,
+          },
+        },
+        alternativeName: {
+          type: DataTypes.STRING(128),
+          allowNull: true,
+          validate: {
+            notEmpty: false,
           },
         },
         timezone: {
