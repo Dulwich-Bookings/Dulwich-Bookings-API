@@ -21,11 +21,8 @@ export default () => {
     schoolController.createOneSchool.bind(schoolController)
   );
 
-  schoolRouter.get(
-    '/',
-    [auth],
-    (_: Request, res: Response, next: NextFunction) =>
-      schoolController.getAllSchools(res, next)
+  schoolRouter.get('/', (_: Request, res: Response, next: NextFunction) =>
+    schoolController.getAllSchools(res, next)
   );
 
   schoolRouter.get(
