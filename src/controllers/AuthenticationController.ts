@@ -4,7 +4,7 @@ import fs from 'fs';
 
 import userFriendlyMessage from '../consts/userFriendlyMessages';
 import UserService from '../services/UserService';
-import EmailService from '../services/EmailService';
+import EmailService, {EmailQuotaExceededError} from '../services/EmailService';
 import JWTUtils from '../utils/jwtUtils';
 import PasswordUtils from '../utils/passwordUtils';
 import enviroment from '../consts/enviroment';
@@ -65,7 +65,11 @@ export default class AuthenticationController {
       });
     } catch (e) {
       res.status(400);
-      if (e instanceof InvalidUserClassError || InvalidUserPasswordError) {
+      if (
+        e instanceof InvalidUserClassError ||
+        InvalidUserPasswordError ||
+        EmailQuotaExceededError
+      ) {
         res.json({message: (e as Error).message});
       } else {
         res.json({message: userFriendlyMessage.failure.createUser});
@@ -179,7 +183,11 @@ export default class AuthenticationController {
       });
     } catch (e) {
       res.status(400);
-      if (e instanceof InvalidUserClassError || InvalidUserPasswordError) {
+      if (
+        e instanceof InvalidUserClassError ||
+        InvalidUserPasswordError ||
+        EmailQuotaExceededError
+      ) {
         res.json({message: (e as Error).message});
       } else {
         res.json({message: userFriendlyMessage.failure.createUser});
@@ -354,7 +362,11 @@ export default class AuthenticationController {
       res.json({message: userFriendlyMessage.success.sendForgetPasswordEmail});
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessage.failure.sendEmail});
+      if (e instanceof EmailQuotaExceededError) {
+        res.json({message: (e as Error).message});
+      } else {
+        res.json({message: userFriendlyMessage.failure.sendEmail});
+      }
       next(e);
     }
   }
