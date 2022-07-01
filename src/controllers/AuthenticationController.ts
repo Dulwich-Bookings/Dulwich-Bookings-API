@@ -1,4 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
+import {format} from 'fast-csv';
+import fs from 'fs';
+
 import userFriendlyMessage from '../consts/userFriendlyMessages';
 import UserService from '../services/UserService';
 import EmailService from '../services/EmailService';
@@ -55,7 +58,6 @@ export default class AuthenticationController {
         id: createdUser.id,
       };
       const accessToken = JWTUtils.generateAccessToken(payload);
-      // TODO: insert frontend url for confirm email.
       const url = `${enviroment.frontendUrl}/auth/confirmEmail?token=${accessToken}`;
       await this.emailService.sendConfirmEmail(email, url);
       res.json({
@@ -94,7 +96,6 @@ export default class AuthenticationController {
     }
   }
 
-  // TODO: Output CSV containing [email], [role], [class?], [url]
   async bulkSignUp(req: Request, res: Response, next: NextFunction) {
     try {
       const signUpAttributes = req.bulkSignUpAttributes;
@@ -157,7 +158,25 @@ export default class AuthenticationController {
         };
       });
       await this.emailService.sendSetPasswordEmail(emailParams);
-      res.json({message: userFriendlyMessage.success.createUser});
+
+      const fileName = 'tmp/users.csv';
+      const csvFile = fs.createWriteStream(fileName);
+
+      const csvStream = format();
+      csvStream.pipe(csvFile);
+      for (let i = 0; i < emailParams.length; i++) {
+        const {email, role} = createdUsers[i];
+        const gradClass = createdUsers[i].class ? createdUsers[i].class : '';
+        const {url} = emailParams[i];
+        csvStream.write([email, role, gradClass, url]);
+      }
+      csvStream.end();
+
+      csvFile.on('finish', () => {
+        res.download(fileName, () => {
+          fs.unlinkSync(fileName);
+        });
+      });
     } catch (e) {
       res.status(400);
       if (e instanceof InvalidUserClassError || InvalidUserPasswordError) {
@@ -330,7 +349,6 @@ export default class AuthenticationController {
         user.password,
         {expiresIn: '30m'}
       );
-      // TODO: Insert frontend url to set password.
       const url = `${enviroment.frontendUrl}/auth/setPassword?token=${accessToken}`;
       await this.emailService.sendResetForgotPasswordEmail(email, url);
       res.json({message: userFriendlyMessage.success.sendForgetPasswordEmail});
