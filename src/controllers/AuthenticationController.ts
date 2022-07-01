@@ -9,10 +9,10 @@ import {
   InvalidUserClassError,
   InvalidUserPasswordError,
   Payload,
-  Role,
   UserAttributes,
   UserCreationAttributes,
 } from '../models/User';
+import {role} from '../consts/constants';
 
 export default class AuthenticationController {
   private userService: UserService;
@@ -47,7 +47,7 @@ export default class AuthenticationController {
 
       const createdUser = await this.userService.createOneUser({
         ...req.body,
-        role: 'Student' as Role,
+        role: role.STUDENT,
         isConfirmed: false,
         isTemporary: false,
       });

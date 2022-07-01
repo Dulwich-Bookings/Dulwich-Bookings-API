@@ -1,5 +1,6 @@
 import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
 import {Models} from '../types';
+import {validateUTCString} from '../utils/datetimeUtils';
 import {Role} from './User';
 
 export interface SubscriptionAttributes {
@@ -8,7 +9,7 @@ export interface SubscriptionAttributes {
   description: string;
   accessRights: Role[];
   credentials: string;
-  expiry?: Date;
+  expiry?: string;
   remindMe: boolean;
   schoolId: number;
 }
@@ -27,7 +28,7 @@ class Subscription
   public description!: string;
   public accessRights!: Role[];
   public credentials!: string;
-  public expiry?: Date;
+  public expiry?: string;
   public remindMe!: boolean;
   public schoolId!: number; // foreign key
 
@@ -77,7 +78,7 @@ class Subscription
           },
         },
         expiry: {
-          type: DataTypes.DATE,
+          type: DataTypes.STRING(128),
           allowNull: true,
           validate: {
             notEmpty: false,
@@ -101,6 +102,20 @@ class Subscription
       {
         tableName: Subscription.getTableName()!,
         sequelize,
+        hooks: {
+          beforeCreate: async (subscription: Subscription) => {
+            const {expiry} = subscription;
+            if (expiry) {
+              validateUTCString(expiry);
+            }
+          },
+          beforeUpdate: async (subscription: Subscription) => {
+            const {expiry} = subscription;
+            if (expiry) {
+              validateUTCString(expiry);
+            }
+          },
+        },
       }
     );
   }

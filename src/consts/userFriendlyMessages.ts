@@ -100,5 +100,7 @@ export default {
     getOneSchool: 'Error in retrieving school.',
     updateSchool: 'Error in updating school.',
     deleteSchool: 'Error in deleting school.',
+
+    invalidUTCString: 'UTC string is not in ISO 8061 UTC format.',
   },
 };
