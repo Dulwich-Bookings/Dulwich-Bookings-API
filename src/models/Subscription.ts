@@ -78,7 +78,7 @@ class Subscription
           },
         },
         expiry: {
-          type: DataTypes.DATE,
+          type: DataTypes.STRING(128),
           allowNull: true,
           validate: {
             notEmpty: false,

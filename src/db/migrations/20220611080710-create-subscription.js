@@ -27,7 +27,7 @@ module.exports = {
       },
       expiry: {
         allowNull: true,
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
       },
       remindMe: {
         allowNull: false,

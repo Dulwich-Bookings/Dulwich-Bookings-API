@@ -10,7 +10,7 @@ module.exports = {
           "ARRAY['Admin', 'Teacher']::\"enum_subscriptions_accessRights\"[]"
         ),
         credentials: 'test123',
-        expiry: new Date(2023, 6, 1),
+        expiry: '2025-05-03T00:00:00.000Z',
         remindMe: true,
         schoolId: 1,
         createdAt: new Date(),

@@ -11,11 +11,8 @@ export default class SubscriptionController {
 
   async createOneSubscription(req: Request, res: Response, next: NextFunction) {
     try {
-      // Date format: YYYY-MM-DD
-      const expiry = req.body.expiry ? new Date(req.body.expiry) : null;
       const toCreate: SubscriptionCreationAttributes = {
         ...req.body,
-        expiry: expiry,
       };
       const createdSubscription =
         await this.subscriptionService.createOneSubscription(toCreate);
@@ -75,12 +72,9 @@ export default class SubscriptionController {
       const id = parseInt(req.params.id);
       const oldSubscription =
         await this.subscriptionService.getOneSubscriptionById(id);
-      // Date format: YYYY-MM-DD
-      const updatedExpiry = req.body.expiry ? new Date(req.body.expiry) : null;
       const updatedAttributes = {
         ...oldSubscription,
         ...req.body,
-        expiry: updatedExpiry,
       };
       const updatedSubscription =
         await this.subscriptionService.updateOneSubscriptionById(
