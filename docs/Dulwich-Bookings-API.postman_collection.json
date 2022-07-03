@@ -173,7 +173,7 @@
                 {
                   "key": "file",
                   "type": "file",
-                  "src": "/Users/shenyicui/Desktop/test.csv"
+                  "src": "bulk-signup-test.csv"
                 }
               ]
             },
