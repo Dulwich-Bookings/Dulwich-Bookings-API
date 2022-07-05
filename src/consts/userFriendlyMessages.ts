@@ -55,6 +55,7 @@ export default {
     deleteUser: 'Error in deleting User(s).',
 
     sendEmail: 'Error in sending email.',
+    emailQuotaExceeded: 'Email quota has been reached for the day.',
 
     userNotExist: 'User does not exist.',
 
