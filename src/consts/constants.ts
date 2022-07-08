@@ -1,5 +1,6 @@
 import {Timezone} from '../types/timezone';
 import {Role} from '../models/User';
+import {WeekProfile} from '../models/Resource';
 
 export const timezone = {
   SHANGHAI: 'Asia/Shanghai' as Timezone,
@@ -12,4 +13,9 @@ export const role = {
   ADMIN: 'Admin' as Role,
   STUDENT: 'Student' as Role,
   TEACHER: 'Teacher' as Role,
+};
+
+export const weekProfile = {
+  WEEKLY: 'Weekly' as WeekProfile,
+  BIWEEKLY: 'BiWeekly' as WeekProfile,
 };
