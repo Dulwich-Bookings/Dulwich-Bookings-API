@@ -47,6 +47,7 @@ export default {
     createTag: 'Error in created Tag.',
     updateTag: 'Error in updated Tag.',
     deleteTag: 'Error in deleted Tag.',
+    invalidColour: 'Colour is not in hex colour code format.',
 
     getOneUser: 'Error in retrieving User.',
     getAllUsers: 'Error in retrieving Users.',
