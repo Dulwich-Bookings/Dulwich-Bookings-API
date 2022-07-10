@@ -558,7 +558,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": [11,12,13,14]\n}",
+              "raw": "{\n    \"id\": [12, 13, 14]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -591,7 +591,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"A113\",\n    \"description\": \"This is an intriguing room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\"],\n    \"inAdvance\": 3,\n    \"isBookingDescriptionOptional\": true,\n    \"schoolId\": 1\n}",
+              "raw": "{\n    \"name\": \"A113\",\n    \"description\": \"This is an intriguing room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\"],\n    \"inAdvance\": 3,\n    \"isBookingDescriptionOptional\": true,\n    \"schoolId\": 1,\n    \"weekProfile\": \"Weekly\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -657,7 +657,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"B113\",\n    \"description\": \"This is a boring room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"inAdvance\": 4\n}",
+              "raw": "{\n    \"name\": \"B113\",\n    \"description\": \"This is a boring room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"inAdvance\": 4,\n    \"weekProfile\": \"BiWeekly\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -931,6 +931,144 @@
         }
       ],
       "description": "For timezone attribute, refer to list [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)."
+    },
+    {
+      "name": "Bookmarks",
+      "item": [
+        {
+          "name": "Create Bookmark",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": 1,\n    \"resourceId\": 1,\n    \"subscriptionId\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/bookmark/",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", ""]
+            },
+            "description": "Expiry date format: YYYY-MM-DD"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Bookmarks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/bookmark/",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get One Bookmark By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/bookmark/3",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Self",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/bookmark/getSelf",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", "getSelf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update One Bookmark By Id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": 2,\n    \"resourceId\": null,\n    \"subscriptionId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/bookmark/3",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete One Bookmark By Id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/bookmark/3",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", "3"]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

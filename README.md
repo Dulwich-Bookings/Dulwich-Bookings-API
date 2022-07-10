@@ -9,9 +9,9 @@ The Backend repository for Dulwich Bookings hosted on Heroku. Built with NodeJS,
 
 ## Access Control Flow
 
-_CAA 220622 1800_
+_CAA 110722 1800_
 
-<img width="702" alt="Access control flow" src="https://user-images.githubusercontent.com/25262042/175012993-33334faa-35c1-488a-a34a-e27aa886ac73.png">
+<img width="702" alt="Access control flow" src="https://user-images.githubusercontent.com/25262042/178154678-c6e8301c-7ae8-419a-877f-deb4e19e9b27.png">
 
 ## Inital setup
 

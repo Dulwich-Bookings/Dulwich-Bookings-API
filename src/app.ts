@@ -36,6 +36,11 @@ import SchoolRepository from './repositories/SchoolRepository';
 import SchoolRouter from './routes/SchoolRoutes';
 import SchoolService from './services/SchoolService';
 
+import BookmarkController from './controllers/BookmarkController';
+import BookmarkRepository from './repositories/BookmarkRepository';
+import BookmarkRouter from './routes/BookmarkRoutes';
+import BookmarkService from './services/BookmarkService';
+
 import Container from './utils/container';
 
 export default class App {
@@ -82,6 +87,7 @@ export default class App {
     this.app.use('/resource', ResourceRouter());
     this.app.use('/subscription', SubscriptionRouter());
     this.app.use('/school', SchoolRouter());
+    this.app.use('/bookmark', BookmarkRouter());
   }
 
   public async initContainer() {
@@ -96,6 +102,7 @@ export default class App {
       'db',
     ]);
     container.register('SchoolRepository', SchoolRepository, ['db']);
+    container.register('BookmarkRepository', BookmarkRepository, ['db']);
 
     // services
     container.register('EmailService', EmailService, []);
@@ -108,6 +115,9 @@ export default class App {
       'SubscriptionRepository',
     ]);
     container.register('SchoolService', SchoolService, ['SchoolRepository']);
+    container.register('BookmarkService', BookmarkService, [
+      'BookmarkRepository',
+    ]);
 
     // controllers
     container.register('EmailController', EmailController, ['EmailService']);
@@ -124,6 +134,9 @@ export default class App {
       'SubscriptionService',
     ]);
     container.register('SchoolController', SchoolController, ['SchoolService']);
+    container.register('BookmarkController', BookmarkController, [
+      'BookmarkService',
+    ]);
 
     // middlewares
     container.register('AuthenticationMiddleware', AuthenticationMiddleware, [

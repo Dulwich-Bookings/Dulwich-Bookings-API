@@ -221,6 +221,13 @@ class User
     User.belongsTo(models.School, {
       foreignKey: 'schoolId',
     });
+    User.hasMany(models.Bookmark, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+    });
   }
 }
 

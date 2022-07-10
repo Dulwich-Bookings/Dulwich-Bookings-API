@@ -40,6 +40,12 @@ export default {
     getOneSchool: 'Successfully retrieved school.',
     updateSchool: 'Successfully updated school.',
     deleteSchool: 'Successfully deleted school.',
+
+    createBookmark: 'Successfully created bookmark.',
+    getAllBookmarks: 'Successfully retrieved bookmarks.',
+    getOneBookmark: 'Successfully retrieved bookmark.',
+    updateBookmark: 'Successfully updated bookmark.',
+    deleteBookmark: 'Successfully deleted bookmark.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -104,5 +110,12 @@ export default {
     deleteSchool: 'Error in deleting school.',
 
     invalidUTCString: 'UTC string is not in ISO 8061 UTC format.',
+
+    createBookmark: 'Error in creating bookmark.',
+    getAllBookmarks: 'Error in retrieving bookmarks.',
+    getOneBookmark: 'Error in retrieving bookmark.',
+    updateBookmark: 'Error in updating bookmark.',
+    deleteBookmark: 'Error in deleting bookmark.',
+    validateBookmarkXor: 'Bookmark must contain resource XOR subscription.',
   },
 };
