@@ -36,6 +36,11 @@ import SchoolRepository from './repositories/SchoolRepository';
 import SchoolRouter from './routes/SchoolRoutes';
 import SchoolService from './services/SchoolService';
 
+import RecentlyVisitedController from './controllers/RecentlyVisitedController';
+import RecentlyVisitedRepository from './repositories/RecentlyVisitedRepository';
+import RecentlyVisitedRouter from './routes/RecentlyVisitedRoutes';
+import RecentlyVisitedService from './services/RecentlyVisitedService';
+
 import Container from './utils/container';
 
 export default class App {
@@ -82,6 +87,7 @@ export default class App {
     this.app.use('/resource', ResourceRouter());
     this.app.use('/subscription', SubscriptionRouter());
     this.app.use('/school', SchoolRouter());
+    this.app.use('/recentlyVisited', RecentlyVisitedRouter());
   }
 
   public async initContainer() {
@@ -96,6 +102,9 @@ export default class App {
       'db',
     ]);
     container.register('SchoolRepository', SchoolRepository, ['db']);
+    container.register('RecentlyVisitedRepository', RecentlyVisitedRepository, [
+      'db',
+    ]);
 
     // services
     container.register('EmailService', EmailService, []);
@@ -108,6 +117,9 @@ export default class App {
       'SubscriptionRepository',
     ]);
     container.register('SchoolService', SchoolService, ['SchoolRepository']);
+    container.register('RecentlyVisitedService', RecentlyVisitedService, [
+      'RecentlyVisitedRepository',
+    ]);
 
     // controllers
     container.register('EmailController', EmailController, ['EmailService']);
@@ -124,6 +136,9 @@ export default class App {
       'SubscriptionService',
     ]);
     container.register('SchoolController', SchoolController, ['SchoolService']);
+    container.register('RecentlyVisitedController', RecentlyVisitedController, [
+      'RecentlyVisitedService',
+    ]);
 
     // middlewares
     container.register('AuthenticationMiddleware', AuthenticationMiddleware, [
