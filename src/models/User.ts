@@ -228,6 +228,13 @@ class User
         allowNull: false,
       },
     });
+    User.hasMany(models.RecentlyVisited, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+    });
   }
 }
 

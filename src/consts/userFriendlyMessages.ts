@@ -46,6 +46,17 @@ export default {
     getOneBookmark: 'Successfully retrieved bookmark.',
     updateBookmark: 'Successfully updated bookmark.',
     deleteBookmark: 'Successfully deleted bookmark.',
+
+    createRecentlyVisited:
+      'Successfully created recently visited resource/subscription.',
+    getAllRecentlyVisited:
+      'Successfully retrieved recently visited resources/subscriptions.',
+    getOneRecentlyVisited:
+      'Successfully retrieved recently visited resource/subscription.',
+    updateRecentlyVisited:
+      'Successfully updated recently visited resource/subscription.',
+    deleteRecentlyVisited:
+      'Successfully deleted recently visited resource/subscription.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -117,5 +128,18 @@ export default {
     updateBookmark: 'Error in updating bookmark.',
     deleteBookmark: 'Error in deleting bookmark.',
     validateBookmarkXor: 'Bookmark must contain resource XOR subscription.',
+
+    createRecentlyVisited:
+      'Error in creating recently visited resource/subscription.',
+    getAllRecentlyVisited:
+      'Error in retrieving recently visited resources/subscriptions.',
+    getOneRecentlyVisited:
+      'Error in retrieving recently visited resource/subscription.',
+    updateRecentlyVisited:
+      'Error in updating recently visited resource/subscription.',
+    deleteRecentlyVisited:
+      'Error in deleting recently visited resource/subscription.',
+    validateRecentlyVisitedXor:
+      'Recently visited must contain resource XOR subscription',
   },
 };

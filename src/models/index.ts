@@ -26,5 +26,6 @@ export {default as Resource} from './Resource';
 export {default as Subscription} from './Subscription';
 export {default as School} from './School';
 export {default as Bookmark} from './Bookmark';
+export {default as RecentlyVisited} from './RecentlyVisited';
 
 export default models;
