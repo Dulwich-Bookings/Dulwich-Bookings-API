@@ -931,6 +931,282 @@
         }
       ],
       "description": "For timezone attribute, refer to list [here](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)."
+    },
+    {
+      "name": "Bookmarks",
+      "item": [
+        {
+          "name": "Create Bookmark",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": 1,\n    \"resourceId\": 1,\n    \"subscriptionId\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/bookmark/",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", ""]
+            },
+            "description": "Expiry date format: YYYY-MM-DD"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Bookmarks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/bookmark/",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get One Bookmark By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/bookmark/3",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Self",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/bookmark/getSelf",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", "getSelf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update One Bookmark By Id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": 2,\n    \"resourceId\": null,\n    \"subscriptionId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/bookmark/3",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete One Bookmark By Id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/bookmark/3",
+              "host": ["{{hostname}}"],
+              "path": ["bookmark", "3"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Recently Visited",
+      "item": [
+        {
+          "name": "Create Recently Visited",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": 1,\n    \"resourceId\": 1,\n    \"subscriptionId\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/recentlyVisited/",
+              "host": ["{{hostname}}"],
+              "path": ["recentlyVisited", ""]
+            },
+            "description": "Expiry date format: YYYY-MM-DD"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Recently Visited",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/recentlyVisited/",
+              "host": ["{{hostname}}"],
+              "path": ["recentlyVisited", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get One Recently Visited By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/recentlyVisited/3",
+              "host": ["{{hostname}}"],
+              "path": ["recentlyVisited", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Self",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/recentlyVisited/getSelf",
+              "host": ["{{hostname}}"],
+              "path": ["recentlyVisited", "getSelf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update One Recently Visited By Id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": 2,\n    \"resourceId\": null,\n    \"subscriptionId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{hostname}}/recentlyVisited/3",
+              "host": ["{{hostname}}"],
+              "path": ["recentlyVisited", "3"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete One Bookmark By Id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hostname}}/recentlyVisited/3",
+              "host": ["{{hostname}}"],
+              "path": ["recentlyVisited", "3"]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
