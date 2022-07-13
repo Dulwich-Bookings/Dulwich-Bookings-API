@@ -13,7 +13,6 @@ _CAA 140722 0220_
 
 ![Screenshot 2022-07-14 at 2 18 27 AM](https://user-images.githubusercontent.com/29945147/178803572-569a7fe8-32f5-4b39-831f-3905bc438eb4.png)
 
-
 ## Inital setup
 
 **Prerequisites**

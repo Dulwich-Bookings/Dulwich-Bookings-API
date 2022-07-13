@@ -31,7 +31,7 @@ export default class SubscriptionController {
   async getAllSubscriptions(res: Response, next: NextFunction) {
     try {
       const subscriptions =
-        (await this.subscriptionService.getAllSubscription()) || [];
+        (await this.subscriptionService.getAllSubscriptions()) || [];
       res.json({
         message: userFriendlyMessages.success.getAllSubscriptions,
         data: subscriptions,

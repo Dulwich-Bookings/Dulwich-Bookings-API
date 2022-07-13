@@ -124,6 +124,13 @@ class Subscription
     Subscription.belongsTo(models.School, {
       foreignKey: 'schoolId',
     });
+    Subscription.hasMany(models.Bookmark, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+    });
     Subscription.hasMany(models.RecentlyVisited, {
       onDelete: 'CASCADE',
       foreignKey: {
