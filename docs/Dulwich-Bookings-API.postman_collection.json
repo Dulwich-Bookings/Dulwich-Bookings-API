@@ -558,7 +558,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": [11,12,13,14]\n}",
+              "raw": "{\n    \"id\": [12, 13, 14]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -591,7 +591,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"A113\",\n    \"description\": \"This is an intriguing room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\"],\n    \"inAdvance\": 3,\n    \"isBookingDescriptionOptional\": true,\n    \"schoolId\": 1\n}",
+              "raw": "{\n    \"name\": \"A113\",\n    \"description\": \"This is an intriguing room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\"],\n    \"inAdvance\": 3,\n    \"isBookingDescriptionOptional\": true,\n    \"schoolId\": 1,\n    \"weekProfile\": \"Weekly\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -657,7 +657,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"B113\",\n    \"description\": \"This is a boring room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"inAdvance\": 4\n}",
+              "raw": "{\n    \"name\": \"B113\",\n    \"description\": \"This is a boring room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"inAdvance\": 4,\n    \"weekProfile\": \"BiWeekly\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

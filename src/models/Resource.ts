@@ -2,6 +2,8 @@ import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
 import {Models} from '../types';
 import {Role} from './User';
 
+export type WeekProfile = 'Weekly' | 'BiWeekly';
+
 export interface ResourceAttributes {
   id: number;
   name: string;
@@ -11,6 +13,7 @@ export interface ResourceAttributes {
   inAdvance: number;
   isBookingDescriptionOptional: boolean;
   schoolId: number;
+  weekProfile: WeekProfile;
 }
 
 export type ResourceCreationAttributes = Optional<ResourceAttributes, 'id'>;
@@ -27,6 +30,7 @@ class Resource
   public inAdvance!: number;
   public isBookingDescriptionOptional!: boolean;
   public schoolId!: number;
+  public weekProfile!: WeekProfile;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -89,6 +93,13 @@ class Resource
         },
         schoolId: {
           type: DataTypes.INTEGER,
+          allowNull: false,
+          validate: {
+            notEmpty: true,
+          },
+        },
+        weekProfile: {
+          type: DataTypes.STRING(10),
           allowNull: false,
           validate: {
             notEmpty: true,
