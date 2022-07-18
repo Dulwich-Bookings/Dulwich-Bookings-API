@@ -58,11 +58,11 @@ export default {
     deleteRecentlyVisited:
       'Successfully deleted recently visited resource/subscription.',
 
-    createTagMap: 'Successfully created tag map.',
+    createTagMap: 'Successfully created tag map(s).',
     getAllTagMap: 'Successfully retrieved tag maps.',
     getOneTagMap: 'Successfully retrieved tag map.',
     updateTagMap: 'Successfully updated tag map.',
-    deleteTagMap: 'Successfully deleted tag map.',
+    deleteTagMap: 'Successfully deleted tag map(s).',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -148,11 +148,11 @@ export default {
     validateRecentlyVisitedXor:
       'Recently visited must contain resource XOR subscription',
 
-    createTagMap: 'Error in creating tag map.',
+    createTagMap: 'Error in creating tag map(s).',
     getAllTagMap: 'Error in retrieving tag maps.',
     getOneTagMap: 'Error in retrieving tag map.',
     updateTagMap: 'Error in updating tag map.',
-    deleteTagMap: 'Error in deleting tag map.',
+    deleteTagMap: 'Error in deleting tag map(s).',
     validateTagMapXor: 'Tag map must contain resource XOR subscription.',
   },
 };

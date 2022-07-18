@@ -24,7 +24,7 @@ export default class TagMapService {
     return (await this.tagMapRepository.bulkCreate(tagMaps)) as TagMap[];
   }
 
-  async bulkDeleteTagMap(tagMaps: DeleteOptions[]) {
+  async bulkDeleteTagMap(tagMaps: DeleteOptions) {
     return await this.tagMapRepository.bulkDelete(tagMaps);
   }
 

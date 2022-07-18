@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from 'express';
 import userFriendlyMessages from '../consts/userFriendlyMessages';
 import {TagMapCreationAttributes} from '../models/TagMap';
 import TagMapService from '../services/TagMapService';
+import {DeleteOptions} from '../services/UserService';
 
 export default class TagMapController {
   private tagMapService: TagMapService;
@@ -23,6 +24,42 @@ export default class TagMapController {
     } catch (e) {
       res.status(400);
       res.json({message: userFriendlyMessages.failure.createTagMap});
+      next(e);
+    }
+  }
+
+  async bulkCreateTagMap(req: Request, res: Response, next: NextFunction) {
+    try {
+      const newTagMaps: TagMapCreationAttributes[] = req.body;
+      const createdTagMaps = await this.tagMapService.bulkCreateTagMap(
+        newTagMaps
+      );
+      res.status(201);
+      res.json({
+        message: userFriendlyMessages.success.createTagMap,
+        data: createdTagMaps,
+      });
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.createTagMap});
+      next(e);
+    }
+  }
+
+  async bulkDeleteTagMap(req: Request, res: Response, next: NextFunction) {
+    try {
+      const {id} = req.body;
+      const deletionFilter: DeleteOptions = {id: id};
+      const deletedTagMaps = await this.tagMapService.bulkDeleteTagMap(
+        deletionFilter
+      );
+      res.json({
+        message: userFriendlyMessages.success.deleteTagMap,
+        data: deletedTagMaps,
+      });
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.deleteTagMap});
       next(e);
     }
   }

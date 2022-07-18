@@ -16,6 +16,12 @@ export default () => {
     authenticationMiddleware.authentication(req, res, next);
 
   tagMapRouter.post(
+    '/bulkCreate',
+    [auth, roleValidator(TEACHERS)],
+    tagMapController.bulkCreateTagMap.bind(tagMapController)
+  );
+
+  tagMapRouter.post(
     '/',
     [auth, roleValidator(TEACHERS)],
     tagMapController.createOneTagMap.bind(tagMapController)
@@ -32,6 +38,12 @@ export default () => {
     '/:id',
     [auth],
     tagMapController.getOneTagMapById.bind(tagMapController)
+  );
+
+  tagMapRouter.delete(
+    '/bulkDelete',
+    [auth, roleValidator(TEACHERS)],
+    tagMapController.bulkDeleteTagMap.bind(tagMapController)
   );
 
   tagMapRouter.delete(
