@@ -3,6 +3,7 @@ import TagMap, {
   TagMapCreationAttributes,
 } from '../models/TagMap';
 import TagMapRepository from '../repositories/TagMapRepository';
+import {DeleteOptions} from './UserService';
 
 export default class TagMapService {
   private tagMapRepository: TagMapRepository;
@@ -19,14 +20,16 @@ export default class TagMapService {
     return (await this.tagMapRepository.getAll()) as TagMap[];
   }
 
-  async getOneTagMapById(id: number) {
-    return (await this.tagMapRepository.getWithFilters({id}))[0] as TagMap;
+  async bulkCreateTagMap(tagMaps: TagMapCreationAttributes[]) {
+    return (await this.tagMapRepository.bulkCreate(tagMaps)) as TagMap[];
   }
 
-  async getTagMapsByUserId(userId: number) {
-    return (await this.tagMapRepository.getWithFilters({
-      userId,
-    })) as TagMap[];
+  async bulkDeleteTagMap(tagMaps: DeleteOptions[]) {
+    return await this.tagMapRepository.bulkDelete(tagMaps);
+  }
+
+  async getOneTagMapById(id: number) {
+    return (await this.tagMapRepository.getWithFilters({id}))[0] as TagMap;
   }
 
   async updateOneTagMapById(id: number, attrs: TagMapAttributes) {
