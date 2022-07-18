@@ -12,6 +12,7 @@ module.exports = {
       tagId: {
         allowNull: false,
         type: Sequelize.INTEGER,
+        unique: 'uniqueTagMap',
         references: {
           model: 'tag',
           key: 'id',
@@ -21,6 +22,7 @@ module.exports = {
       resourceId: {
         allowNull: true,
         type: Sequelize.INTEGER,
+        unique: 'uniqueTagMap',
         references: {
           model: 'resources',
           key: 'id',
@@ -30,6 +32,7 @@ module.exports = {
       subscriptionId: {
         allowNull: true,
         type: Sequelize.INTEGER,
+        unique: 'uniqueTagMap',
         references: {
           model: 'subscriptions',
           key: 'id',
@@ -44,6 +47,18 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+    });
+
+    await queryInterface.addConstraint('tag_map', {
+      fields: ['tagId', 'resourceId'],
+      type: 'unique',
+      name: 'unique_tag_map_resource',
+    });
+
+    await queryInterface.addConstraint('tag_map', {
+      fields: ['tagId', 'subscriptionId'],
+      type: 'unique',
+      name: 'unique_tag_map_subscription',
     });
   },
   async down(queryInterface) {
