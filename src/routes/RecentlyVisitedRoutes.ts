@@ -3,7 +3,6 @@ import express, {Request, Response, NextFunction} from 'express';
 import RecentlyVisitedController from '../controllers/RecentlyVisitedController';
 import Container from '../utils/container';
 import AuthenticationMiddleware from '../middlewares/authentication';
-import roleValidator, {ADMINS} from '../middlewares/authorization';
 
 export default () => {
   const recentlyVisitedRouter = express.Router();
@@ -46,8 +45,7 @@ export default () => {
 
   recentlyVisitedRouter.put(
     '/:id',
-    // add middleware
-    [auth, roleValidator(ADMINS)],
+    [auth],
     recentlyVisitedController.updateOneRecentlyVisitedById.bind(
       recentlyVisitedController
     )
@@ -55,8 +53,7 @@ export default () => {
 
   recentlyVisitedRouter.delete(
     '/:id',
-    // add middleware
-    [auth, roleValidator(ADMINS)],
+    [auth],
     recentlyVisitedController.deleteOneRecentlyVisitedById.bind(
       recentlyVisitedController
     )

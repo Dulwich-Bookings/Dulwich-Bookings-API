@@ -3,7 +3,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import SubscriptionController from '../controllers/SubscriptionController';
 import Container from '../utils/container';
 import AuthenticationMiddleware from '../middlewares/authentication';
-import roleValidator, {ADMINS} from '../middlewares/authorization';
+import roleValidator, {ADMINS, TEACHERS} from '../middlewares/authorization';
 
 export default () => {
   const subscriptionRouter = express.Router();
@@ -17,7 +17,7 @@ export default () => {
 
   subscriptionRouter.post(
     '/',
-    [auth],
+    [auth, roleValidator(TEACHERS)],
     subscriptionController.createOneSubscription.bind(subscriptionController)
   );
 

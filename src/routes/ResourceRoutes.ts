@@ -3,7 +3,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import ResourceController from '../controllers/ResourceController';
 import Container from '../utils/container';
 import AuthenticationMiddleware from '../middlewares/authentication';
-import roleValidator, {ADMINS} from '../middlewares/authorization';
+import roleValidator, {ADMINS, TEACHERS} from '../middlewares/authorization';
 
 export default () => {
   const resourceRouter = express.Router();
@@ -17,7 +17,7 @@ export default () => {
 
   resourceRouter.post(
     '/',
-    [auth],
+    [auth, roleValidator(TEACHERS)],
     resourceController.createOneResource.bind(resourceController)
   );
 
@@ -36,12 +36,14 @@ export default () => {
 
   resourceRouter.put(
     '/:id',
+    // add middleware
     [auth, roleValidator(ADMINS)],
     resourceController.updateOneResourceById.bind(resourceController)
   );
 
   resourceRouter.delete(
     '/:id',
+    // add middleware
     [auth, roleValidator(ADMINS)],
     resourceController.deleteOneResourceById.bind(resourceController)
   );

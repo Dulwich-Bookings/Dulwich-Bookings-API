@@ -3,7 +3,6 @@ import express, {Request, Response, NextFunction} from 'express';
 import BookmarkController from '../controllers/BookmarkController';
 import Container from '../utils/container';
 import AuthenticationMiddleware from '../middlewares/authentication';
-import roleValidator, {ADMINS} from '../middlewares/authorization';
 
 export default () => {
   const bookmarkRouter = express.Router();
@@ -42,15 +41,13 @@ export default () => {
 
   bookmarkRouter.put(
     '/:id',
-    // add middleware
-    [auth, roleValidator(ADMINS)],
+    [auth],
     bookmarkController.updateOneBookmarkById.bind(bookmarkController)
   );
 
   bookmarkRouter.delete(
     '/:id',
-    // add middleware
-    [auth, roleValidator(ADMINS)],
+    [auth],
     bookmarkController.deleteOneBookmarkById.bind(bookmarkController)
   );
 
