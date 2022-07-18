@@ -56,29 +56,6 @@ export default class TagMapController {
     }
   }
 
-  async updateOneTagMapById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const id = parseInt(req.params.id);
-      const oldTagMap = await this.tagMapService.getOneTagMapById(id);
-      const updatedAttributes = {
-        ...oldTagMap,
-        ...req.body,
-      };
-      const updatedTagMap = await this.tagMapService.updateOneTagMapById(
-        id,
-        updatedAttributes
-      );
-      res.json({
-        message: userFriendlyMessages.success.updateTagMap,
-        data: updatedTagMap,
-      });
-    } catch (e) {
-      res.status(400);
-      res.json({message: userFriendlyMessages.failure.updateTagMap});
-      next(e);
-    }
-  }
-
   async deleteOneTagMapById(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseInt(req.params.id);

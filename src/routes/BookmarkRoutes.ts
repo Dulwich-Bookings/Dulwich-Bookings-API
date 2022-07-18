@@ -39,12 +39,6 @@ export default () => {
     bookmarkController.getOneBookmarkById.bind(bookmarkController)
   );
 
-  bookmarkRouter.put(
-    '/:id',
-    [auth],
-    bookmarkController.updateOneBookmarkById.bind(bookmarkController)
-  );
-
   bookmarkRouter.delete(
     '/:id',
     [auth],

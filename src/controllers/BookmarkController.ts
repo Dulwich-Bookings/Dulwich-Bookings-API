@@ -33,8 +33,10 @@ export default class BookmarkController {
 
   async createOneBookmark(req: Request, res: Response, next: NextFunction) {
     try {
+      const userId = req.user.id;
       const toCreate: BookmarkCreationAttributes = {
         ...req.body,
+        userId: userId,
       };
       const createdBookmark = await this.bookmarkService.createOneBookmark(
         toCreate
@@ -76,29 +78,6 @@ export default class BookmarkController {
     } catch (e) {
       res.status(400);
       res.json({message: userFriendlyMessages.failure.getOneBookmark});
-      next(e);
-    }
-  }
-
-  async updateOneBookmarkById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const id = parseInt(req.params.id);
-      const oldBookmark = await this.bookmarkService.getOneBookmarkById(id);
-      const updatedAttributes = {
-        ...oldBookmark,
-        ...req.body,
-      };
-      const updatedBookmark = await this.bookmarkService.updateOneBookmarkById(
-        id,
-        updatedAttributes
-      );
-      res.json({
-        message: userFriendlyMessages.success.updateBookmark,
-        data: updatedBookmark,
-      });
-    } catch (e) {
-      res.status(400);
-      res.json({message: userFriendlyMessages.failure.updateBookmark});
       next(e);
     }
   }

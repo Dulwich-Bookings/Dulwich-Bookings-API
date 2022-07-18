@@ -34,12 +34,6 @@ export default () => {
     tagMapController.getOneTagMapById.bind(tagMapController)
   );
 
-  tagMapRouter.put(
-    '/:id',
-    [auth, roleValidator(TEACHERS)],
-    tagMapController.updateOneTagMapById.bind(tagMapController)
-  );
-
   tagMapRouter.delete(
     '/:id',
     [auth, roleValidator(TEACHERS)],

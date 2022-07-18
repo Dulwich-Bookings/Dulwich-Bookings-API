@@ -56,6 +56,7 @@ export default class RecentlyVisitedController {
 
       const toCreate: RecentlyVisitedCreationAttributes = {
         ...req.body,
+        userId: userId,
       };
       const createdRecentlyVisited =
         await this.recentlyVisitedService.createOneRecentlyVisited(toCreate);
@@ -102,35 +103,6 @@ export default class RecentlyVisitedController {
     } catch (e) {
       res.status(400);
       res.json({message: userFriendlyMessages.failure.getOneRecentlyVisited});
-      next(e);
-    }
-  }
-
-  async updateOneRecentlyVisitedById(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const id = parseInt(req.params.id);
-      const oldRecentlyVisited =
-        await this.recentlyVisitedService.getOneRecentlyVisitedById(id);
-      const updatedAttributes = {
-        ...oldRecentlyVisited,
-        ...req.body,
-      };
-      const updatedRecentlyVisited =
-        await this.recentlyVisitedService.updateOneRecentlyVisitedById(
-          id,
-          updatedAttributes
-        );
-      res.json({
-        message: userFriendlyMessages.success.updateRecentlyVisited,
-        data: updatedRecentlyVisited,
-      });
-    } catch (e) {
-      res.status(400);
-      res.json({message: userFriendlyMessages.failure.updateRecentlyVisited});
       next(e);
     }
   }

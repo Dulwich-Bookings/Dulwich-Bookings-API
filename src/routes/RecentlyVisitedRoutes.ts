@@ -43,14 +43,6 @@ export default () => {
     )
   );
 
-  recentlyVisitedRouter.put(
-    '/:id',
-    [auth],
-    recentlyVisitedController.updateOneRecentlyVisitedById.bind(
-      recentlyVisitedController
-    )
-  );
-
   recentlyVisitedRouter.delete(
     '/:id',
     [auth],
