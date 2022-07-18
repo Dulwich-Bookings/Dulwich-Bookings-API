@@ -62,6 +62,11 @@ module.exports = {
     });
   },
   async down(queryInterface) {
+    await queryInterface.removeConstraint('tag_map', 'unique_tag_map_resource');
+    await queryInterface.removeConstraint(
+      'tag_map',
+      'unique_tag_map_subscription'
+    );
     await queryInterface.dropTable('tag_map');
   },
 };
