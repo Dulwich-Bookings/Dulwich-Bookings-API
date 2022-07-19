@@ -120,14 +120,14 @@ class Resource
     Resource.hasMany(models.Bookmark, {
       onDelete: 'CASCADE',
       foreignKey: {
-        name: 'userId',
+        name: 'resourceId',
         allowNull: false,
       },
     });
     Resource.hasMany(models.RecentlyVisited, {
       onDelete: 'CASCADE',
       foreignKey: {
-        name: 'userId',
+        name: 'resourceId',
         allowNull: false,
       },
     });
