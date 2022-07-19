@@ -46,6 +46,11 @@ import RecentlyVisitedRepository from './repositories/RecentlyVisitedRepository'
 import RecentlyVisitedRouter from './routes/RecentlyVisitedRoutes';
 import RecentlyVisitedService from './services/RecentlyVisitedService';
 
+import TagMapController from './controllers/TagMapController';
+import TagMapRepository from './repositories/TagMapRepository';
+import TagMapRouter from './routes/TagMapRoutes';
+import TagMapService from './services/TagMapService';
+
 import Container from './utils/container';
 
 export default class App {
@@ -94,6 +99,7 @@ export default class App {
     this.app.use('/school', SchoolRouter());
     this.app.use('/bookmark', BookmarkRouter());
     this.app.use('/recentlyVisited', RecentlyVisitedRouter());
+    this.app.use('/tagMap', TagMapRouter());
   }
 
   public async initContainer() {
@@ -112,6 +118,7 @@ export default class App {
     container.register('RecentlyVisitedRepository', RecentlyVisitedRepository, [
       'db',
     ]);
+    container.register('TagMapRepository', TagMapRepository, ['db']);
 
     // services
     container.register('EmailService', EmailService, []);
@@ -130,6 +137,7 @@ export default class App {
     container.register('RecentlyVisitedService', RecentlyVisitedService, [
       'RecentlyVisitedRepository',
     ]);
+    container.register('TagMapService', TagMapService, ['TagMapRepository']);
 
     // controllers
     container.register('EmailController', EmailController, ['EmailService']);
@@ -152,6 +160,7 @@ export default class App {
     container.register('RecentlyVisitedController', RecentlyVisitedController, [
       'RecentlyVisitedService',
     ]);
+    container.register('TagMapController', TagMapController, ['TagMapService']);
 
     // middlewares
     container.register('AuthenticationMiddleware', AuthenticationMiddleware, [

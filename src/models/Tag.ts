@@ -1,4 +1,5 @@
 import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
+import {Models} from '../types';
 import userFriendlyMessages from '../consts/userFriendlyMessages';
 
 export interface TagAttributes {
@@ -76,6 +77,16 @@ class Tag
         },
       }
     );
+  }
+
+  public static associate(models: Models) {
+    Tag.hasMany(models.TagMap, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'tagId',
+        allowNull: false,
+      },
+    });
   }
 }
 

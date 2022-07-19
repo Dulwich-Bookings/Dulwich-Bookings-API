@@ -127,14 +127,21 @@ class Subscription
     Subscription.hasMany(models.Bookmark, {
       onDelete: 'CASCADE',
       foreignKey: {
-        name: 'userId',
+        name: 'subscriptionId',
         allowNull: false,
       },
     });
     Subscription.hasMany(models.RecentlyVisited, {
       onDelete: 'CASCADE',
       foreignKey: {
-        name: 'userId',
+        name: 'subscriptionId',
+        allowNull: false,
+      },
+    });
+    Subscription.hasMany(models.TagMap, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'tagId',
         allowNull: false,
       },
     });
