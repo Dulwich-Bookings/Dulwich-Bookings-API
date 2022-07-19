@@ -63,6 +63,12 @@ export default {
     getOneTagMap: 'Successfully retrieved tag map.',
     updateTagMap: 'Successfully updated tag map.',
     deleteTagMap: 'Successfully deleted tag map(s).',
+
+    createResourceMap: 'Successfully created resource map(s).',
+    getAllResourceMap: 'Successfully retrieved resource maps.',
+    getOneResourceMap: 'Successfully retrieved resource map.',
+    updateResourceMap: 'Successfully updated resource map.',
+    deleteResourceMap: 'Successfully deleted resource map(s).',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -155,6 +161,11 @@ export default {
     deleteTagMap: 'Error in deleting tag map(s).',
     validateTagMapXor: 'Tag map must contain resource XOR subscription.',
 
+    createResourceMap: 'Error in creating resource map(s).',
+    getAllResourceMap: 'Error in retrieving resource maps.',
+    getOneResourceMap: 'Error in retrieving resource map.',
+    updateResourceMap: 'Error in updating resource map.',
+    deleteResourceMap: 'Error in deleting resource map(s).',
     validateResourceMapXor:
       'Resource map must contain resource XOR subscription.',
   },
