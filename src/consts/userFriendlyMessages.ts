@@ -154,5 +154,8 @@ export default {
     updateTagMap: 'Error in updating tag map.',
     deleteTagMap: 'Error in deleting tag map(s).',
     validateTagMapXor: 'Tag map must contain resource XOR subscription.',
+
+    validateResourceMapXor:
+      'Resource map must contain resource XOR subscription.',
   },
 };
