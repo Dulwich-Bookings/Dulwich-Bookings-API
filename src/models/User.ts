@@ -235,6 +235,13 @@ class User
         allowNull: false,
       },
     });
+    User.hasMany(models.ResourceMap, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+    });
   }
 }
 

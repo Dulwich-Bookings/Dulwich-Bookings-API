@@ -1000,6 +1000,206 @@
 			]
 		},
 		{
+			"name": "ResourceMap",
+			"item": [
+				{
+					"name": "Create ResourceMap",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 3,\n    \"resourceId\": 1,\n    \"subscriptionId\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/resourceMap/",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"resourceMap",
+								""
+							]
+						},
+						"description": "Expiry date format: YYYY-MM-DD"
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk Create ResourceMap",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"userId\": 1,\n        \"resourceId\": 1,\n        \"subscriptionId:\": null\n    },\n    {\n        \"userId\": 1,\n        \"resourceId\": 2,\n        \"subscriptionId:\": null\n    },\n    {\n        \"userId\": 1,\n        \"resourceId\": null,\n        \"subscriptionId:\": 1\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/resourceMap/bulkCreate",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"resourceMap",
+								"bulkCreate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Self",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/resourceMap/getSelf",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"resourceMap",
+								"getSelf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All ResourceMap",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/resourceMap",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"resourceMap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One ResourceMap By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/resourceMap/1",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"resourceMap",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete One ResourceMap By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/resourceMap/13",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"resourceMap",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk Delete ResourceMap",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": [1, 2, 3]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/resourceMap/bulkDelete",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"resourceMap",
+								"bulkDelete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Subscriptions",
 			"item": [
 				{

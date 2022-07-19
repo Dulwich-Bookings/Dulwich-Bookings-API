@@ -138,6 +138,13 @@ class Resource
         allowNull: false,
       },
     });
+    Resource.hasMany(models.ResourceMap, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'resourceId',
+        allowNull: false,
+      },
+    });
   }
 }
 
