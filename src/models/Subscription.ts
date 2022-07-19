@@ -138,6 +138,13 @@ class Subscription
         allowNull: false,
       },
     });
+    Subscription.hasMany(models.TagMap, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'tagId',
+        allowNull: false,
+      },
+    });
   }
 }
 

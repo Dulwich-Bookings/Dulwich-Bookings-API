@@ -131,6 +131,13 @@ class Resource
         allowNull: false,
       },
     });
+    Resource.hasMany(models.TagMap, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'tagId',
+        allowNull: false,
+      },
+    });
   }
 }
 
