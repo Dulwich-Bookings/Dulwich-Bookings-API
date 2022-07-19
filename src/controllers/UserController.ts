@@ -11,12 +11,6 @@ export default class UserController {
   async getSelf(req: Request, res: Response, next: NextFunction) {
     try {
       const {user} = req;
-      if (!user) {
-        res
-          .status(400)
-          .send({message: userFriendlyMessage.failure.userNotExist});
-        return;
-      }
       res.json({message: userFriendlyMessage.success.getOneUser, data: user});
     } catch (e) {
       next(e);

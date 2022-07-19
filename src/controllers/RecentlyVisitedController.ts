@@ -12,12 +12,6 @@ export default class RecentlyVisitedController {
   async getSelf(req: Request, res: Response, next: NextFunction) {
     try {
       const {user} = req;
-      if (!user) {
-        res
-          .status(400)
-          .send({message: userFriendlyMessages.failure.userNotExist});
-        return;
-      }
       const userId = user.id;
       const selfRecentlyVisited =
         await this.recentlyVisitedService.getRecentlyVisitedsByUserId(userId);
