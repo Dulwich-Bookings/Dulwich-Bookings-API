@@ -145,6 +145,13 @@ class Subscription
         allowNull: false,
       },
     });
+    Subscription.hasMany(models.ResourceMap, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'subscriptionId',
+        allowNull: false,
+      },
+    });
   }
 }
 
