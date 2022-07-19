@@ -20,12 +20,6 @@ export default class UserController {
   async updateSelf(req: Request, res: Response, next: NextFunction) {
     try {
       const {user} = req;
-      if (!user) {
-        res
-          .status(400)
-          .send({message: userFriendlyMessage.failure.userNotExist});
-        return;
-      }
       const id = user.id;
       const updatedAttributes = {...user, ...req.body};
       delete updatedAttributes['password'];
