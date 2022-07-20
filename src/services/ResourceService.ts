@@ -4,6 +4,7 @@ import {
 } from '../models/Resource';
 import ResourceRepository from '../repositories/ResourceRepository';
 import Resource from '../models/Resource';
+import {TransactionOptions} from '../repositories/BaseRepository';
 
 export default class ResourceService {
   private resourceRepository: ResourceRepository;
@@ -12,8 +13,14 @@ export default class ResourceService {
     this.resourceRepository = resourceRepository;
   }
 
-  async createOneResource(resource: ResourceCreationAttributes) {
-    return (await this.resourceRepository.createOne(resource)) as Resource;
+  async createOneResource(
+    resource: ResourceCreationAttributes,
+    options?: TransactionOptions
+  ) {
+    return (await this.resourceRepository.createOne(
+      resource,
+      options
+    )) as Resource;
   }
 
   async getAllResources() {
@@ -24,11 +31,19 @@ export default class ResourceService {
     return (await this.resourceRepository.getWithFilters({id}))[0] as Resource;
   }
 
-  async updateOneResourceById(id: number, attrs: ResourceAttributes) {
-    return (await this.resourceRepository.updateOne(attrs, {id})) as Resource;
+  async updateOneResourceById(
+    id: number,
+    attrs: ResourceAttributes,
+    options?: TransactionOptions
+  ) {
+    return (await this.resourceRepository.updateOne(
+      attrs,
+      {id},
+      options
+    )) as Resource;
   }
 
-  async deleteOneResourceById(id: number) {
-    return this.resourceRepository.deleteOne({id});
+  async deleteOneResourceById(id: number, options?: TransactionOptions) {
+    return this.resourceRepository.deleteOne({id}, options);
   }
 }
