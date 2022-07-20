@@ -17,7 +17,7 @@ export default class BaseRepository {
   }
 
   async getAll(options?: TransactionOptions) {
-    return this.model.findAll();
+    return this.model.findAll({...options});
   }
 
   async getAllWithExclude(exclude: string[]) {
