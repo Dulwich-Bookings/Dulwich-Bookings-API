@@ -159,6 +159,8 @@ export default class App {
     ]);
     container.register('ResourceController', ResourceController, [
       'ResourceService',
+      'ResourceMapService',
+      'TagMapService',
     ]);
     container.register('SubscriptionController', SubscriptionController, [
       'SubscriptionService',
