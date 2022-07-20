@@ -23,8 +23,8 @@ export default class ResourceMapService {
     )) as ResourceMap;
   }
 
-  async getAllResourceMaps() {
-    return (await this.resourceMapRepository.getAll()) as ResourceMap[];
+  async getAllResourceMaps(options?: TransactionOptions) {
+    return (await this.resourceMapRepository.getAll(options)) as ResourceMap[];
   }
 
   async bulkCreateResourceMap(

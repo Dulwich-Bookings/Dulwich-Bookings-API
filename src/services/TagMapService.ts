@@ -20,8 +20,8 @@ export default class TagMapService {
     return (await this.tagMapRepository.createOne(tagMap, options)) as TagMap;
   }
 
-  async getAllTagMaps() {
-    return (await this.tagMapRepository.getAll()) as TagMap[];
+  async getAllTagMaps(options?: TransactionOptions) {
+    return (await this.tagMapRepository.getAll(options)) as TagMap[];
   }
 
   async bulkCreateTagMap(

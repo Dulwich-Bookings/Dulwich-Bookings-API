@@ -16,7 +16,7 @@ export default class BaseRepository {
     this.model = model;
   }
 
-  async getAll() {
+  async getAll(options?: TransactionOptions) {
     return this.model.findAll();
   }
 
