@@ -159,9 +159,13 @@ export default class App {
     ]);
     container.register('ResourceController', ResourceController, [
       'ResourceService',
+      'TagMapService',
+      'ResourceMapService',
     ]);
     container.register('SubscriptionController', SubscriptionController, [
       'SubscriptionService',
+      'TagMapService',
+      'ResourceMapService',
     ]);
     container.register('SchoolController', SchoolController, ['SchoolService']);
     container.register('BookmarkController', BookmarkController, [

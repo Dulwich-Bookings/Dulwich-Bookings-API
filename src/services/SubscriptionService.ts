@@ -4,6 +4,7 @@ import {
 } from '../models/Subscription';
 import SubscriptionRepository from '../repositories/SubscriptionRepository';
 import Subscription from '../models/Subscription';
+import {TransactionOptions} from '../repositories/BaseRepository';
 
 export default class SubscriptionService {
   private subscriptionRepository: SubscriptionRepository;
@@ -12,9 +13,13 @@ export default class SubscriptionService {
     this.subscriptionRepository = subscriptionRepository;
   }
 
-  async createOneSubscription(subscription: SubscriptionCreationAttributes) {
+  async createOneSubscription(
+    subscription: SubscriptionCreationAttributes,
+    options?: TransactionOptions
+  ) {
     return (await this.subscriptionRepository.createOne(
-      subscription
+      subscription,
+      options
     )) as Subscription;
   }
 
@@ -28,13 +33,21 @@ export default class SubscriptionService {
     )[0] as Subscription;
   }
 
-  async updateOneSubscriptionById(id: number, attrs: SubscriptionAttributes) {
-    return (await this.subscriptionRepository.updateOne(attrs, {
-      id,
-    })) as Subscription;
+  async updateOneSubscriptionById(
+    id: number,
+    attrs: SubscriptionAttributes,
+    options?: TransactionOptions
+  ) {
+    return (await this.subscriptionRepository.updateOne(
+      attrs,
+      {
+        id,
+      },
+      options
+    )) as Subscription;
   }
 
-  async deleteOneSubscriptionById(id: number) {
-    return this.subscriptionRepository.deleteOne({id});
+  async deleteOneSubscriptionById(id: number, options?: TransactionOptions) {
+    return this.subscriptionRepository.deleteOne({id}, options);
   }
 }

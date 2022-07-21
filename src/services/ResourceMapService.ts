@@ -4,6 +4,7 @@ import ResourceMap, {
 } from '../models/ResourceMap';
 import ResourceMapRepository from '../repositories/ResourceMapRepository';
 import {DeleteOptions} from './UserService';
+import {TransactionOptions} from '../repositories/BaseRepository';
 
 export default class ResourceMapService {
   private resourceMapRepository: ResourceMapRepository;
@@ -12,24 +13,35 @@ export default class ResourceMapService {
     this.resourceMapRepository = resourceMapRepository;
   }
 
-  async createOneResourceMap(resourceMap: ResourceMapCreationAttributes) {
+  async createOneResourceMap(
+    resourceMap: ResourceMapCreationAttributes,
+    options?: TransactionOptions
+  ) {
     return (await this.resourceMapRepository.createOne(
-      resourceMap
+      resourceMap,
+      options
     )) as ResourceMap;
   }
 
-  async getAllResourceMaps() {
-    return (await this.resourceMapRepository.getAll()) as ResourceMap[];
+  async getAllResourceMaps(options?: TransactionOptions) {
+    return (await this.resourceMapRepository.getAll(options)) as ResourceMap[];
   }
 
-  async bulkCreateResourceMap(resourceMaps: ResourceMapCreationAttributes[]) {
+  async bulkCreateResourceMap(
+    resourceMaps: ResourceMapCreationAttributes[],
+    options?: TransactionOptions
+  ) {
     return (await this.resourceMapRepository.bulkCreate(
-      resourceMaps
+      resourceMaps,
+      options
     )) as ResourceMap[];
   }
 
-  async bulkDeleteResourceMap(resourceMaps: DeleteOptions) {
-    return await this.resourceMapRepository.bulkDelete(resourceMaps);
+  async bulkDeleteResourceMap(
+    resourceMaps: DeleteOptions,
+    options?: TransactionOptions
+  ) {
+    return await this.resourceMapRepository.bulkDelete(resourceMaps, options);
   }
 
   async getOneResourceMapById(id: number) {
@@ -44,13 +56,21 @@ export default class ResourceMapService {
     })) as ResourceMap[];
   }
 
-  async updateOneResourceMapById(id: number, attrs: ResourceMapAttributes) {
-    return (await this.resourceMapRepository.updateOne(attrs, {
-      id,
-    })) as ResourceMap;
+  async updateOneResourceMapById(
+    id: number,
+    attrs: ResourceMapAttributes,
+    options?: TransactionOptions
+  ) {
+    return (await this.resourceMapRepository.updateOne(
+      attrs,
+      {
+        id,
+      },
+      options
+    )) as ResourceMap;
   }
 
-  async deleteOneResourceMapById(id: number) {
-    return this.resourceMapRepository.deleteOne({id});
+  async deleteOneResourceMapById(id: number, options?: TransactionOptions) {
+    return this.resourceMapRepository.deleteOne({id}, options);
   }
 }

@@ -4,6 +4,7 @@ import {
 } from '../models/Bookmark';
 import BookmarkRepository from '../repositories/BookmarkRepository';
 import Bookmark from '../models/Bookmark';
+import {TransactionOptions} from '../repositories/BaseRepository';
 
 export default class BookmarkService {
   private bookmarkRepository: BookmarkRepository;
@@ -12,8 +13,14 @@ export default class BookmarkService {
     this.bookmarkRepository = bookmarkRepository;
   }
 
-  async createOneBookmark(bookmark: BookmarkCreationAttributes) {
-    return (await this.bookmarkRepository.createOne(bookmark)) as Bookmark;
+  async createOneBookmark(
+    bookmark: BookmarkCreationAttributes,
+    options?: TransactionOptions
+  ) {
+    return (await this.bookmarkRepository.createOne(
+      bookmark,
+      options
+    )) as Bookmark;
   }
 
   async getAllBookmarks() {
@@ -30,13 +37,21 @@ export default class BookmarkService {
     })) as Bookmark[];
   }
 
-  async updateOneBookmarkById(id: number, attrs: BookmarkAttributes) {
-    return (await this.bookmarkRepository.updateOne(attrs, {
-      id,
-    })) as Bookmark;
+  async updateOneBookmarkById(
+    id: number,
+    attrs: BookmarkAttributes,
+    options?: TransactionOptions
+  ) {
+    return (await this.bookmarkRepository.updateOne(
+      attrs,
+      {
+        id,
+      },
+      options
+    )) as Bookmark;
   }
 
-  async deleteOneBookmarkById(id: number) {
-    return this.bookmarkRepository.deleteOne({id});
+  async deleteOneBookmarkById(id: number, options?: TransactionOptions) {
+    return this.bookmarkRepository.deleteOne({id}, options);
   }
 }
