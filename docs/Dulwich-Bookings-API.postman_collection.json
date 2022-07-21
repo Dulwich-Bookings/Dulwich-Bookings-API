@@ -498,7 +498,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"tagId\": 1,\n    \"resourceId\": 2,\n    \"subscriptionId\": null\n}",
+							"raw": "{\n    \"tagId\": 4,\n    \"resourceId\": 1,\n    \"subscriptionId\": null\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -872,7 +872,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"A113\",\n    \"description\": \"This is an intriguing room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\"],\n    \"inAdvance\": 3,\n    \"isBookingDescriptionOptional\": true,\n    \"schoolId\": 1,\n    \"weekProfile\": \"Weekly\"\n}",
+							"raw": "{\n    \"resource\": {\n        \"name\": \"A113\",\n        \"description\": \"This is an intriguing room.\",\n        \"accessRights\": [\"Admin\", \"Teacher\"],\n        \"bookingRights\": [\"Admin\", \"Teacher\"],\n        \"inAdvance\": 3,\n        \"isBookingDescriptionOptional\": true,\n        \"weekProfile\": \"Weekly\"\n    },\n    \"tags\": [1, 2, 3],\n    \"users\": [1, 2, 3]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -953,7 +953,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"B113\",\n    \"description\": \"This is a boring room.\",\n    \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"bookingRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"inAdvance\": 4,\n    \"weekProfile\": \"BiWeekly\"\n}",
+							"raw": "{\n    \"resource\": {\n        \"name\": \"B113\",\n        \"description\": \"This is a boring room.\",\n        \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n        \"bookingRights\": [\"Admin\", \"Teacher\", \"Student\"],\n        \"inAdvance\": 4,\n        \"weekProfile\": \"BiWeekly\"\n    },\n    \"tags\": [1, 3],\n    \"users\": [1, 4]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -961,13 +961,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/resource/3",
+							"raw": "{{hostname}}/resource/26",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
 								"resource",
-								"3"
+								"26"
 							]
 						}
 					},
@@ -985,13 +985,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{hostname}}/resource/1",
+							"raw": "{{hostname}}/resource/25",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
 								"resource",
-								"1"
+								"25"
 							]
 						}
 					},
@@ -1105,12 +1105,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{hostname}}/resourceMap",
+							"raw": "{{hostname}}/resourceMap/",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
-								"resourceMap"
+								"resourceMap",
+								""
 							]
 						}
 					},
@@ -1215,7 +1216,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Adobe Photoshop\",\n    \"description\": \"For photo editing\",\n    \"accessRights\": [\"Admin\", \"Teacher\"],\n    \"credentials\": \"test123\",\n    \"expiry\": \"2016-05-03T00:00:00.000Z\",\n    \"remindMe\": true,\n    \"schoolId\": 2\n}",
+							"raw": "{\n    \"subscription\":{\n        \"name\": \"Adobe Photoshop\",\n        \"description\": \"For photo editing\",\n        \"accessRights\": [\"Admin\", \"Teacher\"],\n        \"credentials\": \"test123\",\n        \"expiry\": \"2016-05-03T00:00:00.000Z\",\n        \"remindMe\": true\n    },\n    \"tags\": [1, 2],\n    \"users\": [1, 2]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1297,7 +1298,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Microsoft Office\",\n    \"description\": \"For coding!\",\n    \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n    \"credentials\": \"321test\",\n    \"expiry\": null,\n    \"remindMe\": false,\n    \"schoolId\": 1\n}",
+							"raw": "{\n    \"subscription\": {\n        \"name\": \"Microsoft Office\",\n        \"description\": \"For coding!\",\n        \"accessRights\": [\"Admin\", \"Teacher\", \"Student\"],\n        \"credentials\": \"321test\",\n        \"expiry\": null,\n        \"remindMe\": false\n    },\n    \"tags\": [1, 3],\n    \"users\": [1, 3]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1329,13 +1330,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{hostname}}/subscription/3",
+							"raw": "{{hostname}}/subscription/4",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
 								"subscription",
-								"3"
+								"4"
 							]
 						}
 					},
