@@ -107,7 +107,11 @@ export default class ResourceController {
       await sequelize.transaction(async t => {
         const id = parseInt(req.params.id);
         const oldResource = await this.resourceService.getOneResourceById(id);
-        const updatedAttributes = {...oldResource, ...req.body.resource};
+        const updatedAttributes = {
+          ...oldResource,
+          ...req.body.resource,
+          schoolId: req.user.schoolId,
+        };
         const updatedResource =
           await this.resourceService.updateOneResourceById(
             id,
