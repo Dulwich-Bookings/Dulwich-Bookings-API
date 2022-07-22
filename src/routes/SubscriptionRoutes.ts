@@ -3,6 +3,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import SubscriptionController from '../controllers/SubscriptionController';
 import Container from '../utils/container';
 import AuthenticationMiddleware from '../middlewares/authentication';
+import ResourceOwnerMiddleware from '../middlewares/resourceOwner';
 import roleValidator, {ADMINS, TEACHERS} from '../middlewares/authorization';
 
 export default () => {
@@ -11,9 +12,12 @@ export default () => {
     Container.getInstance().get('SubscriptionController');
   const authenticationMiddleware: AuthenticationMiddleware =
     Container.getInstance().get('AuthenticationMiddleware');
+  const resourceOwnerMiddleware: ResourceOwnerMiddleware =
+    Container.getInstance().get('ResourceOwnerMiddleware');
 
   const auth = (req: Request, res: Response, next: NextFunction) =>
     authenticationMiddleware.authentication(req, res, next);
+  const resourceOwner = resourceOwnerMiddleware.resourceOwner('Resource');
 
   subscriptionRouter.post(
     '/',
@@ -36,8 +40,7 @@ export default () => {
 
   subscriptionRouter.put(
     '/:id',
-    // add middleware
-    [auth, roleValidator(ADMINS)],
+    [auth, resourceOwner, roleValidator(ADMINS)],
     subscriptionController.updateOneSubscriptionById.bind(
       subscriptionController
     )
@@ -45,8 +48,7 @@ export default () => {
 
   subscriptionRouter.delete(
     '/:id',
-    // add middleware
-    [auth, roleValidator(ADMINS)],
+    [auth, resourceOwner, roleValidator(ADMINS)],
     subscriptionController.deleteOneSubscriptionById.bind(
       subscriptionController
     )

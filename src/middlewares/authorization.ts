@@ -8,6 +8,10 @@ export const ADMINS: Role[] = [role.ADMIN];
 // returns a middleware for doing tier-based permissions
 export default function roleValidator(permittedRoles: Role[]) {
   return (request: Request, response: Response, next: NextFunction) => {
+    if (request.isSkipRoleValidator) {
+      next();
+    }
+
     const {user} = request;
 
     if (user && permittedRoles.includes(user.role)) {
