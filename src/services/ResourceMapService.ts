@@ -50,6 +50,12 @@ export default class ResourceMapService {
     )[0] as ResourceMap;
   }
 
+  async getResourceMapsByIds(id: number[]) {
+    return (await this.resourceMapRepository.getWithFilters({
+      id: id,
+    })) as ResourceMap[];
+  }
+
   async getResourceMapsByUserId(userId: number) {
     return (await this.resourceMapRepository.getWithFilters({
       userId,

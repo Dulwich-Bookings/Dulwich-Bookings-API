@@ -3,6 +3,7 @@ import express, {Request, Response, NextFunction} from 'express';
 import ResourceMapController from '../controllers/ResourceMapController';
 import Container from '../utils/container';
 import AuthenticationMiddleware from '../middlewares/authentication';
+import ResourceMapOwnerMiddleware from '../middlewares/resourceMapOwner';
 import roleValidator, {ADMINS, TEACHERS} from '../middlewares/authorization';
 
 export default () => {
@@ -11,9 +12,13 @@ export default () => {
     Container.getInstance().get('ResourceMapController');
   const authenticationMiddleware: AuthenticationMiddleware =
     Container.getInstance().get('AuthenticationMiddleware');
+  const resourceMapOwnerMiddleware: ResourceMapOwnerMiddleware =
+    Container.getInstance().get('ResourceMapOwnerMiddleware');
 
   const auth = (req: Request, res: Response, next: NextFunction) =>
     authenticationMiddleware.authentication(req, res, next);
+  const resourceMapsOwner = resourceMapOwnerMiddleware.resourceMapsOwner;
+  const resourceMapOwner = resourceMapOwnerMiddleware.resourceMapOwner;
 
   resourceMapRouter.post(
     '/bulkCreate',
@@ -48,15 +53,13 @@ export default () => {
 
   resourceMapRouter.delete(
     '/bulkDelete',
-    // add middleware
-    [auth, roleValidator(ADMINS)],
+    [auth, resourceMapsOwner, roleValidator(ADMINS)],
     resourceMapController.bulkDeleteResourceMap.bind(resourceMapController)
   );
 
   resourceMapRouter.delete(
     '/:id',
-    // add middleware
-    [auth, roleValidator(ADMINS)],
+    [auth, resourceMapOwner, roleValidator(ADMINS)],
     resourceMapController.deleteOneResourceMapById.bind(resourceMapController)
   );
 

@@ -119,13 +119,13 @@ export default class AuthenticationController {
           emails,
           currentUser.schoolId
         );
-      const exisitingEmails: string[] = existingUsers.map(user => user.email);
+      const existingEmails: string[] = existingUsers.map(user => user.email);
       const usersExist = existingUsers.length !== 0;
 
       if (usersExist) {
         res.status(400);
         res.json({
-          emails: exisitingEmails,
+          emails: existingEmails,
           message: userFriendlyMessage.failure.emailExists,
         });
         return;
