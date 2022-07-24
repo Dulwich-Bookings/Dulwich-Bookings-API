@@ -57,7 +57,6 @@ import ResourceMapRouter from './routes/ResourceMapRoutes';
 import ResourceMapService from './services/ResourceMapService';
 
 import ResourceOwnerMiddleware from './middlewares/resourceOwner';
-import ResourceMapOwnerMiddleware from './middlewares/resourceMapOwner';
 
 import Container from './utils/container';
 
@@ -189,11 +188,6 @@ export default class App {
     container.register('ResourceOwnerMiddleware', ResourceOwnerMiddleware, [
       'ResourceMapService',
     ]);
-    container.register(
-      'ResourceMapOwnerMiddleware',
-      ResourceMapOwnerMiddleware,
-      ['ResourceMapService']
-    );
   }
 
   public listen(port: string) {
