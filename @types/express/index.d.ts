@@ -6,6 +6,7 @@ declare global {
     interface Request {
       user: User;
       bulkSignUpAttributes?: BulkSignUpAttributes[];
+      isSkipRoleValidator?: boolean;
     }
   }
 }

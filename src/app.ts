@@ -56,6 +56,8 @@ import ResourceMapRepository from './repositories/ResourceMapRepository';
 import ResourceMapRouter from './routes/ResourceMapRoutes';
 import ResourceMapService from './services/ResourceMapService';
 
+import ResourceOwnerMiddleware from './middlewares/resourceOwner';
+
 import Container from './utils/container';
 
 export default class App {
@@ -182,6 +184,9 @@ export default class App {
     // middlewares
     container.register('AuthenticationMiddleware', AuthenticationMiddleware, [
       'UserService',
+    ]);
+    container.register('ResourceOwnerMiddleware', ResourceOwnerMiddleware, [
+      'ResourceMapService',
     ]);
   }
 
