@@ -9,7 +9,7 @@ export const ADMINS: Role[] = [role.ADMIN];
 export default function roleValidator(permittedRoles: Role[]) {
   return (request: Request, response: Response, next: NextFunction) => {
     if (request.isSkipRoleValidator) {
-      next();
+      return next();
     }
 
     const {user} = request;

@@ -8,6 +8,7 @@ export default class ResourceOwnerMiddleware {
     this.resourceMapService = resourceMapService;
   }
 
+  // middleware to check if user owns resource before updating/deleting resources and subscriptions
   resourceOwner(resourceType: string) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -28,14 +29,55 @@ export default class ResourceOwnerMiddleware {
         const isResourceOwnedByUser = ownedResources.length !== 0;
         if (isResourceOwnedByUser) {
           req.isSkipRoleValidator = true;
-          return next();
-        } else {
-          return next();
         }
+        return next();
       } catch (e: unknown) {
         const {message} = e as Error;
         return res.status(400).json({message: message});
       }
     };
+  }
+
+  // middleware to check if user owns resourceMap before bulk deleting resourceMaps
+  async resourceMapsOwner(req: Request, res: Response, next: NextFunction) {
+    try {
+      const {user} = req;
+      const resourceMapIds = req.body.id;
+
+      const resourceMapsToCheck =
+        await this.resourceMapService.getResourceMapsByIds(resourceMapIds);
+      const resourceMapsNotOwned = resourceMapsToCheck.filter(
+        resourceMap => resourceMap.userId !== user.id
+      );
+      const areAllResourceMapsOwnedByUser = resourceMapsNotOwned.length === 0;
+
+      if (areAllResourceMapsOwnedByUser) {
+        req.isSkipRoleValidator = true;
+      }
+      return next();
+    } catch (e: unknown) {
+      const {message} = e as Error;
+      return res.status(400).json({message: message});
+    }
+  }
+
+  // middleware to check if user owns resourceMap before deleting resourceMap
+  async resourceMapOwner(req: Request, res: Response, next: NextFunction) {
+    try {
+      const {user} = req;
+      const resourceMapId = parseInt(req.params.id);
+
+      const resourceMapToCheck =
+        await this.resourceMapService.getOneResourceMapById(resourceMapId);
+      const isResourceMapOwnedByUser = resourceMapToCheck.userId === user.id;
+
+      if (isResourceMapOwnedByUser) {
+        req.isSkipRoleValidator = true;
+      }
+      return next();
+    } catch (e: unknown) {
+      const {message} = e as Error;
+      return res.status(400).json({message: message});
+    }
   }
 }

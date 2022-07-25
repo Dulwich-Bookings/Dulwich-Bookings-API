@@ -17,7 +17,7 @@ export default () => {
 
   const auth = (req: Request, res: Response, next: NextFunction) =>
     authenticationMiddleware.authentication(req, res, next);
-  const resourceOwner = resourceOwnerMiddleware.resourceOwner('Resource');
+  const resourceOwner = resourceOwnerMiddleware.resourceOwner('Subscription');
 
   subscriptionRouter.post(
     '/',
