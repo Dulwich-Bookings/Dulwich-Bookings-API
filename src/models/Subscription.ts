@@ -2,11 +2,13 @@ import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
 import {Models} from '../types';
 import {validateUTCString} from '../utils/datetimeUtils';
 import {Role} from './User';
+import userFriendlyMessages from '../consts/userFriendlyMessages';
 
 export interface SubscriptionAttributes {
   id: number;
   name: string;
   description: string;
+  link?: string;
   accessRights: Role[];
   credentials: string;
   expiry?: string;
@@ -19,6 +21,12 @@ export type SubscriptionCreationAttributes = Optional<
   'id'
 >;
 
+export class InvalidLinkError extends Error {
+  constructor() {
+    super(userFriendlyMessages.failure.invalidLink);
+  }
+}
+
 class Subscription
   extends Model<SubscriptionAttributes, SubscriptionCreationAttributes>
   implements SubscriptionAttributes
@@ -26,6 +34,7 @@ class Subscription
   public id!: number;
   public name!: string;
   public description!: string;
+  public link?: string;
   public accessRights!: Role[];
   public credentials!: string;
   public expiry?: string;
@@ -40,6 +49,17 @@ class Subscription
   public static getTableName = (): string => {
     return Subscription.tableName;
   };
+
+  public isValidLink() {
+    // Regex to check if link is valid
+    const isLink = new RegExp(
+      // eslint-disable-next-line no-useless-escape
+      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/gm
+    );
+    if (this.link && !isLink.test(this.link)) {
+      throw new InvalidLinkError();
+    }
+  }
 
   public static initModel(sequelize: Sequelize) {
     Subscription.init(
@@ -61,6 +81,15 @@ class Subscription
           allowNull: false,
           validate: {
             notEmpty: true,
+          },
+        },
+        link: {
+          type: DataTypes.STRING(500),
+          allowNull: true,
+          validate: {
+            // eslint-disable-next-line no-useless-escape
+            is: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/gm,
+            notEmpty: false,
           },
         },
         accessRights: {
@@ -104,16 +133,14 @@ class Subscription
         sequelize,
         hooks: {
           beforeCreate: async (subscription: Subscription) => {
-            const {expiry} = subscription;
-            if (expiry) {
-              validateUTCString(expiry);
-            }
+            const {expiry, link} = subscription;
+            if (expiry) validateUTCString(expiry);
+            if (link) subscription.isValidLink();
           },
           beforeUpdate: async (subscription: Subscription) => {
-            const {expiry} = subscription;
-            if (expiry) {
-              validateUTCString(expiry);
-            }
+            const {expiry, link} = subscription;
+            if (expiry) validateUTCString(expiry);
+            if (link) subscription.isValidLink();
           },
         },
       }
