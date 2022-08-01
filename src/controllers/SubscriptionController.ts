@@ -1,6 +1,9 @@
 import {NextFunction, Request, Response} from 'express';
 import userFriendlyMessages from '../consts/userFriendlyMessages';
-import {SubscriptionCreationAttributes} from '../models/Subscription';
+import {
+  SubscriptionCreationAttributes,
+  InvalidLinkError,
+} from '../models/Subscription';
 import SubscriptionService from '../services/SubscriptionService';
 import TagMapService from '../services/TagMapService';
 import ResourceMapService from '../services/ResourceMapService';
@@ -9,6 +12,7 @@ import TagMap, {TagMapCreationAttributes} from '../models/TagMap';
 import ResourceMap, {
   ResourceMapCreationAttributes,
 } from '../models/ResourceMap';
+import {InvalidUTCStringError} from '../utils/datetimeUtils';
 
 export default class SubscriptionController {
   private subscriptionService: SubscriptionService;
@@ -68,7 +72,11 @@ export default class SubscriptionController {
       });
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessages.failure.createSubscription});
+      if (e instanceof InvalidLinkError || InvalidUTCStringError) {
+        res.json({message: (e as Error).message});
+      } else {
+        res.json({message: userFriendlyMessages.failure.createSubscription});
+      }
       next(e);
     }
   }
@@ -223,7 +231,11 @@ export default class SubscriptionController {
       });
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessages.failure.updateSubscription});
+      if (e instanceof InvalidLinkError || InvalidUTCStringError) {
+        res.json({message: (e as Error).message});
+      } else {
+        res.json({message: userFriendlyMessages.failure.updateSubscription});
+      }
       next(e);
     }
   }

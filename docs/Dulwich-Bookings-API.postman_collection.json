@@ -872,7 +872,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"resource\": {\n        \"name\": \"A113\",\n        \"description\": \"This is an intriguing room.\",\n        \"accessRights\": [\"Admin\", \"Teacher\"],\n        \"bookingRights\": [\"Admin\", \"Teacher\"],\n        \"inAdvance\": 3,\n        \"isBookingDescriptionOptional\": true,\n        \"weekProfile\": \"Weekly\"\n    },\n    \"tags\": [1, 2, 3],\n    \"users\": [1, 2, 3]\n}",
+							"raw": "{\n    \"resource\": {\n        \"name\": \"Jstore\",\n        \"description\": \"This is an intriguing room.\",\n        \"accessRights\": [\"Admin\", \"Teacher\"],\n        \"bookingRights\": [\"Admin\", \"Teacher\"],\n        \"inAdvance\": 3,\n        \"isBookingDescriptionOptional\": true,\n        \"weekProfile\": \"Weekly\"\n    },\n    \"tags\": [1, 2, 3],\n    \"users\": [1, 2, 3]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -961,13 +961,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/resource/26",
+							"raw": "{{hostname}}/resource/1",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
 								"resource",
-								"26"
+								"1"
 							]
 						}
 					},
@@ -985,13 +985,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{hostname}}/resource/25",
+							"raw": "{{hostname}}/resource/1",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
 								"resource",
-								"25"
+								"1"
 							]
 						}
 					},
@@ -1216,7 +1216,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"subscription\":{\n        \"name\": \"Adobe Photoshop\",\n        \"description\": \"For photo editing\",\n        \"accessRights\": [\"Admin\", \"Teacher\"],\n        \"credentials\": \"test123\",\n        \"expiry\": \"2016-05-03T00:00:00.000Z\",\n        \"remindMe\": true\n    },\n    \"tags\": [1, 2],\n    \"users\": [1, 2]\n}",
+							"raw": "{\n    \"subscription\":{\n        \"name\": \"Adobe Photoshop\",\n        \"description\": \"For photo editing\",\n        \"accessRights\": [\"Admin\", \"Teacher\"],\n        \"credentials\": \"test123\",\n        \"expiry\": \"2016-05-03T00:00:00.000Z\",\n        \"remindMe\": true,\n        \"link\": \"https://www.google.com\"\n    },\n    \"tags\": [1, 2],\n    \"users\": [1, 2]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1306,13 +1306,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostname}}/subscription/3",
+							"raw": "{{hostname}}/subscription/2",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
 								"subscription",
-								"3"
+								"2"
 							]
 						}
 					},
@@ -1609,13 +1609,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{hostname}}/bookmark/1",
+							"raw": "{{hostname}}/bookmark/22",
 							"host": [
 								"{{hostname}}"
 							],
 							"path": [
 								"bookmark",
-								"1"
+								"22"
 							]
 						}
 					},

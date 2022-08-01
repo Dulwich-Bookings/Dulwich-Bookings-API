@@ -113,6 +113,8 @@ export default {
     invalidClass: 'Class must be a valid year.',
     invalidPassword:
       'Password must at least be 6 characters long with at least 1 special character (@ $ ! % * # ? &).',
+    invalidUTCString: 'UTC string is not in ISO 8061 UTC format.',
+    invalidLink: 'Link needs to be in https://www.example.com format',
 
     createResource: 'Error in creating resource.',
     getAllResources: 'Error in retrieving resources.',
@@ -131,8 +133,6 @@ export default {
     getOneSchool: 'Error in retrieving school.',
     updateSchool: 'Error in updating school.',
     deleteSchool: 'Error in deleting school.',
-
-    invalidUTCString: 'UTC string is not in ISO 8061 UTC format.',
 
     createBookmark: 'Error in creating bookmark.',
     getAllBookmarks: 'Error in retrieving bookmarks.',
