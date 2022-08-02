@@ -80,6 +80,11 @@ class TagMap
           beforeUpdate: async (tagMap: TagMap) => {
             tagMap.validateTagMapXor();
           },
+          beforeBulkCreate: async (tagMaps: TagMap[]) => {
+            for (const tagMap of tagMaps) {
+              tagMap.validateTagMapXor();
+            }
+          },
         },
       }
     );

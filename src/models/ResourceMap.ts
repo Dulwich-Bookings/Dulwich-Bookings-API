@@ -83,6 +83,11 @@ class ResourceMap
           beforeUpdate: async (resourceMap: ResourceMap) => {
             resourceMap.validateResourceMapXor();
           },
+          beforeBulkCreate: async (resourceMaps: ResourceMap[]) => {
+            for (const resourceMap of resourceMaps) {
+              resourceMap.validateResourceMapXor();
+            }
+          },
         },
       }
     );
