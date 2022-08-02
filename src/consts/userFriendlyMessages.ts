@@ -69,6 +69,11 @@ export default {
     getOneResourceMap: 'Successfully retrieved resource map.',
     updateResourceMap: 'Successfully updated resource map.',
     deleteResourceMap: 'Successfully deleted resource map(s).',
+
+    createMilestone: 'Successfully created milestone(s).',
+    getAllMilestone: 'Successfully retrieved milestones.',
+    getOneMilestone: 'Successfully retrieved milestone.',
+    deleteMilestone: 'Successfully deleted milestone(s).',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -168,5 +173,10 @@ export default {
     deleteResourceMap: 'Error in deleting resource map(s).',
     validateResourceMapXor:
       'Resource map must contain resource XOR subscription.',
+
+    createMilestone: 'Error in creating milestone.',
+    getAllMilestone: 'Error in retrieving milestones.',
+    getOneMilestone: 'Error in retrieving milestone.',
+    deleteMilestone: 'Error in deleting milestone(s).',
   },
 };
