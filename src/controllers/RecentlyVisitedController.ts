@@ -20,6 +20,8 @@ export default class RecentlyVisitedController {
         data: selfRecentlyVisited,
       });
     } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.getOneRecentlyVisited});
       next(e);
     }
   }

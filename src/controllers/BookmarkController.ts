@@ -21,6 +21,8 @@ export default class BookmarkController {
         data: selfBookmarks,
       });
     } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.getOneBookmark});
       next(e);
     }
   }

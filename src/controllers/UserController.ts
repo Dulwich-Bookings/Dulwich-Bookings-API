@@ -13,6 +13,8 @@ export default class UserController {
       const {user} = req;
       res.json({message: userFriendlyMessage.success.getOneUser, data: user});
     } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessage.failure.getOneUser});
       next(e);
     }
   }

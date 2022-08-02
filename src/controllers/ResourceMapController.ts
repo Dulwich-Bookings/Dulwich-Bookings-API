@@ -21,6 +21,8 @@ export default class ResourceMapController {
         data: selfResourceMaps,
       });
     } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.getOneResourceMap});
       next(e);
     }
   }
