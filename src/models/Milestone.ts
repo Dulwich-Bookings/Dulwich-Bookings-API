@@ -64,7 +64,6 @@ class Milestone
         sequelize,
         hooks: {
           beforeCreate: async (milestone: Milestone) => {
-            console.log(milestone.weekBeginning);
             validateUTCString(milestone.weekBeginning);
           },
           beforeUpdate: async (milestone: Milestone) => {
