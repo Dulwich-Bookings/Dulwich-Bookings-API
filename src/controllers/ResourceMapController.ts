@@ -17,12 +17,12 @@ export default class ResourceMapController {
       const selfResourceMaps =
         await this.resourceMapService.getResourceMapsByUserId(userId);
       res.json({
-        message: userFriendlyMessages.success.getOneResourceMap,
+        message: userFriendlyMessages.success.getAllResourceMap,
         data: selfResourceMaps,
       });
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessages.failure.getOneResourceMap});
+      res.json({message: userFriendlyMessages.failure.getAllResourceMap});
       next(e);
     }
   }

@@ -16,12 +16,12 @@ export default class RecentlyVisitedController {
       const selfRecentlyVisited =
         await this.recentlyVisitedService.getRecentlyVisitedsByUserId(userId);
       res.json({
-        message: userFriendlyMessages.success.getOneRecentlyVisited,
+        message: userFriendlyMessages.success.getAllRecentlyVisited,
         data: selfRecentlyVisited,
       });
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessages.failure.getOneRecentlyVisited});
+      res.json({message: userFriendlyMessages.failure.getAllRecentlyVisited});
       next(e);
     }
   }
