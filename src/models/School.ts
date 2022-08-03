@@ -88,6 +88,13 @@ class School
         allowNull: false,
       },
     });
+    School.hasMany(models.Milestone, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'schoolId',
+        allowNull: false,
+      },
+    });
   }
 }
 

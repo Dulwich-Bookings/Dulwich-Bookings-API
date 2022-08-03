@@ -29,7 +29,6 @@ export default class BaseRepository {
   }
 
   async getScopeWithFilters(filter: Filter, scope: string) {
-    console.log(filter);
     return this.model.scope(scope).findAll({where: filter});
   }
 

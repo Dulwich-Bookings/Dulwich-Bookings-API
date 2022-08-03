@@ -17,10 +17,12 @@ export default class BookmarkController {
         userId
       );
       res.json({
-        message: userFriendlyMessages.success.getOneBookmark,
+        message: userFriendlyMessages.success.getAllBookmarks,
         data: selfBookmarks,
       });
     } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.getAllBookmarks});
       next(e);
     }
   }
