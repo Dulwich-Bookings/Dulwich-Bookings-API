@@ -36,7 +36,7 @@ module.exports = {
       },
     });
     await queryInterface.addConstraint('milestones', {
-      fields: ['schoolId', 'weekBeginning', 'week'],
+      fields: ['schoolId', 'weekBeginning'],
       type: 'unique',
       name: 'unique_milestones',
     });
