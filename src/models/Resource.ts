@@ -145,6 +145,13 @@ class Resource
         allowNull: false,
       },
     });
+    Resource.hasMany(models.ResourceBooking, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'resourceId',
+        allowNull: false,
+      },
+    });
   }
 }
 
