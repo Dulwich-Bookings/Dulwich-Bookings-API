@@ -86,11 +86,6 @@ class Subscription
         link: {
           type: DataTypes.STRING(500),
           allowNull: true,
-          validate: {
-            // eslint-disable-next-line no-useless-escape
-            is: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/gm,
-            notEmpty: false,
-          },
         },
         accessRights: {
           type: DataTypes.ARRAY(DataTypes.STRING(10)),
