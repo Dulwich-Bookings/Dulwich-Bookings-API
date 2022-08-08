@@ -39,11 +39,9 @@ class RecentlyVisited
   };
 
   public validateRecentlyVisitedXor() {
-    const isResourceIdDefined = this.resourceId !== null;
-    const isSubscriptionIdDefined = this.subscriptionId !== null;
-    const isResourceXorSubscription = isResourceIdDefined
-      ? !isSubscriptionIdDefined
-      : isSubscriptionIdDefined;
+    const isResourceXorSubscription = this.resourceId
+      ? !this.subscriptionId
+      : this.subscriptionId;
     if (!isResourceXorSubscription) {
       throw new InvalidRecentlyVisitedXorError();
     }
