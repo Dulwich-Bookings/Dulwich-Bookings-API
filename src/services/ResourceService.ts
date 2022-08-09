@@ -29,6 +29,12 @@ export default class ResourceService {
     })) as Resource[];
   }
 
+  async getResourceByIds(ids: number[]) {
+    return (await this.resourceRepository.getWithFilters({
+      id: ids,
+    })) as Resource[];
+  }
+
   async getOneResourceById(id: number) {
     return (await this.resourceRepository.getWithFilters({id}))[0] as Resource;
   }

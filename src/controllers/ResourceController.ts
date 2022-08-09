@@ -89,6 +89,29 @@ export default class ResourceController {
     }
   }
 
+  async getMyResources(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user.id;
+      const resourceMaps =
+        await this.resourceMapService.getResourceMapsByUserId(userId);
+      const myResourceIds = resourceMaps
+        .filter(resourceMap => resourceMap.resourceId)
+        .map(subscriptionMap => subscriptionMap.resourceId!);
+
+      const resources =
+        (await this.resourceService.getResourceByIds(myResourceIds)) || [];
+
+      res.json({
+        message: userFriendlyMessages.success.getAllResources,
+        data: resources,
+      });
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.getAllResources});
+      next(e);
+    }
+  }
+
   async getOneResourceById(req: Request, res: Response, next: NextFunction) {
     try {
       const id = parseInt(req.params.id);

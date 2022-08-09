@@ -32,6 +32,12 @@ export default () => {
   );
 
   resourceRouter.get(
+    '/self',
+    [auth],
+    resourceController.getMyResources.bind(resourceController)
+  );
+
+  resourceRouter.get(
     '/:id',
     [auth],
     resourceController.getOneResourceById.bind(resourceController)
