@@ -261,7 +261,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"originalPassword\": \"12345678\",\n    \"newPassword\": \"asdasd\",\n    \"newPasswordConfirmation\": \"asdasd\"\n}",
+							"raw": "{\n    \"originalPassword\": \"asdasd\",\n    \"newPassword\": \"12345678\",\n    \"newPasswordConfirmation\": \"12345678\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -917,6 +917,30 @@
 					"response": []
 				},
 				{
+					"name": "Get Own Resources",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/resource/self",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"resource",
+								"self"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get One Resource By Id",
 					"request": {
 						"method": "GET",
@@ -1256,6 +1280,30 @@
 							"path": [
 								"subscription",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Own Subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/subscription/self",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"subscription",
+								"self"
 							]
 						}
 					},
@@ -1760,6 +1808,101 @@
 		},
 		{
 			"name": "Milestones",
+			"item": [
+				{
+					"name": "Get Self",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/milestones/getSelf",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"milestones",
+								"getSelf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\":\"asdasd\",\n    \"milestones\": [\n        {\n            \"week\": 1,\n            \"weekBeginning\": \"2016-05-03T00:00:00.000Z\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/milestones/bulkCreate",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"milestones",
+								"bulkCreate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bulk Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\":\"asdasd\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/milestones/bulkDelete",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"milestones",
+								"bulkDelete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resource Booking",
 			"item": [
 				{
 					"name": "Get Self",

@@ -40,9 +40,10 @@ export default class UserController {
     }
   }
 
-  async getAllUsers(res: Response, next: NextFunction) {
+  async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const users = (await this.userService.getAllUsers()) || [];
+      const schoolId = req.user.schoolId;
+      const users = (await this.userService.getAllUsers(schoolId)) || [];
       res.json({message: userFriendlyMessage.success.getAllUsers, data: users});
     } catch (e) {
       res.status(400);

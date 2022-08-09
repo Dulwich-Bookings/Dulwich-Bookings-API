@@ -81,10 +81,11 @@ export default class SubscriptionController {
     }
   }
 
-  async getAllSubscriptions(res: Response, next: NextFunction) {
+  async getAllSubscriptions(req: Request, res: Response, next: NextFunction) {
     try {
+      const schoolId = req.user.schoolId;
       const subscriptions =
-        (await this.subscriptionService.getAllSubscriptions()) || [];
+        (await this.subscriptionService.getAllSubscriptions(schoolId)) || [];
       res.json({
         message: userFriendlyMessages.success.getAllSubscriptions,
         data: subscriptions,
@@ -92,6 +93,31 @@ export default class SubscriptionController {
     } catch (e) {
       res.status(400);
       res.json({message: userFriendlyMessages.failure.getAllSubscriptions});
+      next(e);
+    }
+  }
+
+  async getMySubscriptions(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user.id;
+      const resourceMaps =
+        await this.resourceMapService.getResourceMapsByUserId(userId);
+      const mySubscriptionIds = resourceMaps
+        .filter(resourceMap => resourceMap.subscriptionId)
+        .map(subscriptionMap => subscriptionMap.subscriptionId!);
+
+      const resources =
+        (await this.subscriptionService.getSubscriptionByIds(
+          mySubscriptionIds
+        )) || [];
+
+      res.json({
+        message: userFriendlyMessages.success.getAllResources,
+        data: resources,
+      });
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.getAllResources});
       next(e);
     }
   }

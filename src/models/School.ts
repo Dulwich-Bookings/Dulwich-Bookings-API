@@ -95,6 +95,13 @@ class School
         allowNull: false,
       },
     });
+    School.hasMany(models.Tag, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'schoolId',
+        allowNull: false,
+      },
+    });
   }
 }
 

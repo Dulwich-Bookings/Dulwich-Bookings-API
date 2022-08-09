@@ -33,6 +33,6 @@ _CAA 030822 0400_
 
 ## Entity Relation Diagram
 
-_CAA 030822 0400_
+_CAA 090822 1600_
 
-![Screenshot 2022-08-03 at 4 09 23 AM](https://user-images.githubusercontent.com/29945147/182464153-6bb27b0e-9c3e-43eb-a454-c63227c081f2.png)
+<img width="1294" alt="Screenshot 2022-08-09 at 4 11 34 PM" src="https://user-images.githubusercontent.com/29945147/183598979-0520a2b3-2fb5-403b-bc6e-b6ab08496e8d.png">

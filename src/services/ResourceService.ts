@@ -23,8 +23,16 @@ export default class ResourceService {
     )) as Resource;
   }
 
-  async getAllResources() {
-    return (await this.resourceRepository.getAll()) as Resource[];
+  async getAllResources(schoolId: number) {
+    return (await this.resourceRepository.getWithFilters({
+      schoolId,
+    })) as Resource[];
+  }
+
+  async getResourceByIds(ids: number[]) {
+    return (await this.resourceRepository.getWithFilters({
+      id: ids,
+    })) as Resource[];
   }
 
   async getOneResourceById(id: number) {

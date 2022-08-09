@@ -15,15 +15,12 @@ export default () => {
   const auth = (req: Request, res: Response, next: NextFunction) =>
     authenticationMiddleware.authentication(req, res, next);
 
-  userRouter.get('/', [auth], (_: Request, res: Response, next: NextFunction) =>
-    userController.getAllUsers(res, next)
-  );
+  userRouter.get('/', [auth], userController.getAllUsers.bind(userController));
 
   userRouter.get(
     '/getSelf',
     [auth],
-    (req: Request, res: Response, next: NextFunction) =>
-      userController.getSelf(req, res, next)
+    userController.getSelf.bind(userController)
   );
 
   userRouter.put(

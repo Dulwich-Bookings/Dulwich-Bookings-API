@@ -31,6 +31,20 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        name: 'Jstor',
+        description: 'This is a Jstor subscription.',
+        accessRights: Sequelize.literal(
+          "ARRAY['Admin', 'Teacher', 'Student']::\"enum_subscriptions_accessRights\"[]"
+        ),
+        credentials: 'test123',
+        expiry: null,
+        remindMe: true,
+        schoolId: 2,
+        link: 'https://www.google.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 
