@@ -66,6 +66,17 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        email: 'otherSchool@dulwich.org',
+        password: hashPassword('asdasd'),
+        role: 'Teacher',
+        schoolId: 2,
+        isConfirmed: false,
+        isTemporary: false,
+        class: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 

@@ -13,8 +13,8 @@ export default class UserService {
     this.userRepository = userRepository;
   }
 
-  async getAllUsers() {
-    return this.userRepository.getAll();
+  async getAllUsers(schoolId: number) {
+    return this.userRepository.getWithFilters({schoolId});
   }
 
   async getOneUserById(id: number, showPassword = false) {
