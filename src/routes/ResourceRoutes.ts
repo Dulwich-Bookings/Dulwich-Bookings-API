@@ -28,8 +28,7 @@ export default () => {
   resourceRouter.get(
     '/',
     [auth],
-    (_: Request, res: Response, next: NextFunction) =>
-      resourceController.getAllResources(res, next)
+    resourceController.getAllResources.bind(resourceController)
   );
 
   resourceRouter.get(

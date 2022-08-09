@@ -73,9 +73,11 @@ export default class ResourceController {
     }
   }
 
-  async getAllResources(res: Response, next: NextFunction) {
+  async getAllResources(req: Request, res: Response, next: NextFunction) {
     try {
-      const resources = (await this.resourceService.getAllResources()) || [];
+      const schoolId = req.user.schoolId;
+      const resources =
+        (await this.resourceService.getAllResources(schoolId)) || [];
       res.json({
         message: userFriendlyMessages.success.getAllResources,
         data: resources,
