@@ -23,8 +23,10 @@ export default class SubscriptionService {
     )) as Subscription;
   }
 
-  async getAllSubscriptions() {
-    return (await this.subscriptionRepository.getAll()) as Subscription[];
+  async getAllSubscriptions(schoolId: number) {
+    return (await this.subscriptionRepository.getWithFilters({
+      schoolId,
+    })) as Subscription[];
   }
 
   async getOneSubscriptionById(id: number) {

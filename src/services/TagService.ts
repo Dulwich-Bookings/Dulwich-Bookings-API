@@ -8,8 +8,8 @@ export default class TagService {
     this.tagRepository = tagRepository;
   }
 
-  async getAllTags() {
-    return this.tagRepository.getAll();
+  async getAllTags(schoolId: number) {
+    return this.tagRepository.getWithFilters({schoolId});
   }
 
   async getOneTagById(id: number) {

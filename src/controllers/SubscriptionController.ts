@@ -81,10 +81,11 @@ export default class SubscriptionController {
     }
   }
 
-  async getAllSubscriptions(res: Response, next: NextFunction) {
+  async getAllSubscriptions(req: Request, res: Response, next: NextFunction) {
     try {
+      const schoolId = req.user.schoolId;
       const subscriptions =
-        (await this.subscriptionService.getAllSubscriptions()) || [];
+        (await this.subscriptionService.getAllSubscriptions(schoolId)) || [];
       res.json({
         message: userFriendlyMessages.success.getAllSubscriptions,
         data: subscriptions,

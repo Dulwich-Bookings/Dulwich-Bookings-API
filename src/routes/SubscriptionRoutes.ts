@@ -28,8 +28,7 @@ export default () => {
   subscriptionRouter.get(
     '/',
     [auth],
-    (_: Request, res: Response, next: NextFunction) =>
-      subscriptionController.getAllSubscriptions(res, next)
+    subscriptionController.getAllSubscriptions.bind(subscriptionController)
   );
 
   subscriptionRouter.get(
