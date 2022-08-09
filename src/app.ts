@@ -61,6 +61,11 @@ import MilestoneRepository from './repositories/MilestoneRepository';
 import MilestoneRouter from './routes/MilestoneRoutes';
 import MilestoneService from './services/MilestoneService';
 
+import ResourceBookingController from './controllers/ResourceBookingController';
+import ResourceBookingRepository from './repositories/ResourceBookingRepository';
+import ResourceBookingRouter from './routes/ResourceBookingRoutes';
+import ResourceBookingService from './services/ResourceBookingService';
+
 import ResourceOwnerMiddleware from './middlewares/resourceOwner';
 
 import Container from './utils/container';
@@ -114,6 +119,7 @@ export default class App {
     this.app.use('/tagMap', TagMapRouter());
     this.app.use('/resourceMap', ResourceMapRouter());
     this.app.use('/milestones', MilestoneRouter());
+    this.app.use('/resourceBooking', ResourceBookingRouter());
   }
 
   public async initContainer() {
@@ -135,6 +141,9 @@ export default class App {
     container.register('TagMapRepository', TagMapRepository, ['db']);
     container.register('ResourceMapRepository', ResourceMapRepository, ['db']);
     container.register('MilestoneRepository', MilestoneRepository, ['db']);
+    container.register('ResourceBookingRepository', ResourceBookingRepository, [
+      'db',
+    ]);
 
     // services
     container.register('EmailService', EmailService, []);
@@ -159,6 +168,9 @@ export default class App {
     ]);
     container.register('MilestoneService', MilestoneService, [
       'MilestoneRepository',
+    ]);
+    container.register('ResourceBookingService', ResourceBookingService, [
+      'ResourceBookingRepository',
     ]);
 
     // controllers
@@ -193,6 +205,9 @@ export default class App {
     container.register('MilestoneController', MilestoneController, [
       'UserService',
       'MilestoneService',
+    ]);
+    container.register('ResourceBookingController', ResourceBookingController, [
+      'ResourceBookingService',
     ]);
 
     // middlewares

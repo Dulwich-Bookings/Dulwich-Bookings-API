@@ -74,6 +74,12 @@ export default {
     getAllMilestone: 'Successfully retrieved milestones.',
     getOneMilestone: 'Successfully retrieved milestone.',
     deleteMilestone: 'Successfully deleted milestone(s).',
+
+    createResourceBooking: 'Successfully created resource booking(s).',
+    getAllResourceBooking: 'Successfully retrieved resource bookings.',
+    getOneResourceBooking: 'Successfully retrieved resource booking.',
+    updateResourceBooking: 'Successfully updated resource booking.',
+    deleteResourceBooking: 'Successfully deleted resource booking(s).',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -178,5 +184,11 @@ export default {
     getAllMilestone: 'Error in retrieving milestones.',
     getOneMilestone: 'Error in retrieving milestone.',
     deleteMilestone: 'Error in deleting milestone(s).',
+
+    createResourceBooking: 'Error in creating resource booking.',
+    getAllResourceBooking: 'Error in retrieving resource bookings.',
+    getOneResourceBooking: 'Error in retrieving resource booking.',
+    updateResourceBooking: 'Error in updating resource booking.',
+    deleteResourceBooking: 'Error in deleting resource booking(s).',
   },
 };
