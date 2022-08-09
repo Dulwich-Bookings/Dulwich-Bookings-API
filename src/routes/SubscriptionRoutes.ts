@@ -32,6 +32,12 @@ export default () => {
   );
 
   subscriptionRouter.get(
+    '/self',
+    [auth],
+    subscriptionController.getMySubscriptions.bind(subscriptionController)
+  );
+
+  subscriptionRouter.get(
     '/:id',
     [auth],
     subscriptionController.getOneSubscriptionById.bind(subscriptionController)

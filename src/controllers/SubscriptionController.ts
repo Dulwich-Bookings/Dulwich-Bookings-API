@@ -97,6 +97,31 @@ export default class SubscriptionController {
     }
   }
 
+  async getMySubscriptions(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.user.id;
+      const resourceMaps =
+        await this.resourceMapService.getResourceMapsByUserId(userId);
+      const mySubscriptionIds = resourceMaps
+        .filter(resourceMap => resourceMap.subscriptionId)
+        .map(subscriptionMap => subscriptionMap.subscriptionId!);
+
+      const resources =
+        (await this.subscriptionService.getSubscriptionByIds(
+          mySubscriptionIds
+        )) || [];
+
+      res.json({
+        message: userFriendlyMessages.success.getAllResources,
+        data: resources,
+      });
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.getAllResources});
+      next(e);
+    }
+  }
+
   async getOneSubscriptionById(
     req: Request,
     res: Response,

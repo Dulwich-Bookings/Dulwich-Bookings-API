@@ -29,6 +29,12 @@ export default class SubscriptionService {
     })) as Subscription[];
   }
 
+  async getSubscriptionByIds(ids: number[]) {
+    return (await this.subscriptionRepository.getWithFilters({
+      id: ids,
+    })) as Subscription[];
+  }
+
   async getOneSubscriptionById(id: number) {
     return (
       await this.subscriptionRepository.getWithFilters({id})
