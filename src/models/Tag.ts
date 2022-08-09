@@ -6,6 +6,7 @@ export interface TagAttributes {
   id: number;
   name: string;
   colour: string;
+  schoolId: number;
 }
 
 export class InvalidColourError extends Error {
@@ -23,6 +24,7 @@ class Tag
   public id!: number;
   public name!: string;
   public colour!: string;
+  public schoolId!: number;
   public static tableName = 'tag';
 
   public readonly createdAt!: Date;
@@ -63,6 +65,13 @@ class Tag
             notEmpty: true,
           },
         },
+        schoolId: {
+          type: DataTypes.INTEGER.UNSIGNED,
+          allowNull: false,
+          validate: {
+            notEmpty: true,
+          },
+        },
       },
       {
         tableName: Tag.getTableName()!,
@@ -86,6 +95,9 @@ class Tag
         name: 'tagId',
         allowNull: false,
       },
+    });
+    Tag.belongsTo(models.School, {
+      foreignKey: 'schoolId',
     });
   }
 }

@@ -10,9 +10,10 @@ export default class TagController {
     this.tagService = tagService;
   }
 
-  async getAllTags(res: Response, next: NextFunction) {
+  async getAllTags(req: Request, res: Response, next: NextFunction) {
     try {
-      const tags = (await this.tagService.getAllTags()) || [];
+      const schoolId = req.user.schoolId;
+      const tags = (await this.tagService.getAllTags(schoolId)) || [];
       res.json({message: userFriendlyMessage.success.getAllTags, data: tags});
     } catch (e) {
       res.status(400);
@@ -35,8 +36,10 @@ export default class TagController {
 
   async createOneTag(req: Request, res: Response, next: NextFunction) {
     try {
+      const schoolId = req.user.schoolId;
       const toCreate: TagCreationAttributes = {
         ...req.body,
+        schoolId,
       };
       const createdTag = await this.tagService.createOneTag(toCreate);
       res.status(201);
@@ -54,7 +57,9 @@ export default class TagController {
   async updateOneTagById(req: Request, res: Response, next: NextFunction) {
     try {
       const tagId = parseInt(req.params.id);
+      const oldTag = await this.tagService.getOneTagById(tagId);
       const toUpdate: TagAttributes = {
+        ...oldTag,
         ...req.body,
       };
 

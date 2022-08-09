@@ -15,9 +15,7 @@ export default () => {
   const auth = (req: Request, res: Response, next: NextFunction) =>
     authenticationMiddleware.authentication(req, res, next);
 
-  tagRouter.get('/', [auth], (_: Request, res: Response, next: NextFunction) =>
-    tagController.getAllTags(res, next)
-  );
+  tagRouter.get('/', [auth], tagController.getAllTags.bind(tagController));
   tagRouter.get(
     '/:id',
     [auth],
