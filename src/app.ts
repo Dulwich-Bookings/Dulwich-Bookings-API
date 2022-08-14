@@ -66,6 +66,9 @@ import ResourceBookingRepository from './repositories/ResourceBookingRepository'
 import ResourceBookingRouter from './routes/ResourceBookingRoutes';
 import ResourceBookingService from './services/ResourceBookingService';
 
+import ResourceBookingEventRepository from './repositories/ResourceBookingEventRepository';
+import ResourceBookingEventService from './services/ResourceBookingEventService';
+
 import ResourceOwnerMiddleware from './middlewares/resourceOwner';
 
 import Container from './utils/container';
@@ -144,6 +147,11 @@ export default class App {
     container.register('ResourceBookingRepository', ResourceBookingRepository, [
       'db',
     ]);
+    container.register(
+      'ResourceBookingEventRepository',
+      ResourceBookingEventRepository,
+      ['db']
+    );
 
     // services
     container.register('EmailService', EmailService, []);
@@ -172,6 +180,11 @@ export default class App {
     container.register('ResourceBookingService', ResourceBookingService, [
       'ResourceBookingRepository',
     ]);
+    container.register(
+      'ResourceBookingEventService',
+      ResourceBookingEventService,
+      ['ResourceBookingEventRepository']
+    );
 
     // controllers
     container.register('EmailController', EmailController, ['EmailService']);
