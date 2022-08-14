@@ -25,6 +25,7 @@ export {default as Milestone} from './Milestone';
 export {default as RecentlyVisited} from './RecentlyVisited';
 export {default as Resource} from './Resource';
 export {default as ResourceBooking} from './ResourceBooking';
+export {default as ResourceBookingEvent} from './ResourceBookingEvent';
 export {default as ResourceMap} from './ResourceMap';
 export {default as School} from './School';
 export {default as Subscription} from './Subscription';

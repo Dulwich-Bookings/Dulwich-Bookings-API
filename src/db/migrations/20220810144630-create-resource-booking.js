@@ -9,10 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      link: {
-        allowNull: true,
-        type: Sequelize.STRING,
-      },
       userId: {
         allowNull: false,
         type: Sequelize.INTEGER,
@@ -35,14 +31,6 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING,
       },
-      startDateTime: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      endDateTime: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
       bookingState: {
         allowNull: false,
         type: Sequelize.ENUM('Approved', 'Pending'),
@@ -50,10 +38,6 @@ module.exports = {
       bookingType: {
         allowNull: false,
         type: Sequelize.ENUM('Booking', 'Lesson'),
-      },
-      RRULE: {
-        allowNull: true,
-        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,

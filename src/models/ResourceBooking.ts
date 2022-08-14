@@ -1,6 +1,5 @@
 import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
 import {Models} from '../types';
-import {validateUTCString} from '../utils/datetimeUtils';
 
 export type BookingState = 'Approved' | 'Pending';
 export type BookingType = 'Booking' | 'Lesson';
@@ -11,11 +10,8 @@ export interface ResourceBookingAttributes {
   userId: number;
   resourceId: number;
   description?: string;
-  startDateTime: string;
-  endDateTime: string;
   bookingState: BookingState;
   bookingType: BookingType;
-  RRULE?: string;
 }
 
 export type ResourceBookingCreationAttributes = Optional<
@@ -32,11 +28,8 @@ class ResourceBooking
   public userId!: number;
   public resourceId!: number;
   public description?: string;
-  public startDateTime!: string;
-  public endDateTime!: string;
   public bookingState!: BookingState;
   public bookingType!: BookingType;
-  public RRULE?: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -82,20 +75,6 @@ class ResourceBooking
             notEmpty: false,
           },
         },
-        startDateTime: {
-          type: new DataTypes.STRING(128),
-          allowNull: false,
-          validate: {
-            notEmpty: true,
-          },
-        },
-        endDateTime: {
-          type: new DataTypes.STRING(128),
-          allowNull: false,
-          validate: {
-            notEmpty: true,
-          },
-        },
         bookingState: {
           type: DataTypes.ARRAY(DataTypes.STRING(10)),
           allowNull: false,
@@ -110,29 +89,10 @@ class ResourceBooking
             notEmpty: true,
           },
         },
-        RRULE: {
-          type: new DataTypes.STRING(128),
-          allowNull: true,
-          validate: {
-            notEmpty: false,
-          },
-        },
       },
       {
         tableName: ResourceBooking.getTableName()!,
         sequelize,
-        hooks: {
-          beforeCreate: async (resourceBooking: ResourceBooking) => {
-            const {startDateTime, endDateTime} = resourceBooking;
-            validateUTCString(startDateTime);
-            validateUTCString(endDateTime);
-          },
-          beforeUpdate: async (resourceBooking: ResourceBooking) => {
-            const {startDateTime, endDateTime} = resourceBooking;
-            validateUTCString(startDateTime);
-            validateUTCString(endDateTime);
-          },
-        },
       }
     );
   }
@@ -143,6 +103,13 @@ class ResourceBooking
     });
     ResourceBooking.belongsTo(models.Resource, {
       foreignKey: 'resourceId',
+    });
+    ResourceBooking.hasMany(models.ResourceBookingEvent, {
+      onDelete: 'CASCADE',
+      foreignKey: {
+        name: 'resourceBookingId',
+        allowNull: false,
+      },
     });
   }
 }
