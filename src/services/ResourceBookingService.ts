@@ -5,6 +5,8 @@ import {
 import ResourceBookingRepository from '../repositories/ResourceBookingRepository';
 import ResourceBooking from '../models/ResourceBooking';
 import {TransactionOptions} from '../repositories/BaseRepository';
+import sequelize from '../db';
+import {QueryTypes} from 'sequelize';
 
 export default class ResourceBookingService {
   private resourceBookingRepository: ResourceBookingRepository;
@@ -23,16 +25,24 @@ export default class ResourceBookingService {
     )) as ResourceBooking;
   }
 
-  async getAllResourceBookings(schoolId: number) {
-    return (await this.resourceBookingRepository.getWithFilters({
-      schoolId,
-    })) as ResourceBooking[];
+  async getResourceBookingsByResourceIds(resourceIds: number[]) {
+    const resourceBookings = (await sequelize.query(
+      `SELECT * FROM resource_bookings JOIN resource_booking_events 
+      ON resource_bookings.id = resource_booking_events."resourceBookingId" 
+      AND public.resource_bookings."resourceId" IN(:resourceIds);`,
+      {replacements: {resourceIds}, type: QueryTypes.SELECT}
+    )) as ResourceBooking[];
+    return resourceBookings;
   }
 
-  async getResourceBookingByIds(ids: number[]) {
-    return (await this.resourceBookingRepository.getWithFilters({
-      id: ids,
-    })) as ResourceBooking[];
+  async getResourceBookingsByUserId(userId: number) {
+    const resourceBookings = (await sequelize.query(
+      `SELECT * FROM resource_bookings JOIN resource_booking_events 
+      ON resource_bookings.id = resource_booking_events."resourceBookingId" 
+      AND public.resource_bookings."userId" = :userId;`,
+      {replacements: {userId}, type: QueryTypes.SELECT}
+    )) as ResourceBooking[];
+    return resourceBookings;
   }
 
   async getOneResourceBookingById(id: number) {

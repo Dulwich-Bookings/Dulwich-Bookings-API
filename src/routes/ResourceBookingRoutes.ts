@@ -47,19 +47,43 @@ export default () => {
   );
 
   resourceBookingRouter.put(
-    '/:id',
+    'thisEvent/:id',
     [auth],
-    resourceBookingController.updateOneResourceBookingById.bind(
+    resourceBookingController.updateThisEvent.bind(resourceBookingController)
+  );
+
+  resourceBookingRouter.put(
+    'thisAndFollowingEvents/:id',
+    [auth],
+    resourceBookingController.updateThisAndFollowingEvents.bind(
+      resourceBookingController
+    )
+  );
+
+  resourceBookingRouter.put(
+    'allEvents/:id',
+    [auth],
+    resourceBookingController.updateAllEvents.bind(resourceBookingController)
+  );
+
+  resourceBookingRouter.delete(
+    'thisEvent/:id',
+    [auth],
+    resourceBookingController.deleteThisEvent.bind(resourceBookingController)
+  );
+
+  resourceBookingRouter.delete(
+    'thisAndFollowingEvents/:id',
+    [auth],
+    resourceBookingController.deleteThisAndFollowingEvents.bind(
       resourceBookingController
     )
   );
 
   resourceBookingRouter.delete(
-    '/:id',
+    'allEvents/:id',
     [auth],
-    resourceBookingController.deleteOneResourceBookingById.bind(
-      resourceBookingController
-    )
+    resourceBookingController.deleteAllEvents.bind(resourceBookingController)
   );
 
   return resourceBookingRouter;
