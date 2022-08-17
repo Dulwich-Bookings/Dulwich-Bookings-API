@@ -17,10 +17,12 @@ export default class ResourceBookingEventService {
     resourceBookingEvent: ResourceBookingEventCreationAttributes,
     options?: TransactionOptions
   ) {
-    return (await this.resourceBookingEventRepository.createOne(
-      resourceBookingEvent,
-      options
-    )) as ResourceBookingEvent;
+    return (
+      await this.resourceBookingEventRepository.createOne(
+        resourceBookingEvent,
+        options
+      )
+    ).get({plain: true}) as ResourceBookingEvent;
   }
 
   async getResourceBookingEventsByResourceBookingId(

@@ -6,6 +6,7 @@ import ResourceBookingEventService from '../services/ResourceBookingEventService
 import {ResourceBookingEventCreationAttributes} from '../models/ResourceBookingEvent';
 import {ResourceBookingCreationAttributes} from '../models/ResourceBooking';
 import {InvalidUTCStringError} from '../utils/datetimeUtils';
+import sequelize from '../db';
 
 type CreateResourceBooking = ResourceBookingEventCreationAttributes &
   ResourceBookingCreationAttributes;
@@ -69,58 +70,61 @@ export default class ResourceBookingController {
     res: Response,
     next: NextFunction
   ) {
-    // TODO: add creation logic
     try {
-      const userId = req.user.id;
-      const newBooking = req.body as CreateResourceBooking;
-      const resourceId = newBooking.resourceId;
-      const resourceBookings =
-        await this.resourceBookingService.getResourceBookingsByResourceIds([
-          resourceId,
-        ]);
+      await sequelize.transaction(async t => {
+        const userId = req.user.id;
+        const newBooking = req.body as CreateResourceBooking;
+        const resourceId = newBooking.resourceId;
+        const resourceBookings =
+          await this.resourceBookingService.getResourceBookingsByResourceIds([
+            resourceId,
+          ]);
 
-      // Case 1. no recurring booking
-      if (!newBooking.RRULE) {
-        // Check for Booking Overlap
-        if (!this.validateOverlap([newBooking], resourceBookings)) {
-          res.status(400);
-          res.json({message: userFriendlyMessages.failure.bookingOverlap});
-          return;
-        }
+        // Case 1. no recurring booking
+        if (!newBooking.RRULE) {
+          // Check for Booking Overlap
+          if (!this.validateOverlap([newBooking], resourceBookings)) {
+            res.status(400);
+            res.json({message: userFriendlyMessages.failure.bookingOverlap});
+            return;
+          }
 
-        // Create new ResourceBooking
-        const toCreateResourceBooking: ResourceBookingCreationAttributes = {
-          userId: userId,
-          resourceId: newBooking.resourceId,
-          description: newBooking.description,
-          bookingState: newBooking.bookingState,
-          bookingType: newBooking.bookingType,
-        };
-        const createdBooking =
-          await this.resourceBookingService.createOneResourceBooking(
-            toCreateResourceBooking
-          );
-
-        // Create new ResourceBookingEvent
-        const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
-          {
-            resourceBookingId: 1,
-            startDateTime: newBooking.startDateTime,
-            endDateTime: newBooking.endDateTime,
+          // Create new ResourceBooking
+          const toCreateResourceBooking: ResourceBookingCreationAttributes = {
+            userId: userId,
+            resourceId: newBooking.resourceId,
+            description: newBooking.description,
+            bookingState: newBooking.bookingState,
+            bookingType: newBooking.bookingType,
           };
-        const createdBookingEvent =
-          await this.resourceBookingEventService.createOneResourceBookingEvent(
-            toCreateResourceBookingEvent
-          );
+          const createdBooking =
+            await this.resourceBookingService.createOneResourceBooking(
+              toCreateResourceBooking,
+              {transaction: t}
+            );
 
-        res.json({
-          message: userFriendlyMessages.success.createResourceBooking,
-          data: {
-            ...createdBookingEvent,
-            ...createdBooking,
-          },
-        });
-      }
+          // Create new ResourceBookingEvent
+          const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
+            {
+              resourceBookingId: 1,
+              startDateTime: newBooking.startDateTime,
+              endDateTime: newBooking.endDateTime,
+            };
+          const createdBookingEvent =
+            await this.resourceBookingEventService.createOneResourceBookingEvent(
+              toCreateResourceBookingEvent,
+              {transaction: t}
+            );
+
+          res.json({
+            message: userFriendlyMessages.success.createResourceBooking,
+            data: {
+              ...createdBooking,
+              ...createdBookingEvent,
+            },
+          });
+        }
+      });
     } catch (e) {
       res.status(400);
       if (e instanceof InvalidUTCStringError) {

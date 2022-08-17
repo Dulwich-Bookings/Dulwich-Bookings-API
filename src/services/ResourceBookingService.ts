@@ -19,10 +19,9 @@ export default class ResourceBookingService {
     resourceBooking: ResourceBookingCreationAttributes,
     options?: TransactionOptions
   ) {
-    return (await this.resourceBookingRepository.createOne(
-      resourceBooking,
-      options
-    )) as ResourceBooking;
+    return (
+      await this.resourceBookingRepository.createOne(resourceBooking, options)
+    ).get({plain: true}) as ResourceBooking;
   }
 
   async getResourceBookingsByResourceIds(resourceIds: number[]) {
