@@ -3,7 +3,7 @@ import {
   ResourceBookingCreationAttributes,
 } from '../models/ResourceBooking';
 import ResourceBookingRepository from '../repositories/ResourceBookingRepository';
-import ResourceBooking from '../models/ResourceBooking';
+import {ResourceBookingEvent, ResourceBooking} from '../models';
 import {TransactionOptions} from '../repositories/BaseRepository';
 import sequelize from '../db';
 import {QueryTypes} from 'sequelize';
@@ -31,7 +31,7 @@ export default class ResourceBookingService {
       ON resource_bookings.id = resource_booking_events."resourceBookingId" 
       AND public.resource_bookings."resourceId" IN(:resourceIds);`,
       {replacements: {resourceIds}, type: QueryTypes.SELECT}
-    )) as ResourceBooking[];
+    )) as (ResourceBooking & ResourceBookingEvent)[];
     return resourceBookings;
   }
 
@@ -41,7 +41,7 @@ export default class ResourceBookingService {
       ON resource_bookings.id = resource_booking_events."resourceBookingId" 
       AND public.resource_bookings."userId" = :userId;`,
       {replacements: {userId}, type: QueryTypes.SELECT}
-    )) as ResourceBooking[];
+    )) as (ResourceBooking & ResourceBookingEvent)[];
     return resourceBookings;
   }
 

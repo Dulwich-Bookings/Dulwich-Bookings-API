@@ -186,6 +186,7 @@ export default {
     deleteMilestone: 'Error in deleting milestone(s).',
 
     createResourceBooking: 'Error in creating resource booking.',
+    bookingOverlap: 'Booking overlaps with one or more other bookings',
     getAllResourceBooking: 'Error in retrieving resource bookings.',
     getOneResourceBooking: 'Error in retrieving resource booking.',
     updateResourceBooking: 'Error in updating resource booking.',

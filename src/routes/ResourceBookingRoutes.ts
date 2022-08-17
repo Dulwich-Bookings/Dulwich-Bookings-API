@@ -30,6 +30,7 @@ export default () => {
     )
   );
 
+  // Future Route for getting all you own bookings
   resourceBookingRouter.get(
     '/self',
     [auth],

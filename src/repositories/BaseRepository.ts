@@ -37,7 +37,7 @@ export default class BaseRepository {
   }
 
   async createOne(data: ModelAttributes, options?: TransactionOptions) {
-    return this.model.create({...data}, {...options});
+    return this.model.create({...data}, {...options, raw: true});
   }
 
   async updateOne(

@@ -6,7 +6,6 @@ export type BookingType = 'Booking' | 'Lesson';
 
 export interface ResourceBookingAttributes {
   id: number;
-  link?: string;
   userId: number;
   resourceId: number;
   description?: string;
@@ -24,7 +23,6 @@ class ResourceBooking
   implements ResourceBookingAttributes
 {
   public id!: number;
-  public link?: string;
   public userId!: number;
   public resourceId!: number;
   public description?: string;
@@ -46,13 +44,6 @@ class ResourceBooking
           type: DataTypes.INTEGER.UNSIGNED,
           autoIncrement: true,
           primaryKey: true,
-        },
-        link: {
-          type: new DataTypes.STRING(128),
-          allowNull: true,
-          validate: {
-            notEmpty: false,
-          },
         },
         userId: {
           type: DataTypes.INTEGER,
