@@ -2,18 +2,22 @@ import {NextFunction, Request, Response} from 'express';
 import userFriendlyMessages from '../consts/userFriendlyMessages';
 import ResourceBookingService from '../services/ResourceBookingService';
 import ResourceService from '../services/ResourceService';
+import ResourceBookingEventService from '../services/ResourceBookingEventService';
 import {InvalidUTCStringError} from '../utils/datetimeUtils';
 
 export default class ResourceBookingController {
   private resourceBookingService: ResourceBookingService;
   private resourceService: ResourceService;
+  private resourceBookingEventService: ResourceBookingEventService;
 
   constructor(
     resourceBookingService: ResourceBookingService,
-    resourceService: ResourceService
+    resourceService: ResourceService,
+    resourceBookingEventService: ResourceBookingEventService
   ) {
     this.resourceBookingService = resourceBookingService;
     this.resourceService = resourceService;
+    this.resourceBookingEventService = resourceBookingEventService;
   }
 
   async createOneResourceBooking(
