@@ -67,14 +67,14 @@ class ResourceBooking
           },
         },
         bookingState: {
-          type: DataTypes.ARRAY(DataTypes.STRING(10)),
+          type: new DataTypes.STRING(128),
           allowNull: false,
           validate: {
             notEmpty: true,
           },
         },
         bookingType: {
-          type: DataTypes.ARRAY(DataTypes.STRING(10)),
+          type: new DataTypes.STRING(128),
           allowNull: false,
           validate: {
             notEmpty: true,
