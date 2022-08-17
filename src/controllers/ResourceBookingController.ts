@@ -179,26 +179,6 @@ export default class ResourceBookingController {
     }
   }
 
-  async getOneResourceBookingById(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      const id = parseInt(req.params.id);
-      const resourceBooking =
-        await this.resourceBookingService.getOneResourceBookingById(id);
-      res.json({
-        message: userFriendlyMessages.success.getOneResourceBooking,
-        data: resourceBooking,
-      });
-    } catch (e) {
-      res.status(400);
-      res.json({message: userFriendlyMessages.failure.getOneResourceBooking});
-      next(e);
-    }
-  }
-
   async updateThisEvent(req: Request, res: Response, next: NextFunction) {
     // TODO: add logic
     // try {

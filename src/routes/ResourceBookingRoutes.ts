@@ -39,14 +39,6 @@ export default () => {
     )
   );
 
-  resourceBookingRouter.get(
-    '/:id',
-    [auth],
-    resourceBookingController.getOneResourceBookingById.bind(
-      resourceBookingController
-    )
-  );
-
   resourceBookingRouter.put(
     'thisEvent/:id',
     [auth],
