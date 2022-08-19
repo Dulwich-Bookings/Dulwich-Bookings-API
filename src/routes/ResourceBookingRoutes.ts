@@ -22,19 +22,19 @@ export default () => {
     )
   );
 
-  resourceBookingRouter.get(
-    '/:id',
-    [auth],
-    resourceBookingController.getResourceBookingsByResourceId.bind(
-      resourceBookingController
-    )
-  );
-
   // Future Route for getting all you own bookings
   resourceBookingRouter.get(
     '/self',
     [auth],
     resourceBookingController.getMyResourceBookings.bind(
+      resourceBookingController
+    )
+  );
+
+  resourceBookingRouter.get(
+    '/:id',
+    [auth],
+    resourceBookingController.getResourceBookingsByResourceId.bind(
       resourceBookingController
     )
   );
