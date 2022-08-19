@@ -245,9 +245,10 @@ export default class ResourceBookingController {
       const rRuleObject = rrulestr(RRULE, {
         forceset: true,
       }) as RRuleSet;
+
+      // Add excluded date to RRULE
       rRuleObject.exdate(new Date(startDateTime));
       const newRRULE = rRuleObject.toString();
-
       const updatedAttributes = {
         ...oldResourceBookingEvent,
         RRULE: newRRULE,
@@ -277,14 +278,15 @@ export default class ResourceBookingController {
           eventId
         );
 
-      const {RRULE} = oldResourceBookingEvent;
-      if (!RRULE) {
-        // TODO: add error handling here, since it's impossible to reach here
-        return;
-      }
+      // Non-recurring events are not allowed to delete this and following events.
+      // This event must have a RRULE. Thus, the typecast from string | undefined
+      // to string is safe.
+      const RRULE = oldResourceBookingEvent.RRULE as string;
       const rRuleObject = rrulestr(RRULE, {
         forceset: true,
       }) as RRuleSet;
+
+      // Add exclusion rule to RRULE to exclude all dates after selected datetime (inclusive)
       rRuleObject.exrule(
         new RRule({
           freq: RRule.WEEKLY,
@@ -302,17 +304,17 @@ export default class ResourceBookingController {
         updatedAttributes
       );
 
+      // Delete all events after selected datetime (inclusive)
       const {resourceBookingId} = oldResourceBookingEvent;
       const associatedEvents =
         (await this.resourceBookingEventService.getResourceBookingEventsByResourceBookingId(
           resourceBookingId
         )) || [];
       const toDeleteEvents = associatedEvents.filter(event => {
-        const eventRRULE = event.RRULE;
-        if (!eventRRULE) {
-          // TODO: add error handling here, since it's impossible to reach here
-          return true;
-        }
+        // Non-recurring events are not allowed to delete this and following events.
+        // This event must have a RRULE. Thus, the typecast from string | undefined
+        // to string is safe.
+        const eventRRULE = event.RRULE as string;
         const eventRRuleObject = rrulestr(eventRRULE, {
           forceset: true,
         }) as RRuleSet;
