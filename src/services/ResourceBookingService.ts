@@ -24,12 +24,12 @@ export default class ResourceBookingService {
     ).get({plain: true}) as ResourceBooking;
   }
 
-  async getResourceBookingsByResourceIds(resourceIds: number[]) {
+  async getResourceBookingsByResourceId(resourceId: number) {
     const resourceBookings = (await sequelize.query(
       `SELECT * FROM resource_bookings JOIN resource_booking_events 
       ON resource_bookings.id = resource_booking_events."resourceBookingId" 
-      AND public.resource_bookings."resourceId" IN(:resourceIds);`,
-      {replacements: {resourceIds}, type: QueryTypes.SELECT}
+      AND public.resource_bookings."resourceId" = :resourceId;`,
+      {replacements: {resourceId}, type: QueryTypes.SELECT}
     )) as (ResourceBooking & ResourceBookingEvent)[];
     return resourceBookings;
   }

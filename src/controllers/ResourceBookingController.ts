@@ -76,9 +76,9 @@ export default class ResourceBookingController {
         const newBooking = req.body as CreateResourceBooking;
         const resourceId = newBooking.resourceId;
         const resourceBookings =
-          await this.resourceBookingService.getResourceBookingsByResourceIds([
-            resourceId,
-          ]);
+          await this.resourceBookingService.getResourceBookingsByResourceId(
+            resourceId
+          );
 
         // Case 1. no recurring booking
         if (!newBooking.RRULE) {
@@ -136,19 +136,16 @@ export default class ResourceBookingController {
     }
   }
 
-  async getAllResourceBookings(
+  async getResourceBookingsByResourceId(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
-      const schoolId = req.user.schoolId;
-      const resources =
-        (await this.resourceService.getAllResources(schoolId)) || [];
-      const resourceIds = resources.map(resource => resource.id);
+      const resourceId = parseInt(req.params.id);
       const resourceBookings =
-        (await this.resourceBookingService.getResourceBookingsByResourceIds(
-          resourceIds
+        (await this.resourceBookingService.getResourceBookingsByResourceId(
+          resourceId
         )) || [];
       res.json({
         message: userFriendlyMessages.success.getAllResourceBooking,
