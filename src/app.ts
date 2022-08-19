@@ -221,7 +221,6 @@ export default class App {
     ]);
     container.register('ResourceBookingController', ResourceBookingController, [
       'ResourceBookingService',
-      'ResourceService',
       'ResourceBookingEventService',
     ]);
 

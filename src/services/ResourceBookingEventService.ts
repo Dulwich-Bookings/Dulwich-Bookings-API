@@ -5,6 +5,7 @@ import {
 import ResourceBookingEventRepository from '../repositories/ResourceBookingEventRepository';
 import ResourceBookingEvent from '../models/ResourceBookingEvent';
 import {TransactionOptions} from '../repositories/BaseRepository';
+import {DeleteOptions} from '../services/UserService';
 
 export default class ResourceBookingEventService {
   private resourceBookingEventRepository: ResourceBookingEventRepository;
@@ -25,11 +26,9 @@ export default class ResourceBookingEventService {
     ).get({plain: true}) as ResourceBookingEvent;
   }
 
-  async getResourceBookingEventsByResourceBookingId(
-    resourceBookingIds: number[]
-  ) {
+  async getResourceBookingEventsByResourceBookingId(resourceBookingId: number) {
     return (await this.resourceBookingEventRepository.getWithFilters({
-      resourceBookingId: resourceBookingIds,
+      resourceBookingId,
     })) as ResourceBookingEvent[];
   }
 
@@ -58,5 +57,15 @@ export default class ResourceBookingEventService {
     options?: TransactionOptions
   ) {
     return this.resourceBookingEventRepository.deleteOne({id}, options);
+  }
+
+  async bulkDeleteResourceBookingEvents(
+    resourceBookingEvents: DeleteOptions,
+    options?: TransactionOptions
+  ) {
+    return await this.resourceBookingEventRepository.bulkDelete(
+      resourceBookingEvents,
+      options
+    );
   }
 }

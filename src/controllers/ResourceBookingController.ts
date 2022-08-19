@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
+import {RRule, RRuleSet, rrulestr} from 'rrule';
 import userFriendlyMessages from '../consts/userFriendlyMessages';
 import ResourceBookingService from '../services/ResourceBookingService';
-import ResourceService from '../services/ResourceService';
 import ResourceBookingEventService from '../services/ResourceBookingEventService';
 import {ResourceBookingEventCreationAttributes} from '../models/ResourceBookingEvent';
 import {ResourceBookingCreationAttributes} from '../models/ResourceBooking';
@@ -13,16 +13,13 @@ type CreateResourceBooking = ResourceBookingEventCreationAttributes &
 
 export default class ResourceBookingController {
   private resourceBookingService: ResourceBookingService;
-  private resourceService: ResourceService;
   private resourceBookingEventService: ResourceBookingEventService;
 
   constructor(
     resourceBookingService: ResourceBookingService,
-    resourceService: ResourceService,
     resourceBookingEventService: ResourceBookingEventService
   ) {
     this.resourceBookingService = resourceBookingService;
-    this.resourceService = resourceService;
     this.resourceBookingEventService = resourceBookingEventService;
   }
 
@@ -106,7 +103,7 @@ export default class ResourceBookingController {
           // Create new ResourceBookingEvent
           const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
             {
-              resourceBookingId: 1,
+              resourceBookingId: createdBooking.id,
               startDateTime: newBooking.startDateTime,
               endDateTime: newBooking.endDateTime,
             };
@@ -228,13 +225,43 @@ export default class ResourceBookingController {
   }
 
   async deleteThisEvent(req: Request, res: Response, next: NextFunction) {
-    // TODO: add logic
-    // try {
-    // } catch (e) {
-    //   res.status(400);
-    //   res.json({message: userFriendlyMessages.failure.deleteResourceBooking});
-    //   next(e);
-    // }
+    try {
+      const eventId = parseInt(req.params.id);
+      const {startDateTime} = req.body;
+      const oldResourceBookingEvent =
+        await this.resourceBookingEventService.getOneResourceBookingEventById(
+          eventId
+        );
+
+      const {RRULE} = oldResourceBookingEvent;
+      if (!RRULE) {
+        const {resourceBookingId} = oldResourceBookingEvent;
+        await this.resourceBookingService.deleteOneResourceBookingById(
+          resourceBookingId
+        );
+        res.json({message: userFriendlyMessages.success.deleteResourceBooking});
+        return;
+      }
+      const rRuleObject = rrulestr(RRULE, {
+        forceset: true,
+      }) as RRuleSet;
+      rRuleObject.exdate(new Date(startDateTime));
+      const newRRULE = rRuleObject.toString();
+
+      const updatedAttributes = {
+        ...oldResourceBookingEvent,
+        RRULE: newRRULE,
+      };
+      await this.resourceBookingEventService.updateOneResourceBookingEventById(
+        eventId,
+        updatedAttributes
+      );
+      res.json({message: userFriendlyMessages.success.deleteResourceBooking});
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.deleteResourceBooking});
+      next(e);
+    }
   }
 
   async deleteThisAndFollowingEvents(
@@ -242,19 +269,84 @@ export default class ResourceBookingController {
     res: Response,
     next: NextFunction
   ) {
-    // TODO: add logic
-    // try {
-    // } catch (e) {
-    //   res.status(400);
-    //   res.json({message: userFriendlyMessages.failure.deleteResourceBooking});
-    //   next(e);
-    // }
+    try {
+      const eventId = parseInt(req.params.id);
+      const {startDateTime} = req.body;
+      const oldResourceBookingEvent =
+        await this.resourceBookingEventService.getOneResourceBookingEventById(
+          eventId
+        );
+
+      const {RRULE} = oldResourceBookingEvent;
+      if (!RRULE) {
+        // TODO: add error handling here, since it's impossible to reach here
+        return;
+      }
+      const rRuleObject = rrulestr(RRULE, {
+        forceset: true,
+      }) as RRuleSet;
+      rRuleObject.exrule(
+        new RRule({
+          freq: RRule.WEEKLY,
+          dtstart: new Date(startDateTime),
+        })
+      );
+      const newRRULE = rRuleObject.toString();
+
+      const updatedAttributes = {
+        ...oldResourceBookingEvent,
+        RRULE: newRRULE,
+      };
+      await this.resourceBookingEventService.updateOneResourceBookingEventById(
+        eventId,
+        updatedAttributes
+      );
+
+      const {resourceBookingId} = oldResourceBookingEvent;
+      const associatedEvents =
+        (await this.resourceBookingEventService.getResourceBookingEventsByResourceBookingId(
+          resourceBookingId
+        )) || [];
+      const toDeleteEvents = associatedEvents.filter(event => {
+        const eventRRULE = event.RRULE;
+        if (!eventRRULE) {
+          // TODO: add error handling here, since it's impossible to reach here
+          return true;
+        }
+        const eventRRuleObject = rrulestr(eventRRULE, {
+          forceset: true,
+        }) as RRuleSet;
+
+        if (eventRRuleObject.after(new Date(startDateTime), true)) {
+          return true;
+        }
+        return false;
+      });
+      const toDeleteEventIds = toDeleteEvents.map(event => event.id);
+      await this.resourceBookingEventService.bulkDeleteResourceBookingEvents({
+        id: toDeleteEventIds,
+      });
+      res.json({
+        message: userFriendlyMessages.success.deleteResourceBooking,
+      });
+    } catch (e) {
+      res.status(400);
+      res.json({message: userFriendlyMessages.failure.deleteResourceBooking});
+      next(e);
+    }
   }
 
   async deleteAllEvents(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = parseInt(req.params.id);
-      await this.resourceBookingService.deleteOneResourceBookingById(id);
+      const eventId = parseInt(req.params.id);
+      const resourceBookingEvent =
+        await this.resourceBookingEventService.getOneResourceBookingEventById(
+          eventId
+        );
+      const {resourceBookingId} = resourceBookingEvent;
+      await this.resourceBookingService.deleteOneResourceBookingById(
+        resourceBookingId
+      );
       res.json({message: userFriendlyMessages.success.deleteResourceBooking});
     } catch (e) {
       res.status(400);
