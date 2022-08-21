@@ -76,10 +76,19 @@ export default {
     deleteMilestone: 'Successfully deleted milestone(s).',
 
     createResourceBooking: 'Successfully created resource booking(s).',
-    getAllResourceBooking: 'Successfully retrieved resource bookings.',
-    getOneResourceBooking: 'Successfully retrieved resource booking.',
+    getResourceBookings: 'Successfully retrieved resource bookings.',
     updateResourceBooking: 'Successfully updated resource booking.',
     deleteResourceBooking: 'Successfully deleted resource booking(s).',
+
+    updateThisEvent: 'Successfully updated this event.',
+    updateThisAndFollowingEvent:
+      'Successfully updated this and all following events.',
+    updateAllEvents: 'Successfully updated all events.',
+
+    deleteThisEvent: 'Successfully deleted this event.',
+    deleteThisAndFollowingEvent:
+      'Successfully deleted this and all following events.',
+    deleteAllEvents: 'Successfully deleted all events.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -187,9 +196,18 @@ export default {
 
     createResourceBooking: 'Error in creating resource booking.',
     bookingOverlap: 'Booking overlaps with one or more other bookings',
-    getAllResourceBooking: 'Error in retrieving resource bookings.',
-    getOneResourceBooking: 'Error in retrieving resource booking.',
-    updateResourceBooking: 'Error in updating resource booking.',
+    getResourceBookings: 'Error in retrieving resource bookings.',
+    updateResourceBooking: 'Error in deleting resource booking.',
     deleteResourceBooking: 'Error in deleting resource booking(s).',
+
+    updateThisEvent: 'Error in updating this event.',
+    updateThisAndFollowingEvent:
+      'Error in updating this and all following events.',
+    updateAllEvents: 'Error in updating all events.',
+
+    deleteThisEvent: 'Error in deleting this event.',
+    deleteThisAndFollowingEvent:
+      'Error in deleting this and all following events.',
+    deleteAllEvents: 'Error in deleting all events.',
   },
 };

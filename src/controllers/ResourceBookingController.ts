@@ -7,8 +7,9 @@ import {ResourceBookingEventCreationAttributes} from '../models/ResourceBookingE
 import {ResourceBookingCreationAttributes} from '../models/ResourceBooking';
 import {InvalidUTCStringError} from '../utils/datetimeUtils';
 import sequelize from '../db';
+import DateTimeInterval from '../modules/timeInterval/DateTimeInterval';
 
-type CreateResourceBooking = ResourceBookingEventCreationAttributes &
+export type CreateResourceBooking = ResourceBookingEventCreationAttributes &
   ResourceBookingCreationAttributes;
 
 export default class ResourceBookingController {
@@ -21,45 +22,6 @@ export default class ResourceBookingController {
   ) {
     this.resourceBookingService = resourceBookingService;
     this.resourceBookingEventService = resourceBookingEventService;
-  }
-
-  private isOverlap(
-    newBooking: CreateResourceBooking,
-    oldBooking: CreateResourceBooking
-  ): boolean {
-    const newStartTime = new Date(newBooking.startDateTime);
-    const newEndTime = new Date(newBooking.endDateTime);
-
-    const oldStartTime = new Date(oldBooking.startDateTime);
-    const oldEndTime = new Date(oldBooking.endDateTime);
-
-    const caseOne =
-      newEndTime.getTime() > oldStartTime.getTime() &&
-      newStartTime.getTime() < oldStartTime.getTime();
-    const caseTwo =
-      newStartTime.getTime() < oldEndTime.getTime() &&
-      newEndTime.getTime() > oldEndTime.getTime();
-    const caseThree =
-      newStartTime.getTime() <= oldEndTime.getTime() &&
-      newStartTime.getTime() >= oldStartTime.getTime() &&
-      newEndTime.getTime() <= oldEndTime.getTime() &&
-      newEndTime.getTime() >= oldStartTime.getTime();
-
-    return caseOne || caseTwo || caseThree;
-  }
-
-  private validateOverlap(
-    newBookings: CreateResourceBooking[],
-    oldBookings: CreateResourceBooking[]
-  ) {
-    for (let i = 0; i < oldBookings.length; i++) {
-      for (let j = 0; j < newBookings.length; j++) {
-        const oldBooking = oldBookings[i];
-        const newBooking = newBookings[j];
-        if (this.isOverlap(newBooking, oldBooking)) return false;
-      }
-    }
-    return true;
   }
 
   async createOneResourceBooking(
@@ -77,15 +39,30 @@ export default class ResourceBookingController {
             resourceId
           );
 
-        // Case 1. no recurring booking
-        if (!newBooking.RRULE) {
-          // Check for Booking Overlap
-          if (!this.validateOverlap([newBooking], resourceBookings)) {
-            res.status(400);
-            res.json({message: userFriendlyMessages.failure.bookingOverlap});
-            return;
-          }
+        // Check for booking overlap
+        const newBookingIntervals =
+          DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
+            newBooking
+          );
+        const resourceBookingIntervals = resourceBookings.flatMap(
+          resourceBooking =>
+            DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
+              resourceBooking
+            )
+        );
+        if (
+          DateTimeInterval.hasOverlapsBetween(
+            newBookingIntervals,
+            resourceBookingIntervals
+          )
+        ) {
+          res.status(400);
+          res.json({message: userFriendlyMessages.failure.bookingOverlap});
+          return;
+        }
 
+        // Case 1. non-recurring booking
+        if (!newBooking.RRULE) {
           // Create new ResourceBooking
           const toCreateResourceBooking: ResourceBookingCreationAttributes = {
             userId: userId,
@@ -121,6 +98,8 @@ export default class ResourceBookingController {
             },
           });
         }
+
+        // Case 2. recurring booking
       });
     } catch (e) {
       res.status(400);
@@ -145,12 +124,12 @@ export default class ResourceBookingController {
           resourceId
         )) || [];
       res.json({
-        message: userFriendlyMessages.success.getAllResourceBooking,
+        message: userFriendlyMessages.success.getResourceBookings,
         data: resourceBookings,
       });
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessages.failure.getAllResourceBooking});
+      res.json({message: userFriendlyMessages.failure.getResourceBookings});
       next(e);
     }
   }
@@ -163,29 +142,122 @@ export default class ResourceBookingController {
           userId
         )) || [];
       res.json({
-        message: userFriendlyMessages.success.getAllResourceBooking,
+        message: userFriendlyMessages.success.getResourceBookings,
         data: resourceBookings,
       });
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessages.failure.getAllResourceBooking});
+      res.json({message: userFriendlyMessages.failure.getResourceBookings});
       next(e);
     }
   }
 
   async updateThisEvent(req: Request, res: Response, next: NextFunction) {
-    // TODO: add logic
     // try {
+    //   await sequelize.transaction(async t => {
+    //     const newBooking = req.body.newBooking as CreateResourceBooking;
+    //     const resourceId = newBooking.resourceId;
+    //     const resourceBookings =
+    //       await this.resourceBookingService.getResourceBookingsByResourceId(
+    //         resourceId
+    //       );
+    //     if (!this.validateOverlap([newBooking], resourceBookings)) {
+    //       res.status(400);
+    //       res.json({message: userFriendlyMessages.failure.bookingOverlap});
+    //       return;
+    //     }
+    //     const eventId = parseInt(req.params.id);
+    //     const {oldStartDateTime} = req.body;
+    //     const userId = req.user.id;
+    //     const oldResourceBookingEvent =
+    //       await this.resourceBookingEventService.getOneResourceBookingEventById(
+    //         eventId
+    //       );
+    //     const {RRULE} = oldResourceBookingEvent;
+    //     // If non-recurring:
+    //     if (!RRULE) {
+    //       // Update resourceBooking
+    //       const {resourceBookingId} = oldResourceBookingEvent;
+    //       const oldResourceBooking =
+    //         await this.resourceBookingService.getOneResourceBookingById(
+    //           resourceBookingId
+    //         );
+    //       const updatedResourceBookingAttributes = {
+    //         ...oldResourceBooking,
+    //         description: newBooking.description,
+    //         bookingState: newBooking.bookingState,
+    //         bookingType: newBooking.bookingType,
+    //       };
+    //       const updatedResourceBooking =
+    //         await this.resourceBookingService.updateOneResourceBookingById(
+    //           resourceBookingId,
+    //           updatedResourceBookingAttributes,
+    //           {transaction: t}
+    //         );
+    //       // Update resourceBookingEvent
+    //       res.json({
+    //         message: userFriendlyMessages.success.updateResourceBooking,
+    //       });
+    //       return;
+    //     }
+    //     // If recurring, add excluded date to original RRULE
+    //     const rRuleObject = rrulestr(RRULE, {
+    //       forceset: true,
+    //     }) as RRuleSet;
+    //     rRuleObject.exdate(new Date(oldStartDateTime));
+    //     const newRRULE = rRuleObject.toString();
+    //     const updatedAttributes = {
+    //       ...oldResourceBookingEvent,
+    //       RRULE: newRRULE,
+    //     };
+    //     await this.resourceBookingEventService.updateOneResourceBookingEventById(
+    //       eventId,
+    //       updatedAttributes
+    //     );
+    //     // Create new non-recurring resourceBooking
+    //     const toCreateResourceBooking: ResourceBookingCreationAttributes = {
+    //       userId: userId,
+    //       resourceId: newBooking.resourceId,
+    //       description: newBooking.description,
+    //       bookingState: newBooking.bookingState,
+    //       bookingType: newBooking.bookingType,
+    //     };
+    //     const createdBooking =
+    //       await this.resourceBookingService.createOneResourceBooking(
+    //         toCreateResourceBooking,
+    //         {transaction: t}
+    //       );
+    //     // Create new ResourceBookingEvent
+    //     const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
+    //       {
+    //         resourceBookingId: createdBooking.id,
+    //         startDateTime: newBooking.startDateTime,
+    //         endDateTime: newBooking.endDateTime,
+    //       };
+    //     const createdBookingEvent =
+    //       await this.resourceBookingEventService.createOneResourceBookingEvent(
+    //         toCreateResourceBookingEvent,
+    //         {transaction: t}
+    //       );
+    //     res.json({
+    //       message: userFriendlyMessages.success.updateThisEvent,
+    //       data: {
+    //         ...createdBooking,
+    //         ...createdBookingEvent,
+    //       },
+    //     });
+    //   });
     // } catch (e) {
     //   res.status(400);
     //   if (e instanceof InvalidUTCStringError) {
     //     res.json({message: (e as Error).message});
     //   } else {
-    //     res.json({message: userFriendlyMessages.failure.updateResourceBooking});
+    //     res.json({message: userFriendlyMessages.failure.updateThisEvent});
     //   }
     //   next(e);
     // }
   }
+
   async updateThisAndFollowingEvents(
     req: Request,
     res: Response,
@@ -198,7 +270,7 @@ export default class ResourceBookingController {
     //   if (e instanceof InvalidUTCStringError) {
     //     res.json({message: (e as Error).message});
     //   } else {
-    //     res.json({message: userFriendlyMessages.failure.updateResourceBooking});
+    //     res.json({message: userFriendlyMessages.failure.updateThisAndFollowingEvent});
     //   }
     //   next(e);
     // }
@@ -212,13 +284,13 @@ export default class ResourceBookingController {
       // if time was changed, need to loop through everything to update the time
       // else, just update the resourceBooking
 
-      res.json({message: userFriendlyMessages.success.updateResourceBooking});
+      res.json({message: userFriendlyMessages.success.updateAllEvents});
     } catch (e) {
       res.status(400);
       if (e instanceof InvalidUTCStringError) {
         res.json({message: (e as Error).message});
       } else {
-        res.json({message: userFriendlyMessages.failure.updateResourceBooking});
+        res.json({message: userFriendlyMessages.failure.updateAllEvents});
       }
       next(e);
     }
@@ -257,10 +329,10 @@ export default class ResourceBookingController {
         eventId,
         updatedAttributes
       );
-      res.json({message: userFriendlyMessages.success.deleteResourceBooking});
+      res.json({message: userFriendlyMessages.success.deleteThisEvent});
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessages.failure.deleteResourceBooking});
+      res.json({message: userFriendlyMessages.failure.deleteThisEvent});
       next(e);
     }
   }
@@ -329,11 +401,13 @@ export default class ResourceBookingController {
         id: toDeleteEventIds,
       });
       res.json({
-        message: userFriendlyMessages.success.deleteResourceBooking,
+        message: userFriendlyMessages.success.deleteThisAndFollowingEvent,
       });
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessages.failure.deleteResourceBooking});
+      res.json({
+        message: userFriendlyMessages.failure.deleteThisAndFollowingEvent,
+      });
       next(e);
     }
   }
@@ -349,10 +423,10 @@ export default class ResourceBookingController {
       await this.resourceBookingService.deleteOneResourceBookingById(
         resourceBookingId
       );
-      res.json({message: userFriendlyMessages.success.deleteResourceBooking});
+      res.json({message: userFriendlyMessages.success.deleteAllEvents});
     } catch (e) {
       res.status(400);
-      res.json({message: userFriendlyMessages.failure.deleteResourceBooking});
+      res.json({message: userFriendlyMessages.failure.deleteAllEvents});
       next(e);
     }
   }
