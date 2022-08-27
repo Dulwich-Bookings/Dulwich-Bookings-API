@@ -222,6 +222,7 @@ export default class App {
     container.register('ResourceBookingController', ResourceBookingController, [
       'ResourceBookingService',
       'ResourceBookingEventService',
+      'MilestoneService',
     ]);
 
     // middlewares

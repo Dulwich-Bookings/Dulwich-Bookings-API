@@ -1,13 +1,19 @@
 import {NextFunction, Request, Response} from 'express';
 import {RRule, RRuleSet, rrulestr} from 'rrule';
+import moment, {Moment} from 'moment';
+
 import userFriendlyMessages from '../consts/userFriendlyMessages';
 import ResourceBookingService from '../services/ResourceBookingService';
 import ResourceBookingEventService from '../services/ResourceBookingEventService';
+import MilestoneService from '../services/MilestoneService';
 import {ResourceBookingEventCreationAttributes} from '../models/ResourceBookingEvent';
 import {ResourceBookingCreationAttributes} from '../models/ResourceBooking';
-import {InvalidUTCStringError} from '../utils/datetimeUtils';
+import {InvalidUTCStringError, momentToString} from '../utils/datetimeUtils';
 import sequelize from '../db';
 import DateTimeInterval from '../modules/timeInterval/DateTimeInterval';
+import {WeekProfile} from '../consts/enums';
+import Milestone, {compareByWeekBeginning} from '../models/Milestone';
+import RRuleUtils from '../utils/rRuleUtils';
 
 export type CreateResourceBooking = ResourceBookingEventCreationAttributes &
   ResourceBookingCreationAttributes;
@@ -15,13 +21,16 @@ export type CreateResourceBooking = ResourceBookingEventCreationAttributes &
 export default class ResourceBookingController {
   private resourceBookingService: ResourceBookingService;
   private resourceBookingEventService: ResourceBookingEventService;
+  private milestoneService: MilestoneService;
 
   constructor(
     resourceBookingService: ResourceBookingService,
-    resourceBookingEventService: ResourceBookingEventService
+    resourceBookingEventService: ResourceBookingEventService,
+    milestoneService: MilestoneService
   ) {
     this.resourceBookingService = resourceBookingService;
     this.resourceBookingEventService = resourceBookingEventService;
+    this.milestoneService = milestoneService;
   }
 
   async createOneResourceBooking(
@@ -32,6 +41,7 @@ export default class ResourceBookingController {
     try {
       await sequelize.transaction(async t => {
         const userId = req.user.id;
+        const schoolId = req.user.schoolId;
         const newBooking = req.body as CreateResourceBooking;
         const resourceId = newBooking.resourceId;
         const resourceBookings =
@@ -61,23 +71,23 @@ export default class ResourceBookingController {
           return;
         }
 
+        // Create new ResourceBooking
+        const toCreateResourceBooking: ResourceBookingCreationAttributes = {
+          userId: userId,
+          resourceId: newBooking.resourceId,
+          description: newBooking.description,
+          bookingState: newBooking.bookingState,
+          bookingType: newBooking.bookingType,
+        };
+        const createdBooking =
+          await this.resourceBookingService.createOneResourceBooking(
+            toCreateResourceBooking,
+            {transaction: t}
+          );
+
         // Case 1. non-recurring booking
         if (!newBooking.RRULE) {
-          // Create new ResourceBooking
-          const toCreateResourceBooking: ResourceBookingCreationAttributes = {
-            userId: userId,
-            resourceId: newBooking.resourceId,
-            description: newBooking.description,
-            bookingState: newBooking.bookingState,
-            bookingType: newBooking.bookingType,
-          };
-          const createdBooking =
-            await this.resourceBookingService.createOneResourceBooking(
-              toCreateResourceBooking,
-              {transaction: t}
-            );
-
-          // Create new ResourceBookingEvent
+          // Create new ResourceBookingEvent with no recurrence
           const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
             {
               resourceBookingId: createdBooking.id,
@@ -100,6 +110,126 @@ export default class ResourceBookingController {
         }
 
         // Case 2. recurring booking
+        const rRule = rrulestr(newBooking.RRULE as string);
+        if (rRule.options.interval === WeekProfile.WEEKLY) {
+          // Create new ResourceBookingEvent with weekly recurrence
+          const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
+            {
+              resourceBookingId: createdBooking.id,
+              startDateTime: newBooking.startDateTime,
+              endDateTime: newBooking.endDateTime,
+              RRULE: newBooking.RRULE,
+            };
+          const createdBookingEvent =
+            await this.resourceBookingEventService.createOneResourceBookingEvent(
+              toCreateResourceBookingEvent,
+              {transaction: t}
+            );
+
+          res.json({
+            message: userFriendlyMessages.success.createResourceBooking,
+            data: {
+              ...createdBooking,
+              ...createdBookingEvent,
+            },
+          });
+        } else if (rRule.options.interval === WeekProfile.BIWEEKLY) {
+          const milestones =
+            await this.milestoneService.getMilestonesBySchoolId(schoolId);
+          milestones.sort(compareByWeekBeginning);
+
+          // Determine milestone that new resourceBooking is starting from
+          const startDateTime = moment.utc(newBooking.startDateTime);
+          const endDateTime = moment.utc(newBooking.endDateTime);
+          let currentMilestoneIdx = 0;
+          for (let i = 0; i < milestones.length; i++) {
+            const m = moment.utc(milestones[i].weekBeginning);
+            if (m > startDateTime) {
+              break;
+            }
+            currentMilestoneIdx++;
+          }
+
+          // Determine the week number this new booking belongs to
+          const currentMilestoneWeekBeginning = moment.utc(
+            milestones[currentMilestoneIdx].weekBeginning
+          );
+          const diffInWeeks =
+            startDateTime.diff(currentMilestoneWeekBeginning, 'weeks') % 2;
+          const bookingWeek =
+            milestones[currentMilestoneIdx].week + diffInWeeks;
+
+          let remainingBookingDates = rRule.all();
+          while (remainingBookingDates.length !== 0) {
+            const nextMilestoneIdx = currentMilestoneIdx + 1;
+            if (nextMilestoneIdx >= milestones.length) {
+              break;
+              // can just whack
+            }
+            const nextMilestoneWeekBeginning = moment.utc(
+              milestones[nextMilestoneIdx].weekBeginning
+            );
+            const remainingBookingRRule = rRule;
+            let remainingBookingRRuleCount = rRule.options.count;
+            let currentStartDateTime = startDateTime;
+            let currentEndDateTime = endDateTime;
+            for (let i = 0; i < remainingBookingDates.length; i++) {
+              const bookingDate = moment.utc(remainingBookingDates[i]);
+              if (bookingDate > nextMilestoneWeekBeginning) {
+                // Exclude dates after next milestone from RRule
+                const rRuleSetToSave = new RRuleSet();
+                rRuleSetToSave.rrule(remainingBookingRRule);
+                rRuleSetToSave.exrule(
+                  new RRule({
+                    freq: RRule.WEEKLY,
+                    dtstart: bookingDate.toDate(),
+                  })
+                );
+
+                // Create new ResourceBookingEvent
+                const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
+                  {
+                    resourceBookingId: createdBooking.id,
+                    startDateTime: momentToString(currentStartDateTime),
+                    endDateTime: momentToString(currentEndDateTime),
+                    RRULE: rRuleSetToSave.toString(),
+                  };
+                await this.resourceBookingEventService.createOneResourceBookingEvent(
+                  toCreateResourceBookingEvent,
+                  {transaction: t}
+                );
+
+                // Update currentStartDateTime, currentEndDateTime, and remainingBookingRRule
+                currentMilestoneIdx = nextMilestoneIdx;
+                currentStartDateTime = this.translateDateTimeFromMilestone(
+                  milestones[currentMilestoneIdx],
+                  startDateTime,
+                  bookingWeek
+                );
+                currentEndDateTime = this.translateDateTimeFromMilestone(
+                  milestones[currentMilestoneIdx],
+                  endDateTime,
+                  bookingWeek
+                );
+                if (RRuleUtils.isRecurringUsingCount(remainingBookingRRule)) {
+                  remainingBookingRRule.options.count =
+                    remainingBookingRRuleCount;
+                }
+                remainingBookingRRule.options.dtstart =
+                  currentStartDateTime.toDate();
+                remainingBookingDates = remainingBookingRRule.all();
+                break;
+              }
+              if (remainingBookingRRuleCount) {
+                remainingBookingRRuleCount--;
+              }
+            }
+          }
+        } else {
+          res.status(400);
+          res.json({message: userFriendlyMessages.failure.invalidWeekProfile});
+          return;
+        }
       });
     } catch (e) {
       res.status(400);
@@ -110,6 +240,36 @@ export default class ResourceBookingController {
       }
       next(e);
     }
+  }
+
+  /**
+   * Translates Milestone beginning date to same weekday, hour, minute, and second
+   * as given referenceDateTime
+   * @param milestone given Milestone to translate
+   * @param referenceDateTime reference DateTime to translate
+   * @param bookingWeek week number that booking belongs to
+   * @returns Moment object representing the translated
+   */
+  private translateDateTimeFromMilestone(
+    milestone: Milestone,
+    referenceDateTime: Moment,
+    bookingWeek: number
+  ): Moment {
+    const isoWeekday = referenceDateTime.isoWeekday();
+    const hour = referenceDateTime.hour();
+    const minute = referenceDateTime.minute();
+    const second = referenceDateTime.second();
+    const translatedDateTime = moment.utc(milestone.weekBeginning);
+
+    if (milestone.week !== bookingWeek) {
+      translatedDateTime.add(1, 'weeks');
+    }
+    translatedDateTime.isoWeekday(isoWeekday);
+    translatedDateTime.hour(hour);
+    translatedDateTime.minute(minute);
+    translatedDateTime.second(second);
+
+    return translatedDateTime;
   }
 
   async getResourceBookingsByResourceId(

@@ -1,4 +1,5 @@
 import {Model, DataTypes, Optional, Sequelize} from 'sequelize';
+import moment from 'moment';
 import {Models} from '../types';
 import {validateUTCString} from '../utils/datetimeUtils';
 
@@ -10,6 +11,22 @@ export interface MilestoneAttributes {
 }
 
 export type MilestoneCreationAttributes = Optional<MilestoneAttributes, 'id'>;
+
+/**
+ * Compare function used to sort Milestones based on weekBeginning
+ * @param curr current Milestone
+ * @param next current Milestone to compare
+ * @returns positive value, if next is before curr. Negative value,
+ * if next is after curr. 0 otherwise.
+ */
+export function compareByWeekBeginning(
+  curr: Milestone,
+  next: Milestone
+): number {
+  const currWeekBeginning = moment.utc(curr.weekBeginning);
+  const nextWeekBeginning = moment.utc(next.weekBeginning);
+  return nextWeekBeginning.diff(currWeekBeginning);
+}
 
 class Milestone
   extends Model<MilestoneAttributes, MilestoneCreationAttributes>

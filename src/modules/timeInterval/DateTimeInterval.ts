@@ -101,7 +101,7 @@ class DateTimeInterval {
    * Checks if there exists overlaps between given datetime intervals
    * @param firstBookingIntervals array of DateTimeIntervals
    * @param secondBookingIntervals array of DateTimeIntervals
-   * @returns true, if there exists an overlap. Otherwise false.
+   * @returns true, if there exists an overlap. False otherwise.
    */
   public static hasOverlapsBetween(
     firstBookingIntervals: DateTimeInterval[],

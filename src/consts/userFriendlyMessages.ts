@@ -196,6 +196,8 @@ export default {
 
     createResourceBooking: 'Error in creating resource booking.',
     bookingOverlap: 'Booking overlaps with one or more other bookings',
+    invalidWeekProfile:
+      'Recurring bookings must be in intervals of 1 or 2 weeks.',
     getResourceBookings: 'Error in retrieving resource bookings.',
     updateResourceBooking: 'Error in deleting resource booking.',
     deleteResourceBooking: 'Error in deleting resource booking(s).',
