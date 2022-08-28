@@ -514,14 +514,36 @@ export default class ResourceBookingController {
   }
 
   async updateAllEvents(req: Request, res: Response, next: NextFunction) {
+    // TODO: Logic below assumes that start datetime, end datetime, and RRULE does not change
+    // If time is changed, and it is changed beyond 1 week, how do we ensure the
+    // recurrence still follows the week number. How do we support changing RRULE?
     try {
-      const id = parseInt(req.params.id);
-
-      // TODO: add logic
-      // if time was changed, need to loop through everything to update the time
-      // else, just update the resourceBooking
-
-      res.json({message: userFriendlyMessages.success.updateAllEvents});
+      const eventId = parseInt(req.params.id);
+      const newBooking = req.body.newBooking as CreateResourceBooking;
+      const resourceBookingEvent =
+        await this.resourceBookingEventService.getOneResourceBookingEventById(
+          eventId
+        );
+      const {resourceBookingId} = resourceBookingEvent;
+      const oldResourceBooking =
+        await this.resourceBookingService.getOneResourceBookingById(
+          resourceBookingId
+        );
+      const updatedResourceBookingAttributes = {
+        ...oldResourceBooking,
+        description: newBooking.description,
+        bookingState: newBooking.bookingState,
+        bookingType: newBooking.bookingType,
+      };
+      const updatedResourceBooking =
+        await this.resourceBookingService.updateOneResourceBookingById(
+          resourceBookingId,
+          updatedResourceBookingAttributes
+        );
+      res.json({
+        message: userFriendlyMessages.success.updateAllEvents,
+        data: updatedResourceBooking,
+      });
     } catch (e) {
       res.status(400);
       if (e instanceof InvalidUTCStringError) {
