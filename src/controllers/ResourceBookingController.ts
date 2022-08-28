@@ -495,19 +495,105 @@ export default class ResourceBookingController {
     }
   }
 
+  // TODO: Logic below assumes that start datetime, end datetime, and RRULE does not change
+  // If time is changed, and it is changed beyond 1 week, how do we ensure the
+  // recurrence still follows the week number. How do we support changing RRULE?
   async updateThisAndFollowingEvents(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
-    // TODO: add logic
     // try {
+    //   await sequelize.transaction(async t => {
+    //     const newBooking = req.body.newBooking as CreateResourceBooking;
+    //     const resourceId = newBooking.resourceId;
+    //     const resourceBookings =
+    //       await this.resourceBookingService.getResourceBookingsByResourceId(
+    //         resourceId
+    //       );
+    //     // Check for booking overlap
+    //     const newBookingIntervals =
+    //       DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
+    //         newBooking
+    //       );
+    //     const resourceBookingIntervals = resourceBookings.flatMap(
+    //       resourceBooking =>
+    //         DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
+    //           resourceBooking
+    //         )
+    //     );
+    //     if (
+    //       DateTimeInterval.hasOverlapsBetween(
+    //         newBookingIntervals,
+    //         resourceBookingIntervals
+    //       )
+    //     ) {
+    //       res.status(400);
+    //       res.json({message: userFriendlyMessages.failure.bookingOverlap});
+    //       return;
+    //     }
+    //     const eventId = parseInt(req.params.id);
+    //     const {oldStartDateTime} = req.body;
+    //     const userId = req.user.id;
+    //     const oldResourceBookingEvent =
+    //       await this.resourceBookingEventService.getOneResourceBookingEventById(
+    //         eventId
+    //       );
+    //     // Case 2. recurring booking
+    //     const updatedRRuleSet = rrulestr(
+    //       oldResourceBookingEvent.RRULE as string,
+    //       {
+    //         forceset: true,
+    //       }
+    //     ) as RRuleSet;
+    //     updatedRRuleSet.exdate(new Date(oldStartDateTime));
+    //     const updatedAttributes = {
+    //       ...oldResourceBookingEvent,
+    //       RRULE: updatedRRuleSet.toString(),
+    //     };
+    //     await this.resourceBookingEventService.updateOneResourceBookingEventById(
+    //       eventId,
+    //       updatedAttributes
+    //     );
+    //     // Create new non-recurring resourceBooking
+    //     const toCreateResourceBooking: ResourceBookingCreationAttributes = {
+    //       userId: userId,
+    //       resourceId: newBooking.resourceId,
+    //       description: newBooking.description,
+    //       bookingState: newBooking.bookingState,
+    //       bookingType: newBooking.bookingType,
+    //     };
+    //     const createdBooking =
+    //       await this.resourceBookingService.createOneResourceBooking(
+    //         toCreateResourceBooking,
+    //         {transaction: t}
+    //       );
+    //     // Create new ResourceBookingEvent
+    //     const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
+    //       {
+    //         resourceBookingId: createdBooking.id,
+    //         startDateTime: newBooking.startDateTime,
+    //         endDateTime: newBooking.endDateTime,
+    //       };
+    //     const createdBookingEvent =
+    //       await this.resourceBookingEventService.createOneResourceBookingEvent(
+    //         toCreateResourceBookingEvent,
+    //         {transaction: t}
+    //       );
+    //     res.json({
+    //       message: userFriendlyMessages.success.updateThisEvent,
+    //       data: {
+    //         ...createdBooking,
+    //         ...createdBookingEvent,
+    //       },
+    //     });
+    //   });
     // } catch (e) {
     //   res.status(400);
     //   if (e instanceof InvalidUTCStringError) {
     //     res.json({message: (e as Error).message});
     //   } else {
-    //     res.json({message: userFriendlyMessages.failure.updateThisAndFollowingEvent});
+    //     res.json({message: userFriendlyMessages.failure.updateThisEvent});
     //   }
     //   next(e);
     // }
