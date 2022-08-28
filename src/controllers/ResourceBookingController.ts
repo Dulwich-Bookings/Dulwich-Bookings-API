@@ -45,6 +45,9 @@ export default class ResourceBookingController {
       await sequelize.transaction(async t => {
         await this.createOneResourceBookingHelper(user, newBooking, t, res);
       });
+      res.json({
+        message: userFriendlyMessages.success.createResourceBooking,
+      });
     } catch (e) {
       res.status(400);
       if (e instanceof InvalidUTCStringError) {
@@ -278,9 +281,6 @@ export default class ResourceBookingController {
         toCreateResourceBookingEvent,
         {transaction: t}
       );
-      res.json({
-        message: userFriendlyMessages.success.createResourceBooking,
-      });
       return;
     }
     res.status(400);
@@ -360,137 +360,42 @@ export default class ResourceBookingController {
   async updateThisEvent(req: Request, res: Response, next: NextFunction) {
     try {
       await sequelize.transaction(async t => {
-        const newBooking = req.body.newBooking as CreateResourceBooking;
-        const resourceId = newBooking.resourceId;
-        const resourceBookings =
-          await this.resourceBookingService.getResourceBookingsByResourceId(
-            resourceId
-          );
-
-        // Check for booking overlap
-        const newBookingIntervals =
-          DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
-            newBooking
-          );
-        const resourceBookingIntervals = resourceBookings.flatMap(
-          resourceBooking =>
-            DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
-              resourceBooking
-            )
-        );
-        if (
-          DateTimeInterval.hasOverlapsBetween(
-            newBookingIntervals,
-            resourceBookingIntervals
-          )
-        ) {
-          res.status(400);
-          res.json({message: userFriendlyMessages.failure.bookingOverlap});
-          return;
-        }
-
         const eventId = parseInt(req.params.id);
-        const {oldStartDateTime} = req.body;
-        const userId = req.user.id;
+        const {startDateTime} = req.body;
         const oldResourceBookingEvent =
           await this.resourceBookingEventService.getOneResourceBookingEventById(
             eventId
           );
 
-        // Case 1. non-recurring booking
+        // Case 1. updating a non-recurring booking
         if (!oldResourceBookingEvent.RRULE) {
-          // Update old resource booking
           const {resourceBookingId} = oldResourceBookingEvent;
-          const oldResourceBooking =
-            await this.resourceBookingService.getOneResourceBookingById(
-              resourceBookingId
-            );
-          const updatedResourceBookingAttributes = {
-            ...oldResourceBooking,
-            description: newBooking.description,
-            bookingState: newBooking.bookingState,
-            bookingType: newBooking.bookingType,
-          };
-          const updatedResourceBooking =
-            await this.resourceBookingService.updateOneResourceBookingById(
-              resourceBookingId,
-              updatedResourceBookingAttributes,
-              {transaction: t}
-            );
-
-          // TODO: support changing non recurring booking to recurring, and vice versa
-          const updatedResourceBookingEventAttributes = {
-            ...oldResourceBookingEvent,
-            startDateTime: newBooking.startDateTime,
-            endDateTime: newBooking.endDateTime,
-            // RRULE: newBooking.RRULE,
-          };
-
-          const updatedResourceBookingEvent =
-            await this.resourceBookingEventService.updateOneResourceBookingEventById(
-              eventId,
-              updatedResourceBookingEventAttributes,
-              {transaction: t}
-            );
-
-          res.json({
-            message: userFriendlyMessages.success.updateResourceBooking,
-            data: {
-              ...updatedResourceBooking,
-              ...updatedResourceBookingEvent,
-            },
-          });
-          return;
-        }
-
-        // Case 2. recurring booking
-        const updatedRRuleSet = rrulestr(
-          oldResourceBookingEvent.RRULE as string,
-          {
+          await this.resourceBookingService.deleteOneResourceBookingById(
+            resourceBookingId,
+            {transaction: t}
+          );
+        } else {
+          // Case 2. updating a recurring booking
+          // Exclude startDateTime from existing RRule
+          const rRuleSet = rrulestr(oldResourceBookingEvent.RRULE, {
             forceset: true,
-          }
-        ) as RRuleSet;
-        updatedRRuleSet.exdate(new Date(oldStartDateTime));
-        const updatedAttributes = {
-          ...oldResourceBookingEvent,
-          RRULE: updatedRRuleSet.toString(),
-        };
-        await this.resourceBookingEventService.updateOneResourceBookingEventById(
-          eventId,
-          updatedAttributes
-        );
-        // Create new non-recurring resourceBooking
-        const toCreateResourceBooking: ResourceBookingCreationAttributes = {
-          userId: userId,
-          resourceId: newBooking.resourceId,
-          description: newBooking.description,
-          bookingState: newBooking.bookingState,
-          bookingType: newBooking.bookingType,
-        };
-        const createdBooking =
-          await this.resourceBookingService.createOneResourceBooking(
-            toCreateResourceBooking,
-            {transaction: t}
-          );
-        // Create new ResourceBookingEvent
-        const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
-          {
-            resourceBookingId: createdBooking.id,
-            startDateTime: newBooking.startDateTime,
-            endDateTime: newBooking.endDateTime,
+          }) as RRuleSet;
+          rRuleSet.exdate(new Date(startDateTime));
+
+          const updatedAttributes = {
+            ...oldResourceBookingEvent,
+            RRULE: rRuleSet.toString(),
           };
-        const createdBookingEvent =
-          await this.resourceBookingEventService.createOneResourceBookingEvent(
-            toCreateResourceBookingEvent,
+          await this.resourceBookingEventService.updateOneResourceBookingEventById(
+            eventId,
+            updatedAttributes,
             {transaction: t}
           );
-        res.json({
-          message: userFriendlyMessages.success.updateThisEvent,
-          data: {
-            ...createdBooking,
-            ...createdBookingEvent,
-          },
-        });
+        }
+        // Create new booking
+        const {user} = req.body;
+        const newBooking = req.body.newBooking as CreateResourceBooking;
+        await this.createOneResourceBookingHelper(user, newBooking, t, res);
       });
     } catch (e) {
       res.status(400);
@@ -503,140 +408,135 @@ export default class ResourceBookingController {
     }
   }
 
-  // TODO: Logic below assumes that start datetime, end datetime, and RRULE does not change
-  // If time is changed, and it is changed beyond 1 week, how do we ensure the
-  // recurrence still follows the week number. How do we support changing RRULE?
   async updateThisAndFollowingEvents(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
-    // try {
-    //   await sequelize.transaction(async t => {
-    //     const newBooking = req.body.newBooking as CreateResourceBooking;
-    //     const resourceId = newBooking.resourceId;
-    //     const resourceBookings =
-    //       await this.resourceBookingService.getResourceBookingsByResourceId(
-    //         resourceId
-    //       );
-    //     // Check for booking overlap
-    //     const newBookingIntervals =
-    //       DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
-    //         newBooking
-    //       );
-    //     const resourceBookingIntervals = resourceBookings.flatMap(
-    //       resourceBooking =>
-    //         DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
-    //           resourceBooking
-    //         )
-    //     );
-    //     if (
-    //       DateTimeInterval.hasOverlapsBetween(
-    //         newBookingIntervals,
-    //         resourceBookingIntervals
-    //       )
-    //     ) {
-    //       res.status(400);
-    //       res.json({message: userFriendlyMessages.failure.bookingOverlap});
-    //       return;
-    //     }
-    //     const eventId = parseInt(req.params.id);
-    //     const {oldStartDateTime} = req.body;
-    //     const userId = req.user.id;
-    //     const oldResourceBookingEvent =
-    //       await this.resourceBookingEventService.getOneResourceBookingEventById(
-    //         eventId
-    //       );
-    //     // Case 2. recurring booking
-    //     const updatedRRuleSet = rrulestr(
-    //       oldResourceBookingEvent.RRULE as string,
-    //       {
-    //         forceset: true,
-    //       }
-    //     ) as RRuleSet;
-    //     updatedRRuleSet.exdate(new Date(oldStartDateTime));
-    //     const updatedAttributes = {
-    //       ...oldResourceBookingEvent,
-    //       RRULE: updatedRRuleSet.toString(),
-    //     };
-    //     await this.resourceBookingEventService.updateOneResourceBookingEventById(
-    //       eventId,
-    //       updatedAttributes
-    //     );
-    //     // Create new non-recurring resourceBooking
-    //     const toCreateResourceBooking: ResourceBookingCreationAttributes = {
-    //       userId: userId,
-    //       resourceId: newBooking.resourceId,
-    //       description: newBooking.description,
-    //       bookingState: newBooking.bookingState,
-    //       bookingType: newBooking.bookingType,
-    //     };
-    //     const createdBooking =
-    //       await this.resourceBookingService.createOneResourceBooking(
-    //         toCreateResourceBooking,
-    //         {transaction: t}
-    //       );
-    //     // Create new ResourceBookingEvent
-    //     const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
-    //       {
-    //         resourceBookingId: createdBooking.id,
-    //         startDateTime: newBooking.startDateTime,
-    //         endDateTime: newBooking.endDateTime,
-    //       };
-    //     const createdBookingEvent =
-    //       await this.resourceBookingEventService.createOneResourceBookingEvent(
-    //         toCreateResourceBookingEvent,
-    //         {transaction: t}
-    //       );
-    //     res.json({
-    //       message: userFriendlyMessages.success.updateThisEvent,
-    //       data: {
-    //         ...createdBooking,
-    //         ...createdBookingEvent,
-    //       },
-    //     });
-    //   });
-    // } catch (e) {
-    //   res.status(400);
-    //   if (e instanceof InvalidUTCStringError) {
-    //     res.json({message: (e as Error).message});
-    //   } else {
-    //     res.json({message: userFriendlyMessages.failure.updateThisEvent});
-    //   }
-    //   next(e);
-    // }
+    try {
+      await sequelize.transaction(async t => {
+        const eventId = parseInt(req.params.id);
+        const {startDateTime} = req.body;
+        const oldResourceBookingEvent =
+          await this.resourceBookingEventService.getOneResourceBookingEventById(
+            eventId
+          );
+
+        // Non-recurring events are not allowed to delete this and following events.
+        // This event must have a RRULE. Thus, the typecast from string | undefined
+        // to string is safe.
+        const rRuleSet = rrulestr(oldResourceBookingEvent.RRULE as string, {
+          forceset: true,
+        }) as RRuleSet;
+        const rRuleSetExdates = rRuleSet.exdates();
+
+        const rRule = rRuleSet.rrules()[0];
+        let splicedRRule;
+        if (rRule.options.count) {
+          // Count number of dates before startDateTime (exclusive)
+          const rRuleDates = rRule.all();
+          const newCount = rRuleDates.filter(
+            date => date < new Date(startDateTime)
+          ).length;
+
+          splicedRRule = new RRule({
+            ...rRule.options,
+            count: newCount,
+          });
+        } else {
+          splicedRRule = new RRule({
+            ...rRule.options,
+            until: new Date(startDateTime),
+          });
+        }
+        const splicedRRuleSet = new RRuleSet();
+        splicedRRuleSet.rrule(splicedRRule);
+        rRuleSetExdates.forEach(exdate => splicedRRuleSet.exdate(exdate));
+
+        const updatedAttributes = {
+          ...oldResourceBookingEvent,
+          RRULE: splicedRRuleSet.toString(),
+        };
+        await this.resourceBookingEventService.updateOneResourceBookingEventById(
+          eventId,
+          updatedAttributes,
+          {transaction: t}
+        );
+
+        // Delete all events after selected datetime (inclusive)
+        const {resourceBookingId} = oldResourceBookingEvent;
+        const associatedEvents =
+          (await this.resourceBookingEventService.getResourceBookingEventsByResourceBookingId(
+            resourceBookingId
+          )) || [];
+        const toDeleteEvents = associatedEvents.filter(event => {
+          // Non-recurring events are not allowed to delete this and following events.
+          // This event must have a RRULE. Thus, the typecast from string | undefined
+          // to string is safe.
+          const eventRRuleSet = rrulestr(event.RRULE as string, {
+            forceset: true,
+          }) as RRuleSet;
+
+          if (eventRRuleSet.after(new Date(startDateTime), true)) {
+            return true;
+          }
+          return false;
+        });
+        const toDeleteEventIds = toDeleteEvents.map(event => event.id);
+        await this.resourceBookingEventService.bulkDeleteResourceBookingEvents(
+          {
+            id: toDeleteEventIds,
+          },
+          {transaction: t}
+        );
+
+        // Create new bookings
+        const {user} = req;
+        const newBooking = req.body.newBooking as CreateResourceBooking;
+        await this.createOneResourceBookingHelper(user, newBooking, t, res);
+        res.json({
+          message: userFriendlyMessages.success.updateThisAndFollowingEvent,
+        });
+      });
+    } catch (e) {
+      res.status(400);
+      if (e instanceof InvalidUTCStringError) {
+        res.json({message: (e as Error).message});
+      } else {
+        res.json({
+          message: userFriendlyMessages.failure.updateThisAndFollowingEvent,
+        });
+      }
+      next(e);
+    }
   }
 
   async updateAllEvents(req: Request, res: Response, next: NextFunction) {
-    // TODO: Logic below assumes that start datetime, end datetime, and RRULE does not change
-    // If time is changed, and it is changed beyond 1 week, how do we ensure the
-    // recurrence still follows the week number. How do we support changing RRULE?
     try {
-      const eventId = parseInt(req.params.id);
-      const newBooking = req.body.newBooking as CreateResourceBooking;
-      const resourceBookingEvent =
-        await this.resourceBookingEventService.getOneResourceBookingEventById(
-          eventId
+      await sequelize.transaction(async t => {
+        // Delete all related old bookings
+        const eventId = parseInt(req.params.id);
+        const resourceBookingEvent =
+          await this.resourceBookingEventService.getOneResourceBookingEventById(
+            eventId
+          );
+        const {resourceBookingId} = resourceBookingEvent;
+        const oldResourceBooking =
+          await this.resourceBookingService.getOneResourceBookingById(
+            resourceBookingId
+          );
+        await this.resourceBookingService.deleteOneResourceBookingById(
+          oldResourceBooking.id,
+          {transaction: t}
         );
-      const {resourceBookingId} = resourceBookingEvent;
-      const oldResourceBooking =
-        await this.resourceBookingService.getOneResourceBookingById(
-          resourceBookingId
-        );
-      const updatedResourceBookingAttributes = {
-        ...oldResourceBooking,
-        description: newBooking.description,
-        bookingState: newBooking.bookingState,
-        bookingType: newBooking.bookingType,
-      };
-      const updatedResourceBooking =
-        await this.resourceBookingService.updateOneResourceBookingById(
-          resourceBookingId,
-          updatedResourceBookingAttributes
-        );
+
+        // Create new bookings
+        const {user} = req;
+        const newBooking = req.body as CreateResourceBooking;
+        await this.createOneResourceBookingHelper(user, newBooking, t, res);
+      });
       res.json({
         message: userFriendlyMessages.success.updateAllEvents,
-        data: updatedResourceBooking,
       });
     } catch (e) {
       res.status(400);
@@ -651,36 +551,44 @@ export default class ResourceBookingController {
 
   async deleteThisEvent(req: Request, res: Response, next: NextFunction) {
     try {
-      const eventId = parseInt(req.params.id);
-      const {startDateTime} = req.body;
-      const oldResourceBookingEvent =
-        await this.resourceBookingEventService.getOneResourceBookingEventById(
-          eventId
+      await sequelize.transaction(async t => {
+        const eventId = parseInt(req.params.id);
+        const {startDateTime} = req.body;
+        const oldResourceBookingEvent =
+          await this.resourceBookingEventService.getOneResourceBookingEventById(
+            eventId
+          );
+
+        // Case 1. deleting a non-recurring booking
+        if (!oldResourceBookingEvent.RRULE) {
+          const {resourceBookingId} = oldResourceBookingEvent;
+          await this.resourceBookingService.deleteOneResourceBookingById(
+            resourceBookingId,
+            {transaction: t}
+          );
+          res.json({
+            message: userFriendlyMessages.success.deleteResourceBooking,
+          });
+          return;
+        }
+
+        // Case 2. deleting from a recurring booking
+        const rRuleSet = rrulestr(oldResourceBookingEvent.RRULE, {
+          forceset: true,
+        }) as RRuleSet;
+
+        // Add excluded date to RRULE
+        rRuleSet.exdate(new Date(startDateTime));
+        const updatedAttributes = {
+          ...oldResourceBookingEvent,
+          RRULE: rRuleSet.toString(),
+        };
+        await this.resourceBookingEventService.updateOneResourceBookingEventById(
+          eventId,
+          updatedAttributes,
+          {transaction: t}
         );
-
-      if (!oldResourceBookingEvent.RRULE) {
-        const {resourceBookingId} = oldResourceBookingEvent;
-        await this.resourceBookingService.deleteOneResourceBookingById(
-          resourceBookingId
-        );
-        res.json({message: userFriendlyMessages.success.deleteResourceBooking});
-        return;
-      }
-
-      const rRuleSet = rrulestr(oldResourceBookingEvent.RRULE, {
-        forceset: true,
-      }) as RRuleSet;
-
-      // Add excluded date to RRULE
-      rRuleSet.exdate(new Date(startDateTime));
-      const updatedAttributes = {
-        ...oldResourceBookingEvent,
-        RRULE: rRuleSet.toString(),
-      };
-      await this.resourceBookingEventService.updateOneResourceBookingEventById(
-        eventId,
-        updatedAttributes
-      );
+      });
       res.json({message: userFriendlyMessages.success.deleteThisEvent});
     } catch (e) {
       res.status(400);
@@ -695,59 +603,81 @@ export default class ResourceBookingController {
     next: NextFunction
   ) {
     try {
-      const eventId = parseInt(req.params.id);
-      const {startDateTime} = req.body;
-      const oldResourceBookingEvent =
-        await this.resourceBookingEventService.getOneResourceBookingEventById(
-          eventId
-        );
+      await sequelize.transaction(async t => {
+        const eventId = parseInt(req.params.id);
+        const {startDateTime} = req.body;
+        const oldResourceBookingEvent =
+          await this.resourceBookingEventService.getOneResourceBookingEventById(
+            eventId
+          );
 
-      // Non-recurring events are not allowed to delete this and following events.
-      // This event must have a RRULE. Thus, the typecast from string | undefined
-      // to string is safe.
-      const rRuleSet = rrulestr(oldResourceBookingEvent.RRULE as string, {
-        forceset: true,
-      }) as RRuleSet;
-
-      // Add exclusion rule to RRULE to exclude all dates after selected datetime (inclusive)
-      rRuleSet.exrule(
-        new RRule({
-          freq: RRule.WEEKLY,
-          dtstart: new Date(startDateTime),
-        })
-      );
-
-      const updatedAttributes = {
-        ...oldResourceBookingEvent,
-        RRULE: rRuleSet.toString(),
-      };
-      await this.resourceBookingEventService.updateOneResourceBookingEventById(
-        eventId,
-        updatedAttributes
-      );
-
-      // Delete all events after selected datetime (inclusive)
-      const {resourceBookingId} = oldResourceBookingEvent;
-      const associatedEvents =
-        (await this.resourceBookingEventService.getResourceBookingEventsByResourceBookingId(
-          resourceBookingId
-        )) || [];
-      const toDeleteEvents = associatedEvents.filter(event => {
         // Non-recurring events are not allowed to delete this and following events.
         // This event must have a RRULE. Thus, the typecast from string | undefined
         // to string is safe.
-        const eventRRuleSet = rrulestr(event.RRULE as string, {
+        const rRuleSet = rrulestr(oldResourceBookingEvent.RRULE as string, {
           forceset: true,
         }) as RRuleSet;
+        const rRuleSetExdates = rRuleSet.exdates();
 
-        if (eventRRuleSet.after(new Date(startDateTime), true)) {
-          return true;
+        const rRule = rRuleSet.rrules()[0];
+        let splicedRRule;
+        if (rRule.options.count) {
+          // Count number of dates before startDateTime (exclusive)
+          const rRuleDates = rRule.all();
+          const newCount = rRuleDates.filter(
+            date => date < new Date(startDateTime)
+          ).length;
+
+          splicedRRule = new RRule({
+            ...rRule.options,
+            count: newCount,
+          });
+        } else {
+          splicedRRule = new RRule({
+            ...rRule.options,
+            until: new Date(startDateTime),
+          });
         }
-        return false;
-      });
-      const toDeleteEventIds = toDeleteEvents.map(event => event.id);
-      await this.resourceBookingEventService.bulkDeleteResourceBookingEvents({
-        id: toDeleteEventIds,
+        const splicedRRuleSet = new RRuleSet();
+        splicedRRuleSet.rrule(splicedRRule);
+        rRuleSetExdates.forEach(exdate => splicedRRuleSet.exdate(exdate));
+
+        const updatedAttributes = {
+          ...oldResourceBookingEvent,
+          RRULE: splicedRRuleSet.toString(),
+        };
+        await this.resourceBookingEventService.updateOneResourceBookingEventById(
+          eventId,
+          updatedAttributes,
+          {transaction: t}
+        );
+
+        // Delete all events after selected datetime (inclusive)
+        const {resourceBookingId} = oldResourceBookingEvent;
+        const associatedEvents =
+          (await this.resourceBookingEventService.getResourceBookingEventsByResourceBookingId(
+            resourceBookingId
+          )) || [];
+        const toDeleteEvents = associatedEvents.filter(event => {
+          // Non-recurring events are not allowed to delete this and following events.
+          // This event must have a RRULE. Thus, the typecast from string | undefined
+          // to string is safe.
+          const eventRRuleSet = rrulestr(event.RRULE as string, {
+            forceset: true,
+          }) as RRuleSet;
+
+          if (eventRRuleSet.after(new Date(startDateTime), true)) {
+            return true;
+          }
+          return false;
+        });
+        const toDeleteEventIds = toDeleteEvents.map(event => event.id);
+        await this.resourceBookingEventService.bulkDeleteResourceBookingEvents(
+          {
+            id: toDeleteEventIds,
+          },
+          {transaction: t}
+        );
       });
       res.json({
         message: userFriendlyMessages.success.deleteThisAndFollowingEvent,
