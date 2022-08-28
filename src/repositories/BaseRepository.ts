@@ -24,8 +24,8 @@ export default class BaseRepository {
     return this.model.findAll({attributes: {exclude}});
   }
 
-  async getWithFilters(filter: Filter) {
-    return this.model.findAll({where: filter});
+  async getWithFilters(filter: Filter, options?: TransactionOptions) {
+    return this.model.findAll({where: filter, ...options});
   }
 
   async getScopeWithFilters(filter: Filter, scope: string) {

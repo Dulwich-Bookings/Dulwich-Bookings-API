@@ -393,10 +393,11 @@ export default class ResourceBookingController {
           );
         }
         // Create new booking
-        const {user} = req.body;
+        const {user} = req;
         const newBooking = req.body.newBooking as CreateResourceBooking;
         await this.createOneResourceBookingHelper(user, newBooking, t, res);
       });
+      res.json({message: userFriendlyMessages.success.updateThisEvent});
     } catch (e) {
       res.status(400);
       if (e instanceof InvalidUTCStringError) {
@@ -467,7 +468,8 @@ export default class ResourceBookingController {
         const {resourceBookingId} = oldResourceBookingEvent;
         const associatedEvents =
           (await this.resourceBookingEventService.getResourceBookingEventsByResourceBookingId(
-            resourceBookingId
+            resourceBookingId,
+            {transaction: t}
           )) || [];
         const toDeleteEvents = associatedEvents.filter(event => {
           // Non-recurring events are not allowed to delete this and following events.
@@ -532,7 +534,7 @@ export default class ResourceBookingController {
 
         // Create new bookings
         const {user} = req;
-        const newBooking = req.body as CreateResourceBooking;
+        const newBooking = req.body.newBooking as CreateResourceBooking;
         await this.createOneResourceBookingHelper(user, newBooking, t, res);
       });
       res.json({
@@ -656,7 +658,8 @@ export default class ResourceBookingController {
         const {resourceBookingId} = oldResourceBookingEvent;
         const associatedEvents =
           (await this.resourceBookingEventService.getResourceBookingEventsByResourceBookingId(
-            resourceBookingId
+            resourceBookingId,
+            {transaction: t}
           )) || [];
         const toDeleteEvents = associatedEvents.filter(event => {
           // Non-recurring events are not allowed to delete this and following events.

@@ -26,10 +26,16 @@ export default class ResourceBookingEventService {
     ).get({plain: true}) as ResourceBookingEvent;
   }
 
-  async getResourceBookingEventsByResourceBookingId(resourceBookingId: number) {
-    return (await this.resourceBookingEventRepository.getWithFilters({
-      resourceBookingId,
-    })) as ResourceBookingEvent[];
+  async getResourceBookingEventsByResourceBookingId(
+    resourceBookingId: number,
+    options?: TransactionOptions
+  ) {
+    return (await this.resourceBookingEventRepository.getWithFilters(
+      {
+        resourceBookingId,
+      },
+      options
+    )) as ResourceBookingEvent[];
   }
 
   async getOneResourceBookingEventById(id: number) {
