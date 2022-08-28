@@ -198,6 +198,8 @@ export default {
     bookingOverlap: 'Booking overlaps with one or more other bookings',
     invalidWeekProfile:
       'Recurring bookings must be in intervals of 1 or 2 weeks.',
+    resourceBookingBeforeFirstMilestone:
+      'Booking must be after the first milestone.',
     getResourceBookings: 'Error in retrieving resource bookings.',
     updateResourceBooking: 'Error in deleting resource booking.',
     deleteResourceBooking: 'Error in deleting resource booking(s).',
