@@ -25,7 +25,7 @@ export function compareByWeekBeginning(
 ): number {
   const currWeekBeginning = moment.utc(curr.weekBeginning);
   const nextWeekBeginning = moment.utc(next.weekBeginning);
-  return nextWeekBeginning.diff(currWeekBeginning);
+  return currWeekBeginning.diff(nextWeekBeginning);
 }
 
 class Milestone

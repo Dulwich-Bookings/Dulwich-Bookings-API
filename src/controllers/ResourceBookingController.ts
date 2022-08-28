@@ -13,7 +13,6 @@ import sequelize from '../db';
 import DateTimeInterval from '../modules/timeInterval/DateTimeInterval';
 import {WeekProfile} from '../consts/enums';
 import Milestone, {compareByWeekBeginning} from '../models/Milestone';
-import RRuleUtils from '../utils/rRuleUtils';
 
 export type CreateResourceBooking = ResourceBookingEventCreationAttributes &
   ResourceBookingCreationAttributes;
@@ -107,6 +106,7 @@ export default class ResourceBookingController {
               ...createdBookingEvent,
             },
           });
+          return;
         }
 
         // Case 2. recurring booking
@@ -133,7 +133,10 @@ export default class ResourceBookingController {
               ...createdBookingEvent,
             },
           });
-        } else if (rRule.options.interval === WeekProfile.BIWEEKLY) {
+          return;
+        }
+
+        if (rRule.options.interval === WeekProfile.BIWEEKLY) {
           const milestones =
             await this.milestoneService.getMilestonesBySchoolId(schoolId);
           milestones.sort(compareByWeekBeginning);
@@ -141,13 +144,17 @@ export default class ResourceBookingController {
           // Determine milestone that new resourceBooking is starting from
           const startDateTime = moment.utc(newBooking.startDateTime);
           const endDateTime = moment.utc(newBooking.endDateTime);
-          let currentMilestoneIdx = 0;
+          let currentMilestoneIdx = -1;
           for (let i = 0; i < milestones.length; i++) {
             const m = moment.utc(milestones[i].weekBeginning);
             if (m > startDateTime) {
               break;
             }
             currentMilestoneIdx++;
+          }
+          if (currentMilestoneIdx === -1) {
+            // if new booking is before any milestone
+            return;
           }
 
           // Determine the week number this new booking belongs to
@@ -160,39 +167,37 @@ export default class ResourceBookingController {
             milestones[currentMilestoneIdx].week + diffInWeeks;
 
           let remainingBookingDates = rRule.all();
+          const remainingBookingRRule = rRule;
+          let currentStartDateTime = startDateTime;
+          let currentEndDateTime = endDateTime;
           while (remainingBookingDates.length !== 0) {
             const nextMilestoneIdx = currentMilestoneIdx + 1;
+            // If booking exceeds last milestone
             if (nextMilestoneIdx >= milestones.length) {
               break;
-              // can just whack
             }
+
             const nextMilestoneWeekBeginning = moment.utc(
               milestones[nextMilestoneIdx].weekBeginning
             );
-            const remainingBookingRRule = rRule;
-            let remainingBookingRRuleCount = rRule.options.count;
-            let currentStartDateTime = startDateTime;
-            let currentEndDateTime = endDateTime;
             for (let i = 0; i < remainingBookingDates.length; i++) {
               const bookingDate = moment.utc(remainingBookingDates[i]);
               if (bookingDate > nextMilestoneWeekBeginning) {
-                // Exclude dates after next milestone from RRule
-                const rRuleSetToSave = new RRuleSet();
-                rRuleSetToSave.rrule(remainingBookingRRule);
-                rRuleSetToSave.exrule(
-                  new RRule({
-                    freq: RRule.WEEKLY,
-                    dtstart: bookingDate.toDate(),
-                  })
-                );
+                // Bisect dates by creating a new rRule which excludes dates after next milestone
+                const rRuleToSave = new RRule(remainingBookingRRule.options);
+                if (rRuleToSave.options.count) {
+                  rRuleToSave.options.count = i;
+                } else {
+                  rRuleToSave.options.until =
+                    nextMilestoneWeekBeginning.toDate();
+                }
 
-                // Create new ResourceBookingEvent
                 const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
                   {
                     resourceBookingId: createdBooking.id,
                     startDateTime: momentToString(currentStartDateTime),
                     endDateTime: momentToString(currentEndDateTime),
-                    RRULE: rRuleSetToSave.toString(),
+                    RRULE: RRule.optionsToString(rRuleToSave.options),
                   };
                 await this.resourceBookingEventService.createOneResourceBookingEvent(
                   toCreateResourceBookingEvent,
@@ -211,25 +216,36 @@ export default class ResourceBookingController {
                   endDateTime,
                   bookingWeek
                 );
-                if (RRuleUtils.isRecurringUsingCount(remainingBookingRRule)) {
-                  remainingBookingRRule.options.count =
-                    remainingBookingRRuleCount;
+                if (remainingBookingRRule.options.count) {
+                  remainingBookingRRule.options.count -= i;
                 }
                 remainingBookingRRule.options.dtstart =
                   currentStartDateTime.toDate();
                 remainingBookingDates = remainingBookingRRule.all();
                 break;
               }
-              if (remainingBookingRRuleCount) {
-                remainingBookingRRuleCount--;
-              }
             }
+            // All remaining bookings are before the next deadline
+            break;
           }
-        } else {
-          res.status(400);
-          res.json({message: userFriendlyMessages.failure.invalidWeekProfile});
+          const toCreateResourceBookingEvent: ResourceBookingEventCreationAttributes =
+            {
+              resourceBookingId: createdBooking.id,
+              startDateTime: momentToString(currentStartDateTime),
+              endDateTime: momentToString(currentEndDateTime),
+              RRULE: RRule.optionsToString(remainingBookingRRule.options),
+            };
+          await this.resourceBookingEventService.createOneResourceBookingEvent(
+            toCreateResourceBookingEvent,
+            {transaction: t}
+          );
+          res.json({
+            message: userFriendlyMessages.success.createResourceBooking,
+          });
           return;
         }
+        res.status(400);
+        res.json({message: userFriendlyMessages.failure.invalidWeekProfile});
       });
     } catch (e) {
       res.status(400);
