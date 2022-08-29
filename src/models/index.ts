@@ -20,12 +20,17 @@ fs.readdirSync(__dirname)
     models[model.default.name] = model.default; // we export default from our models
   });
 
-export {default as User} from './User';
-export {default as Tag} from './Tag';
-export {default as Resource} from './Resource';
-export {default as Subscription} from './Subscription';
-export {default as School} from './School';
 export {default as Bookmark} from './Bookmark';
+export {default as Milestone} from './Milestone';
 export {default as RecentlyVisited} from './RecentlyVisited';
+export {default as Resource} from './Resource';
+export {default as ResourceBooking} from './ResourceBooking';
+export {default as ResourceBookingEvent} from './ResourceBookingEvent';
+export {default as ResourceMap} from './ResourceMap';
+export {default as School} from './School';
+export {default as Subscription} from './Subscription';
+export {default as Tag} from './Tag';
+export {default as TagMap} from './TagMap';
+export {default as User} from './User';
 
 export default models;

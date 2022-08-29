@@ -74,6 +74,21 @@ export default {
     getAllMilestone: 'Successfully retrieved milestones.',
     getOneMilestone: 'Successfully retrieved milestone.',
     deleteMilestone: 'Successfully deleted milestone(s).',
+
+    createResourceBooking: 'Successfully created resource booking(s).',
+    getResourceBookings: 'Successfully retrieved resource bookings.',
+    updateResourceBooking: 'Successfully updated resource booking.',
+    deleteResourceBooking: 'Successfully deleted resource booking(s).',
+
+    updateThisEvent: 'Successfully updated this event.',
+    updateThisAndFollowingEvent:
+      'Successfully updated this and all following events.',
+    updateAllEvents: 'Successfully updated all events.',
+
+    deleteThisEvent: 'Successfully deleted this event.',
+    deleteThisAndFollowingEvent:
+      'Successfully deleted this and all following events.',
+    deleteAllEvents: 'Successfully deleted all events.',
   },
   failure: {
     getOneTag: 'Error in retrieved Tag.',
@@ -178,5 +193,25 @@ export default {
     getAllMilestone: 'Error in retrieving milestones.',
     getOneMilestone: 'Error in retrieving milestone.',
     deleteMilestone: 'Error in deleting milestone(s).',
+
+    createResourceBooking: 'Error in creating resource booking.',
+    bookingOverlap: 'Booking overlaps with one or more other bookings',
+    invalidWeekProfile:
+      'Recurring bookings must be in intervals of 1 or 2 weeks.',
+    resourceBookingBeforeFirstMilestone:
+      'Booking must be after the first milestone.',
+    getResourceBookings: 'Error in retrieving resource bookings.',
+    updateResourceBooking: 'Error in deleting resource booking.',
+    deleteResourceBooking: 'Error in deleting resource booking(s).',
+
+    updateThisEvent: 'Error in updating this event.',
+    updateThisAndFollowingEvent:
+      'Error in updating this and all following events.',
+    updateAllEvents: 'Error in updating all events.',
+
+    deleteThisEvent: 'Error in deleting this event.',
+    deleteThisAndFollowingEvent:
+      'Error in deleting this and all following events.',
+    deleteAllEvents: 'Error in deleting all events.',
   },
 };

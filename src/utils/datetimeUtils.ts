@@ -1,3 +1,4 @@
+import {Moment} from 'moment';
 import userFriendlyMessages from '../consts/userFriendlyMessages';
 
 export class InvalidUTCStringError extends Error {
@@ -14,4 +15,12 @@ export function validateUTCString(utc: string): void {
   if (!isUTCString.test(utc)) {
     throw new InvalidUTCStringError();
   }
+}
+
+/**
+ * Converts the given Moment object into UTC String
+ * @returns a UTC string of the given Moment object
+ */
+export function momentToString(moment: Moment): string {
+  return `${moment.format('YYYY-MM-DDTHH:mm:ss.SSS')}Z`;
 }
