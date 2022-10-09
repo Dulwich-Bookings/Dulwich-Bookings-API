@@ -10,13 +10,6 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-      {
-        name: 'Singapore',
-        timezone: 'Asia/Singapore',
-        alternativeName: '新加坡德威国际学校',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
     ]);
   },
 
