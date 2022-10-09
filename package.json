@@ -23,7 +23,7 @@
     "db:unseed": "sequelize-cli db:seed:undo:all",
     "db:reset": "node scripts/resetDb.js && npm run db:seed",
     "db:reseed": "npm run db:migrate && npm run db:migrate:undo && npm run db:migrate && npm run db:seed",
-    "heroku-postbuild": "npm run build && PGSSLMODE=no-verify && npm run db:reseed"
+    "heroku-postbuild": "npm run build && PGSSLMODE=no-verify"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.6.2",
