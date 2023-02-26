@@ -19,6 +19,12 @@ import {Transaction} from 'sequelize/types';
 export type CreateResourceBooking = ResourceBookingEventCreationAttributes &
   ResourceBookingCreationAttributes;
 
+export class CreateResourceBookingError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
 export default class ResourceBookingController {
   private resourceBookingService: ResourceBookingService;
   private resourceBookingEventService: ResourceBookingEventService;
@@ -43,14 +49,14 @@ export default class ResourceBookingController {
       const {user} = req;
       const newBooking = req.body as CreateResourceBooking;
       await sequelize.transaction(async t => {
-        await this.createOneResourceBookingHelper(user, newBooking, t, res);
+        await this.createOneResourceBookingHelper(user, newBooking, t);
       });
       res.json({
         message: userFriendlyMessages.success.createResourceBooking,
       });
     } catch (e) {
       res.status(400);
-      if (e instanceof InvalidUTCStringError) {
+      if (e instanceof InvalidUTCStringError || CreateResourceBookingError) {
         res.json({message: (e as Error).message});
       } else {
         res.json({message: userFriendlyMessages.failure.createResourceBooking});
@@ -62,8 +68,7 @@ export default class ResourceBookingController {
   private async createOneResourceBookingHelper(
     user: User,
     newBooking: CreateResourceBooking,
-    t: Transaction,
-    res: Response
+    t: Transaction
   ) {
     const userId = user.id;
     const schoolId = user.schoolId;
@@ -87,9 +92,9 @@ export default class ResourceBookingController {
         resourceBookingIntervals
       )
     ) {
-      res.status(400);
-      res.json({message: userFriendlyMessages.failure.bookingOverlap});
-      return;
+      throw new CreateResourceBookingError(
+        userFriendlyMessages.failure.bookingOverlap
+      );
     }
 
     // Create new ResourceBooking
@@ -121,14 +126,10 @@ export default class ResourceBookingController {
           {transaction: t}
         );
 
-      res.json({
-        message: userFriendlyMessages.success.createResourceBooking,
-        data: {
-          ...createdBooking,
-          ...createdBookingEvent,
-        },
-      });
-      return;
+      return {
+        ...createdBooking,
+        ...createdBookingEvent,
+      };
     }
 
     // Case 2. recurring booking
@@ -150,14 +151,10 @@ export default class ResourceBookingController {
           {transaction: t}
         );
 
-      res.json({
-        message: userFriendlyMessages.success.createResourceBooking,
-        data: {
-          ...createdBooking,
-          ...createdBookingEvent,
-        },
-      });
-      return;
+      return {
+        ...createdBooking,
+        ...createdBookingEvent,
+      };
     }
 
     if (rRule.options.interval === WeekProfile.BIWEEKLY) {
@@ -178,12 +175,9 @@ export default class ResourceBookingController {
         currentMilestoneIdx++;
       }
       if (currentMilestoneIdx === -1) {
-        res.status(400);
-        res.json({
-          message:
-            userFriendlyMessages.failure.resourceBookingBeforeFirstMilestone,
-        });
-        return;
+        throw new CreateResourceBookingError(
+          userFriendlyMessages.failure.resourceBookingBeforeFirstMilestone
+        );
       }
 
       // Determine the week number this new booking belongs to
@@ -283,8 +277,9 @@ export default class ResourceBookingController {
       );
       return;
     }
-    res.status(400);
-    res.json({message: userFriendlyMessages.failure.invalidWeekProfile});
+    throw new CreateResourceBookingError(
+      userFriendlyMessages.failure.invalidWeekProfile
+    );
   }
 
   /**
@@ -395,12 +390,12 @@ export default class ResourceBookingController {
         // Create new booking
         const {user} = req;
         const newBooking = req.body.newBooking as CreateResourceBooking;
-        await this.createOneResourceBookingHelper(user, newBooking, t, res);
+        await this.createOneResourceBookingHelper(user, newBooking, t);
       });
       res.json({message: userFriendlyMessages.success.updateThisEvent});
     } catch (e) {
       res.status(400);
-      if (e instanceof InvalidUTCStringError) {
+      if (e instanceof InvalidUTCStringError || CreateResourceBookingError) {
         res.json({message: (e as Error).message});
       } else {
         res.json({message: userFriendlyMessages.failure.updateThisEvent});
@@ -495,14 +490,14 @@ export default class ResourceBookingController {
         // Create new bookings
         const {user} = req;
         const newBooking = req.body.newBooking as CreateResourceBooking;
-        await this.createOneResourceBookingHelper(user, newBooking, t, res);
+        await this.createOneResourceBookingHelper(user, newBooking, t);
         res.json({
           message: userFriendlyMessages.success.updateThisAndFollowingEvent,
         });
       });
     } catch (e) {
       res.status(400);
-      if (e instanceof InvalidUTCStringError) {
+      if (e instanceof InvalidUTCStringError || CreateResourceBookingError) {
         res.json({message: (e as Error).message});
       } else {
         res.json({
@@ -535,14 +530,14 @@ export default class ResourceBookingController {
         // Create new bookings
         const {user} = req;
         const newBooking = req.body.newBooking as CreateResourceBooking;
-        await this.createOneResourceBookingHelper(user, newBooking, t, res);
+        await this.createOneResourceBookingHelper(user, newBooking, t);
       });
       res.json({
         message: userFriendlyMessages.success.updateAllEvents,
       });
     } catch (e) {
       res.status(400);
-      if (e instanceof InvalidUTCStringError) {
+      if (e instanceof InvalidUTCStringError || CreateResourceBookingError) {
         res.json({message: (e as Error).message});
       } else {
         res.json({message: userFriendlyMessages.failure.updateAllEvents});
