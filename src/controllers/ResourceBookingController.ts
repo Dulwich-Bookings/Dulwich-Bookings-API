@@ -68,7 +68,8 @@ export default class ResourceBookingController {
   private async createOneResourceBookingHelper(
     user: User,
     newBooking: CreateResourceBooking,
-    t: Transaction
+    t: Transaction,
+    deletionId?: number
   ) {
     const userId = user.id;
     const schoolId = user.schoolId;
@@ -81,11 +82,16 @@ export default class ResourceBookingController {
     // Check for booking overlap
     const newBookingIntervals =
       DateTimeInterval.createDateTimeIntervalsFromResourceBooking(newBooking);
-    const resourceBookingIntervals = resourceBookings.flatMap(resourceBooking =>
-      DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
-        resourceBooking
+    const resourceBookingIntervals = resourceBookings
+      .filter(
+        resourceBooking => resourceBooking.resourceBookingId !== deletionId
       )
-    );
+      .flatMap(resourceBooking =>
+        DateTimeInterval.createDateTimeIntervalsFromResourceBooking(
+          resourceBooking
+        )
+      );
+
     if (
       DateTimeInterval.hasOverlapsBetween(
         newBookingIntervals,
@@ -361,6 +367,7 @@ export default class ResourceBookingController {
           await this.resourceBookingEventService.getOneResourceBookingEventById(
             eventId
           );
+        let deletionId;
 
         // Case 1. updating a non-recurring booking
         if (!oldResourceBookingEvent.RRULE) {
@@ -369,6 +376,7 @@ export default class ResourceBookingController {
             resourceBookingId,
             {transaction: t}
           );
+          deletionId = resourceBookingId;
         } else {
           // Case 2. updating a recurring booking
           // Exclude startDateTime from existing RRule
@@ -390,7 +398,12 @@ export default class ResourceBookingController {
         // Create new booking
         const {user} = req;
         const newBooking = req.body.newBooking as CreateResourceBooking;
-        await this.createOneResourceBookingHelper(user, newBooking, t);
+        await this.createOneResourceBookingHelper(
+          user,
+          newBooking,
+          t,
+          deletionId
+        );
       });
       res.json({message: userFriendlyMessages.success.updateThisEvent});
     } catch (e) {
